@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { SPLToken, Token } from '../src'
+import { Token } from '../src'
 
 enum ChainId {
   ETHEREUM = 1,
