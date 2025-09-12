@@ -2,7 +2,6 @@ import { useEffect } from 'react'
 import { Button } from '@pancakeswap/uikit'
 import {
   Flex,
-  Image,
   Text,
   Modal,
   ModalBody,

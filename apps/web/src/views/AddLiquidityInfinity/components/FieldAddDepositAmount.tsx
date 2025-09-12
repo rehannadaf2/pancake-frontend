@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { Currency } from '@pancakeswap/swap-sdk-core'
-import { BoxProps, RowBetween, Column, Text, SkeletonV2, Skeleton } from '@pancakeswap/uikit'
+import { BoxProps, RowBetween, Column, Text, Skeleton } from '@pancakeswap/uikit'
 import { FieldDepositAmount } from 'components/Liquidity/Form/FieldDepositAmount'
 import { useInfinityPoolIdRouteParams } from 'hooks/dynamicRoute/usePoolIdRoute'
 import { useInverted } from 'state/infinity/shared'

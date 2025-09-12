@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import * as yup from 'yup'
 import Decimal from 'decimal.js'
 import { Trans, useTranslation, type TranslateFunction } from '@pancakeswap/localization'
-import { MAX_DURATION_DAYS, MIN_DURATION_DAYS } from '@/store/configs/farm'
 import { EditReward } from '../util'
 
 interface Props {

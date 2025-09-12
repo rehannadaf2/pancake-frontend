@@ -10,10 +10,9 @@ import {
   ZERO,
   DecreaseLiquidityEventLayout
 } from '@pancakeswap/solana-core-sdk'
-import { AccountInfo, Transaction } from '@solana/web3.js'
+import { AccountInfo } from '@solana/web3.js'
 import BN from 'bn.js'
 import Decimal from 'decimal.js'
-import { shallow } from 'zustand/shallow'
 import useSWR from 'swr'
 import useTokenPrice from '@/hooks/token/useTokenPrice'
 import useFetchMultipleAccountInfo from '@/hooks/info/useFetchMultipleAccountInfo'

@@ -1,4 +1,4 @@
-import { Address, Hex, zeroAddress } from 'viem'
+import { Address, Hex } from 'viem'
 import { ACTIONS } from '../../../constants/actions'
 import { CLPositionConfig } from '../../../types'
 import { ActionsPlanner } from '../../../utils/ActionsPlanner'

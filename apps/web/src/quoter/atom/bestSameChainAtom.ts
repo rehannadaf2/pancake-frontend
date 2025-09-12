@@ -1,4 +1,4 @@
-import { Currency, Percent, SPLToken, TradeType } from '@pancakeswap/swap-sdk-core'
+import { Currency, SPLToken, TradeType } from '@pancakeswap/swap-sdk-core'
 import { Loadable } from '@pancakeswap/utils/Loadable'
 import { TimeoutError } from '@pancakeswap/utils/withTimeout'
 import { getIsWrapping } from 'hooks/useWrapCallback'

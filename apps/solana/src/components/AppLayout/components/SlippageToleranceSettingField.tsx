@@ -1,5 +1,5 @@
 import { Flex } from '@chakra-ui/react'
-import { Box, Button, ButtonMenu, ButtonMenuItem, Input, Message, Text } from '@pancakeswap/uikit'
+import { Box, ButtonMenu, ButtonMenuItem, Input, Message, Text } from '@pancakeswap/uikit'
 import Decimal from 'decimal.js'
 import { KeyboardEvent, useCallback, useState } from 'react'
 import { useTranslation } from '@pancakeswap/localization'

@@ -1,4 +1,4 @@
-import { atom, useAtom, useAtomValue } from 'jotai'
+import { atom, useAtomValue } from 'jotai'
 import { useEffect, useRef, useState } from 'react'
 
 import { WorkerInstance, createWorker } from 'utils/worker'

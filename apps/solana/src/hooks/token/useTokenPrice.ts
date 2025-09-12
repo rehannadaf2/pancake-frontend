@@ -1,4 +1,4 @@
-import { solToWSol, WSOLMint, RAYMint, USDCMint, USDTMint, mSOLMint } from '@pancakeswap/solana-core-sdk'
+import { solToWSol, WSOLMint, USDCMint, USDTMint, mSOLMint } from '@pancakeswap/solana-core-sdk'
 import { NATIVE_MINT } from '@solana/spl-token-0.4'
 import { PublicKey } from '@solana/web3.js'
 import { useCallback, useEffect, useMemo, useState } from 'react'

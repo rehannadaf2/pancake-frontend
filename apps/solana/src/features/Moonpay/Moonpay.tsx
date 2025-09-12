@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import { Box, Flex, Image, Text, useColorMode, useMediaQuery } from '@chakra-ui/react'
 import { useTranslation } from '@pancakeswap/localization'
 import { PhantomWalletAdapter } from '@solana/wallet-adapter-wallets'

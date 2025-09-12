@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import BigNumber from 'bignumber.js'
 import { styled } from 'styled-components'
 import { useTranslation } from '@pancakeswap/localization'
 import { Flex, CardFooter, ExpandableLabel, HelpIcon } from '@pancakeswap/uikit'

@@ -1,7 +1,6 @@
 import { useEffect, useMemo } from 'react'
 import {
   getPdaPersonalPositionAddress,
-  getPdaLockClPositionIdV2,
   PositionInfoLayout,
   TickUtils,
   ApiV3PoolInfoConcentratedItem,

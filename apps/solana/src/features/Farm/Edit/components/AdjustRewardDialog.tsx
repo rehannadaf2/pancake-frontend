@@ -19,7 +19,6 @@ import {
 import { ApiV3Token, wSolToSolToken } from '@pancakeswap/solana-core-sdk'
 import Decimal from 'decimal.js'
 import Button from '@/components/Button'
-import CalloutNote from '@/components/CalloutNote'
 import DecimalInput from '@/components/DecimalInput'
 import TokenInput from '@/components/TokenInput'
 import { useAppStore, useTokenAccountStore } from '@/store'
@@ -31,7 +30,6 @@ import { formatCurrency, formatToRawLocaleStr } from '@/utils/numberish/formatte
 import toPercentString from '@/utils/numberish/toPercentString'
 import { wSolToSolString } from '@/utils/token'
 import useTokenPrice, { TokenPrice } from '@/hooks/token/useTokenPrice'
-import { MAX_DURATION_DAYS, MIN_DURATION_DAYS } from '@/store/configs/farm'
 import { EditReward } from '../util'
 import useAdjustRewardSchema, { ADJUST_REWARD_ERROR } from '../schema/useAdjustRewardSchema'
 

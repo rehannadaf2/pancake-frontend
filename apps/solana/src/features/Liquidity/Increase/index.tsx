@@ -1,10 +1,10 @@
-import { ReactNode, useCallback, useEffect, useState, useMemo } from 'react'
+import { useCallback, useEffect, useState, useMemo } from 'react'
 import { useTranslation } from '@pancakeswap/localization'
-import { Box, Flex, Grid, GridItem, HStack, Text, TooltipProps, VStack, useDisclosure } from '@chakra-ui/react'
+import { Box, Flex, Grid, GridItem, HStack, Text, VStack, useDisclosure } from '@chakra-ui/react'
 import { ApiV3PoolInfoStandardItem, ApiV3Token, TokenInfo, CREATE_CPMM_POOL_PROGRAM } from '@pancakeswap/solana-core-sdk'
 import Decimal from 'decimal.js'
 
-import Tabs, { TabItem } from '@/components/Tabs'
+import { TabItem } from '@/components/Tabs'
 import { Desktop, Mobile } from '@/components/MobileDesktop'
 import useFetchPoolById from '@/hooks/pool/useFetchPoolById'
 import useFarmPositions from '@/hooks/portfolio/farm/useFarmPositions'

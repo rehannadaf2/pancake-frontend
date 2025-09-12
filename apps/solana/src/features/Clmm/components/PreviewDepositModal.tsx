@@ -25,7 +25,6 @@ import { colors } from '@/theme/cssVariables/colors'
 import { panelCard } from '@/theme/cssBlocks'
 import toPercentString from '@/utils/numberish/toPercentString'
 import { getFirstNonZeroDecimal, formatCurrency, formatToRawLocaleStr } from '@/utils/numberish/formatter'
-import { Mobile } from '@/components/MobileDesktop'
 
 const SubTitle: React.FC<React.PropsWithChildren<TextProps>> = ({ children, ...props }) => (
   <Text variant="subTitle" color={colors.textSecondary} fontSize="xs" textTransform="uppercase" {...props}>

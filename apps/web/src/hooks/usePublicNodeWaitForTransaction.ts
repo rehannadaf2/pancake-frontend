@@ -6,7 +6,7 @@ import { CHAINS } from 'config/chains'
 import { PUBLIC_NODES } from 'config/nodes'
 import memoize from 'lodash/memoize'
 import { useCallback } from 'react'
-import { RetryableError, retry, retryExp } from 'state/multicall/retry'
+import { RetryableError, retryExp } from 'state/multicall/retry'
 import { fallbackWithRank } from 'utils/fallbackWithRank'
 import {
   BlockNotFoundError,

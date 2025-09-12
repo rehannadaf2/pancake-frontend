@@ -1,7 +1,7 @@
 import BN from 'bn.js'
 import Decimal from 'decimal.js'
 import { useTranslation } from '@pancakeswap/localization'
-import { Badge, Button, Divider, Flex, HStack, Text, Tooltip, useDisclosure } from '@chakra-ui/react'
+import { Badge, Button, Flex, HStack, Text, Tooltip, useDisclosure } from '@chakra-ui/react'
 import { useMemo } from 'react'
 import AprMDSwitchWidget from '@/components/AprMDSwitchWidget'
 import { Desktop, Mobile } from '@/components/MobileDesktop'

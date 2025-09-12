@@ -4,7 +4,7 @@ import tryParseAmount from '@pancakeswap/utils/tryParseAmount'
 
 import { Field } from 'state/swap/actions'
 import { useSwapState } from 'state/swap/hooks'
-import { isAddressEqual, safeGetAddress, safeGetUnifiedAddress } from 'utils'
+import { isAddressEqual, safeGetUnifiedAddress } from 'utils'
 
 import { ClassicOrder, PriceOrder } from '@pancakeswap/price-api-sdk'
 import { isClassicOrder } from 'views/Swap/utils'

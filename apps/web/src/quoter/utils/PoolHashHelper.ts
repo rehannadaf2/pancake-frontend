@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Currency, getCurrencyAddress, sortCurrencies } from '@pancakeswap/swap-sdk-core'
 import { keccak256, stringify } from 'viem/utils'
-import { PoolQuery, QuoteQuery, StrategyQuery, SVMQuoteQuery } from '../quoter.types'
+import { PoolQuery, QuoteQuery, StrategyQuery } from '../quoter.types'
 
 export class PoolHashHelper {
   static hashCurrenciesWithSort(a?: Currency, b?: Currency) {

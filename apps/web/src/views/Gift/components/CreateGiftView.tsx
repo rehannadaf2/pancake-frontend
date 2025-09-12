@@ -1,5 +1,5 @@
 import { useTranslation } from '@pancakeswap/localization'
-import { ChainId, CurrencyAmount, NativeCurrency, Token } from '@pancakeswap/sdk'
+import { CurrencyAmount, NativeCurrency, Token } from '@pancakeswap/sdk'
 import {
   Box,
   ButtonMenu,

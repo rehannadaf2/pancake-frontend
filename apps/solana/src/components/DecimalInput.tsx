@@ -1,7 +1,7 @@
 import { Flex, InputGroup, NumberInput, NumberInputField, SystemStyleObject, Text } from '@chakra-ui/react'
 import React, { MouseEvent, KeyboardEvent, ReactNode, useCallback, useEffect, useMemo, useRef } from 'react'
 import Decimal from 'decimal.js'
-import { formatToRawLocaleStr, detectedSeparator } from '@/utils/numberish/formatter'
+import { formatToRawLocaleStr } from '@/utils/numberish/formatter'
 import { numberRegExp, extractNumberOnly } from '@/utils/numberish/regex'
 import { inputCard } from '@/theme/cssBlocks'
 

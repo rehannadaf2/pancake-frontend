@@ -1,6 +1,6 @@
 import { Box, Divider } from '@chakra-ui/react'
 import { useHttpLocations } from '@pancakeswap/hooks'
-import { AutoColumn, Row, RowBetween, RowFixed, Text, Toggle, TokenLogo } from '@pancakeswap/uikit'
+import { AutoColumn, RowBetween, RowFixed, Text, Toggle, TokenLogo } from '@pancakeswap/uikit'
 import { JupTokenType } from '@pancakeswap/solana-core-sdk'
 import { ReactNode } from 'react'
 import { useTranslation } from '@pancakeswap/localization'

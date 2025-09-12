@@ -3,7 +3,7 @@
     "es6": true,
     "browser": true
   },
-  "plugins": ["lodash", "address"],
+  "plugins": ["lodash", "address", "unused-imports"],
   "extends": ["@pancakeswap/eslint-config-pancake", "plugin:react/jsx-runtime"],
   "settings": {
     "next": {
@@ -12,6 +12,7 @@
   },
   "rules": {
     "address/addr-type": ["warn", "checksum"],
+    "unused-imports/no-unused-imports": "error",
     "no-empty-function": 0,
     "no-restricted-syntax": 0,
     "import/no-unresolved": 0,

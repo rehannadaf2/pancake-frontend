@@ -3,7 +3,6 @@ import { QueryConfig } from '../types'
 
 import { useAccountBalances, UseAccountBalancesQueryResult, UseAccountBalancesResult } from './useAccountBalances'
 import { useNetwork } from './useNetwork'
-import { UseAccountResourcesConfig } from './useAccountResources'
 
 export type UseAccountBalanceArgs = Partial<FetchBalanceArgs> & {
   /** Subscribe to changes */

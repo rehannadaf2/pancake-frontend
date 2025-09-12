@@ -1,11 +1,9 @@
 import { Slider } from '@pancakeswap/uikit'
 import { Button, Box, BoxProps, HStack, Text } from '@chakra-ui/react'
-import { ReactNode, RefObject, useEffect, useState, useImperativeHandle } from 'react'
+import { ReactNode, RefObject } from 'react'
 import { useTranslation } from '@pancakeswap/localization'
 import toPercentString from '@/utils/numberish/toPercentString'
 import { colors } from '@/theme/cssVariables'
-import { useSyncSignal } from '@/hooks/useSyncSignalState'
-import { Desktop, Mobile } from '@/components/MobileDesktop'
 import PanelCard from './PanelCard'
 
 export type AmountSliderProps = {

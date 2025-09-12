@@ -1,6 +1,5 @@
 import { Meta, StoryObj } from "@storybook/react";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import React from "react";
 import { ToastsProvider, useToast } from "../../contexts";
 import { Button } from "../Button";
 import { FlexGap } from "../Layouts";

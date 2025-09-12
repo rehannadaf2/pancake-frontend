@@ -13,7 +13,6 @@ import {
 } from '@pancakeswap/solana-core-sdk'
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base'
 import { Wallet } from '@solana/wallet-adapter-react'
-import { compare } from 'compare-versions'
 import { PancakeClmmProgramId } from '@pancakeswap/solana-clmm-sdk'
 import { toastSubject } from '@/hooks/toast/useGlobalToast'
 import axios from '@/api/axios'

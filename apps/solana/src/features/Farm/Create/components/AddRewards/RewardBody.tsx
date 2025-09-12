@@ -10,7 +10,6 @@ import { useEvent } from '@/hooks/useEvent'
 import { parseDateInfo } from '@/utils/date'
 import FarmDatePickerModal from '@/components/FarmDatePickerModal'
 import { formatToRawLocaleStr } from '@/utils/numberish/formatter'
-import { useAppStore, useClmmStore } from '@/store'
 import { NewRewardInfo } from '../../type'
 
 type RewardBodyProps = {

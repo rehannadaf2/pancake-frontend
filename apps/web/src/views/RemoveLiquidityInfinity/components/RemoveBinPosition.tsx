@@ -10,14 +10,11 @@ import {
   Container,
   ErrorIcon,
   Flex,
-  IconButton,
   Message,
   MessageText,
-  PencilIcon,
   PreTitle,
   Text,
   Toggle,
-  useModal,
 } from '@pancakeswap/uikit'
 import { formatNumber } from '@pancakeswap/utils/formatNumber'
 import { useUserSlippage } from '@pancakeswap/utils/user'
@@ -46,7 +43,7 @@ import { calculateSlippageAmount } from 'utils/exchange'
 import { zeroAddress } from 'viem'
 import { LiquidityTitle } from 'views/PositionDetails/components'
 import { useAccount } from 'wagmi'
-import { LiquiditySlippageButton, SlippageButton } from 'views/Swap/components/SlippageButton'
+import { LiquiditySlippageButton } from 'views/Swap/components/SlippageButton'
 import { StyledBinCard, StyledInfoCard } from '../styled'
 import { BinSlider } from './BinSlider'
 import { NavBreadcrumbs } from './NavBreadcrumbs'

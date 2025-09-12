@@ -5,7 +5,7 @@ import uniqBy from '@pancakeswap/utils/uniqBy'
 
 import { BASES_TO_CHECK_TRADES_AGAINST, CUSTOM_BASES } from '../../constants'
 import { wrappedCurrency } from '../../utils/currency'
-import { isCurrenciesSameChain, log } from '../utils'
+import { isCurrenciesSameChain } from '../utils'
 import { getAdditionalBases } from './getAdditionalBase'
 
 const resolver = (currencyA?: Currency, currencyB?: Currency) => {

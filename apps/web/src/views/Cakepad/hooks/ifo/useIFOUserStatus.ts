@@ -1,4 +1,4 @@
-import { type Currency, CurrencyAmount } from '@pancakeswap/swap-sdk-core'
+import { CurrencyAmount } from '@pancakeswap/swap-sdk-core'
 import { useQuery } from '@tanstack/react-query'
 import { useMemo } from 'react'
 import { useAtomValue } from 'jotai'

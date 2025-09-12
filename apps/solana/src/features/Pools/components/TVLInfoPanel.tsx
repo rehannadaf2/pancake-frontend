@@ -1,5 +1,5 @@
 import { Card } from '@pancakeswap/uikit'
-import { Box, HStack, Image, Text } from '@chakra-ui/react'
+import { Box, HStack, Text } from '@chakra-ui/react'
 import { useTranslation } from '@pancakeswap/localization'
 
 import { colors } from '@/theme/cssVariables'

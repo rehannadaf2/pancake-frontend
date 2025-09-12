@@ -1,4 +1,4 @@
-import { Box, Flex, Grid, GridItem, HStack, Link, Text, VStack } from '@chakra-ui/react'
+import { Box, Flex, Grid, GridItem, HStack, Text, VStack } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
 import { useTranslation } from '@pancakeswap/localization'
 import { colors } from '@/theme/cssVariables'

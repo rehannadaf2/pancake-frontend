@@ -1,4 +1,4 @@
-import { Link, Text, Box } from '@pancakeswap/uikit'
+import { Link, Box } from '@pancakeswap/uikit'
 import { useTranslation, Trans } from '@pancakeswap/localization'
 
 const ALETHWarning = () => {

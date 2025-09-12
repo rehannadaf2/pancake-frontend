@@ -1,5 +1,5 @@
 import { isCyberWallet } from '@cyberlab/cyber-app-sdk'
-import { ChainId, NonEVMChainId } from '@pancakeswap/chains'
+import { ChainId } from '@pancakeswap/chains'
 import { LegacyWalletConfig, LegacyWalletIds } from '@pancakeswap/ui-wallets'
 import { WalletFilledIcon } from '@pancakeswap/uikit'
 import safeGetWindow from '@pancakeswap/utils/safeGetWindow'

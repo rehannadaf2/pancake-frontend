@@ -1,6 +1,6 @@
 import { Box, Flex, HStack, Text } from '@chakra-ui/react'
 import { useTranslation } from '@pancakeswap/localization'
-import { Cell, Label, Pie, PieChart, ResponsiveContainer } from 'recharts'
+import { Cell, Pie, PieChart, ResponsiveContainer } from 'recharts'
 import AprMDSwitchWidget from '@/components/AprMDSwitchWidget'
 import Tabs from '@/components/Tabs'
 import { TimeBasisOptionType, timeBasisOptions } from '@/hooks/pool/type'

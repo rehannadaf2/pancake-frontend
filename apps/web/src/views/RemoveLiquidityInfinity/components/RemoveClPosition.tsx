@@ -3,7 +3,7 @@ import { useTheme } from '@pancakeswap/hooks'
 import { getPoolId } from '@pancakeswap/infinity-sdk'
 import { useTranslation } from '@pancakeswap/localization'
 import { zeroAddress } from '@pancakeswap/price-api-sdk'
-import { LiquiditySlippageButton, SlippageButton } from 'views/Swap/components/SlippageButton'
+import { LiquiditySlippageButton } from 'views/Swap/components/SlippageButton'
 import { Percent } from '@pancakeswap/swap-sdk-core'
 import {
   ArrowDownIcon,

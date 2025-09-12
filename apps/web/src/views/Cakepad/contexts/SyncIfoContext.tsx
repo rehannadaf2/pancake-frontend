@@ -1,6 +1,6 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import React, { useEffect } from 'react'
-import { Box, Flex, Skeleton, Spinner } from '@pancakeswap/uikit'
+import { Flex, Spinner } from '@pancakeswap/uikit'
 import { useIFOPoolInfoCtx } from '../hooks/ifo/useIFOPoolInfo'
 import { ifoInfoAtom, ifoPoolsAtom, ifoUsersAtom } from '../atom/ifo.atoms'
 import { useIFOInfoCtx } from '../hooks/ifo/useIFOInfo'

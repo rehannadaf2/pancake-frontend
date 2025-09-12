@@ -1,5 +1,5 @@
 import { Box } from '@chakra-ui/react'
-import React, { RefObject, startTransition, useEffect, useImperativeHandle, useRef, useState } from 'react'
+import { RefObject, startTransition, useEffect, useImperativeHandle, useRef, useState } from 'react'
 
 export interface IntervalCircleHandler {
   /** percent */

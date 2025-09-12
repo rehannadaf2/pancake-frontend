@@ -1,6 +1,5 @@
 import { Box, Flex, HStack, SystemStyleObject, Text, useSteps } from '@chakra-ui/react'
 import { forwardRef, useEffect, useImperativeHandle } from 'react'
-import { CircleCheckForStep } from '@/icons/misc/CircleCheckFill'
 import { panelCard } from '@/theme/cssBlocks'
 import { colors } from '@/theme/cssVariables'
 

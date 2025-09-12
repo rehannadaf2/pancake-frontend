@@ -1,5 +1,5 @@
 import { Box } from '@chakra-ui/react'
-import { SvgBoxIcon, SvgIcon } from '../type'
+import { SvgBoxIcon } from '../type'
 
 export default function AvalancheNetworkIcon(props: SvgBoxIcon) {
   const { width = '48px', height = '48px', ...restProps } = props

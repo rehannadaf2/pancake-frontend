@@ -1,4 +1,4 @@
-import { Box, Flex, Grid, GridItem, HStack, Heading, Link, Skeleton, Text, VStack, useDisclosure } from '@chakra-ui/react'
+import { Box, Flex, Grid, GridItem, HStack, Link, Skeleton, Text, VStack, useDisclosure } from '@chakra-ui/react'
 import { useTranslation } from '@pancakeswap/localization'
 import {
   ApiV3PoolInfoConcentratedItem,

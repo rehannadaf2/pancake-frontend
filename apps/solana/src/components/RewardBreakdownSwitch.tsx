@@ -1,10 +1,9 @@
 import { useTranslation } from '@pancakeswap/localization'
 import { useEffect } from 'react'
-import { Box, Button, HStack, SimpleGrid, Text, VStack } from '@chakra-ui/react'
+import { Box, Button, HStack, SimpleGrid, Text } from '@chakra-ui/react'
 import { SwapHorizIcon } from '@pancakeswap/uikit'
 import { colors } from '@/theme/cssVariables'
 import { useAppStore } from '@/store'
-import SquareDIcon from '@/icons/misc/SquareDIcon'
 import Tooltip from './Tooltip'
 
 export default function RewardBreakdownSwitch() {

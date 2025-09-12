@@ -1,6 +1,6 @@
 import { Box, Flex, HStack } from '@chakra-ui/react'
 import { ReactNode } from 'react'
-import { ChevronUp, ChevronDown } from 'react-feather'
+import { ChevronUp } from 'react-feather'
 import { ArrowDropDownIcon } from '@pancakeswap/uikit'
 import { colors } from '@/theme/cssVariables'
 import { inputShadowInsetStyle } from '@/theme/cssBlocks'
