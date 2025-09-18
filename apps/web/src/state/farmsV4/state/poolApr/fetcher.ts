@@ -20,7 +20,7 @@ import { erc20Abi } from 'viem'
 import { ChainId, isEvm } from '@pancakeswap/chains'
 import { INCENTRA_API, IncentraCampaign } from 'hooks/useIncentra'
 import { ChainIdAddressKey, InfinityPoolInfo, PoolInfo, StablePoolInfo, V2PoolInfo, V3PoolInfo } from '../type'
-import { AprValue, CakeApr, IncentraApr, MerklApr } from './atom'
+import { CakeApr, IncentraApr, MerklApr } from './atom'
 
 export const getCakeApr = (pool: PoolInfo, cakePrice: BigNumber): Promise<CakeApr> => {
   switch (pool.protocol) {
