@@ -40,9 +40,8 @@ import {
 import { useUserChart } from './useUserChart'
 
 // Get user preference for exchange price chart
-// For mobile layout chart is hidden by default
-export function useExchangeChartManager(isMobile: boolean) {
-  return useUserChart(isMobile)
+export function useExchangeChartManager() {
+  return useUserChart()
 }
 
 export function useSubgraphHealthIndicatorManager() {

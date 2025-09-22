@@ -31,7 +31,7 @@ export function useGlobalSettingsEvaluation() {
   const [subgraphHealth] = useSubgraphHealthIndicatorManager()
   const [userUsernameVisibility] = useUserUsernameVisibility()
   const { enabled } = useWebNotifications()
-  const [userChart] = useUserChart(false)
+  const [userChart] = useUserChart()
   const isSwapHotTokenDisplay = useIsSwapHotTokenDisplayFlag()
   useFeatureFlagEvaluation('global-settings-expert-mode', expertMode)
   useFeatureFlagEvaluation('global-settings-audio-play', audioPlay)

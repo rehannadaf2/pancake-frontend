@@ -29,8 +29,7 @@ const TwapAndLimitSwapInner = ({ limit }: { limit?: boolean }) => {
   const { query } = useRouter()
   const { t } = useTranslation()
   const { isDesktop, isMobile } = useMatchBreakpoints()
-  const { setIsChartDisplayed, setIsChartExpanded, isChartExpanded, isChartSupported, isChartDisplayed } =
-    useContext(SwapFeaturesContext)
+  const { setIsChartDisplayed, isChartExpanded, isChartDisplayed } = useContext(SwapFeaturesContext)
   const [isSwapHotTokenDisplay, setIsSwapHotTokenDisplay] = useSwapHotTokenDisplay()
   const [firstTime, setFirstTime] = useState(true)
 

@@ -13,14 +13,14 @@ import {
 } from '@pancakeswap/uikit'
 import { useActiveChainId } from 'hooks/useActiveChainId'
 import { useIsSmartAccount } from 'hooks/useIsSmartAccount'
-import { useAtom } from 'jotai'
 import { useRouter } from 'next/router'
-import { useCallback, useMemo } from 'react'
+import { useCallback, useContext, useMemo } from 'react'
 import { styled } from 'styled-components'
 import { isEvm } from '@pancakeswap/chains'
 import { SWAP_CHART_UNSUPPORTED_CHAINS } from 'config/constants/supportChains'
 import { chartDisplayAtom } from './atoms'
 
+import { SwapFeaturesContext } from 'views/Swap/SwapFeaturesContext'
 import { SwapType } from '../../Swap/types'
 import { isTwapSupported, isLimitSupported } from '../../Swap/utils'
 
@@ -119,11 +119,13 @@ export const SwapSelection = ({
     { placement: 'top' },
   )
 
-  const [isChartDisplayed, setIsChartDisplayed] = useAtom(chartDisplayAtom)
+  const { setIsChartDisplayed, isChartDisplayed } = useContext(SwapFeaturesContext)
 
-  const toggleChartDisplayed = () => {
-    setIsChartDisplayed((currentIsChartDisplayed) => !currentIsChartDisplayed)
-  }
+  const isEvmSwap = isEvm(chainId) && isEvm(outputChainId)
+
+  const toggleChartDisplayed = useCallback(() => {
+    setIsChartDisplayed?.((currentIsChartDisplayed) => !currentIsChartDisplayed)
+  }, [setIsChartDisplayed])
 
   const { theme } = useTheme()
   const tSwapProps = useMemo(() => {

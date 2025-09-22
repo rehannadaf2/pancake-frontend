@@ -1,5 +1,4 @@
 import { ChainId } from '@pancakeswap/chains'
-import { useMatchBreakpoints } from '@pancakeswap/uikit'
 import { ACCESS_TOKEN_SUPPORT_CHAIN_IDS } from 'components/AccessRisk/config/supportedChains'
 import { useActiveChainId } from 'hooks/useActiveChainId'
 import React, { createContext, useMemo, useState } from 'react'
@@ -40,9 +39,8 @@ const STABLE_SUPPORT_CHAIN_IDS = [ChainId.BSC_TESTNET, ChainId.BSC]
 // const HOT_TOKEN_SUPPORT_CHAIN_IDS = [ChainId.BSC, ChainId.ETHEREUM]
 
 export const SwapFeaturesProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
-  const { isMobile } = useMatchBreakpoints()
   const { chainId } = useActiveChainId()
-  const [isChartDisplayed, setIsChartDisplayed] = useExchangeChartManager(isMobile)
+  const [isChartDisplayed, setIsChartDisplayed] = useExchangeChartManager()
   const [isChartExpanded, setIsChartExpanded] = useState(false)
 
   const isChartSupported = useMemo(
