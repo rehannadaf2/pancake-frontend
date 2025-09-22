@@ -2,7 +2,7 @@ import { Box, useMatchBreakpoints } from '@pancakeswap/uikit'
 import { useAtomValue } from 'jotai'
 import styled from 'styled-components'
 import { swapDetailsCollapseAtom } from 'views/SwapSimplify/InfinitySwap/atoms'
-import { userChartAtom } from 'state/user/hooks/useUserChart'
+import { useExchangeChartManager } from 'state/user/hooks'
 import { AdPlayer } from './AdPlayer'
 import { AdPlayerProps } from './ads.types'
 import { useShowAdPanel } from './useShowAdPanel'
@@ -21,7 +21,7 @@ export const DesktopCard = ({
 }: DesktopCardProps) => {
   const { isDesktop } = useMatchBreakpoints()
   const [show] = useShowAdPanel()
-  const isChartDisplayed = useAtomValue(userChartAtom)
+  const [isChartDisplayed] = useExchangeChartManager()
   const isSwapDetailsOpen = useAtomValue(swapDetailsCollapseAtom)
 
   // Apply left class when chart is displayed and swap details are open
