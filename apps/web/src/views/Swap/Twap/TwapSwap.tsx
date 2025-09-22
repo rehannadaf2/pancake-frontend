@@ -55,74 +55,73 @@ const TwapAndLimitSwapInner = ({ limit }: { limit?: boolean }) => {
   useDefaultsFromURLSearch()
 
   return (
-    <>
-      <Flex
-        width="100%"
-        height={isMobile ? 'auto' : '100%'}
-        justifyContent="center"
-        position="relative"
-        alignItems="flex-start"
-        mb={isMobile ? '40px' : '0'}
-        style={{ zIndex: 1 }}
-        mt={isChartExpanded ? undefined : isMobile ? '18px' : '42px'}
-        p={isChartExpanded ? undefined : isMobile ? '16px' : '24px'}
-      >
-        {isDesktop && (
-          <Flex width={isChartExpanded ? '100%' : '50%'} maxWidth="928px" flexDirection="column" style={{ gap: 20 }}>
-            {isChartDisplayed && (
-              <ChartWithPriceHeader
-                currency0={inputCurrency || undefined}
-                currency1={outputCurrency || undefined}
-                symbol={`${inputCurrency?.symbol}/${outputCurrency?.symbol}`}
-              />
-            )}
-            <OrderHistory />
-          </Flex>
-        )}
-        {!isDesktop && (
-          <BottomDrawer
-            content={
-              <ChartWithPriceHeader
-                currency0={inputCurrency || undefined}
-                currency1={outputCurrency || undefined}
-                symbol={`${inputCurrency?.symbol}/${outputCurrency?.symbol}`}
-              />
-            }
-            isOpen={isChartDisplayed}
-            setIsOpen={(isOpen) => setIsChartDisplayed?.(isOpen)}
-            hideCloseButton
-          />
-        )}
-        <Flex flexDirection="column" width={isDesktop ? undefined : '100%'}>
-          <StyledSwapContainer $isChartExpanded={isChartExpanded}>
-            <StyledInputCurrencyWrapper mt={isChartExpanded ? '24px' : '0'}>
-              <SwapSelection
-                swapType={limit ? SwapType.LIMIT : SwapType.TWAP}
-                style={{ marginBottom: 16 }}
-                withToolkit
-                outputChainId={outputChainId}
-              />
-              <TWAPPanel limit={limit} />
-              <Flex flexDirection={!isDesktop ? 'column-reverse' : 'column'}>
-                {limit && (
-                  <AutoRow gap="4px" justifyContent="center">
-                    <Text fontSize="14px" color="textSubtle">
-                      {t('Orders missing? Check out:')}
-                    </Text>
-                    <Link href="/limit-orders" passHref prefetch={false}>
-                      <StyledLink fontSize="14px" color="primary">
-                        {t('Limit V2 (deprecated)')}
-                      </StyledLink>
-                    </Link>
-                  </AutoRow>
-                )}
-                {!isDesktop && <OrderHistory />}
-              </Flex>
-            </StyledInputCurrencyWrapper>
-          </StyledSwapContainer>
+    <Flex
+      width="100%"
+      height={isMobile ? 'auto' : '100%'}
+      justifyContent="center"
+      position="relative"
+      alignItems="flex-start"
+      mb={isMobile ? '40px' : '0'}
+      style={{ zIndex: 1 }}
+      mt={isChartExpanded ? undefined : isMobile ? '18px' : '42px'}
+      p={isChartExpanded ? undefined : isMobile ? '16px' : '24px'}
+    >
+      {isDesktop && (
+        <Flex width={isChartExpanded ? '100%' : '50%'} maxWidth="928px" flexDirection="column" style={{ gap: 20 }}>
+          {isChartDisplayed && (
+            <ChartWithPriceHeader
+              currency0={inputCurrency || undefined}
+              currency1={outputCurrency || undefined}
+              symbol={`${inputCurrency?.symbol}/${outputCurrency?.symbol}`}
+            />
+          )}
+          <OrderHistory />
         </Flex>
+      )}
+      {!isDesktop && (
+        <BottomDrawer
+          content={
+            <ChartWithPriceHeader
+              currency0={inputCurrency || undefined}
+              currency1={outputCurrency || undefined}
+              symbol={`${inputCurrency?.symbol}/${outputCurrency?.symbol}`}
+              theme="Dark"
+            />
+          }
+          isOpen={isChartDisplayed}
+          setIsOpen={(isOpen) => setIsChartDisplayed?.(isOpen)}
+          hideCloseButton
+        />
+      )}
+      <Flex flexDirection="column" width={isDesktop ? undefined : '100%'}>
+        <StyledSwapContainer $isChartExpanded={isChartExpanded}>
+          <StyledInputCurrencyWrapper mt={isChartExpanded ? '24px' : '0'}>
+            <SwapSelection
+              swapType={limit ? SwapType.LIMIT : SwapType.TWAP}
+              style={{ marginBottom: 16 }}
+              withToolkit
+              outputChainId={outputChainId}
+            />
+            <TWAPPanel limit={limit} />
+            <Flex flexDirection={!isDesktop ? 'column-reverse' : 'column'}>
+              {limit && (
+                <AutoRow gap="4px" justifyContent="center">
+                  <Text fontSize="14px" color="textSubtle">
+                    {t('Orders missing? Check out:')}
+                  </Text>
+                  <Link href="/limit-orders" passHref prefetch={false}>
+                    <StyledLink fontSize="14px" color="primary">
+                      {t('Limit V2 (deprecated)')}
+                    </StyledLink>
+                  </Link>
+                </AutoRow>
+              )}
+              {!isDesktop && <OrderHistory />}
+            </Flex>
+          </StyledInputCurrencyWrapper>
+        </StyledSwapContainer>
       </Flex>
-    </>
+    </Flex>
   )
 }
 
