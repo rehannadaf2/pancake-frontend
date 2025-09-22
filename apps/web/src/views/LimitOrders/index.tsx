@@ -43,9 +43,9 @@ const LimitOrders = () => {
   const { account, chainId } = useAccountActiveChain()
   const { t } = useTranslation()
   const router = useRouter()
-  const { isMobile, isTablet, isDesktop } = useMatchBreakpoints()
+  const { isTablet, isDesktop } = useMatchBreakpoints()
   const { theme } = useTheme()
-  const [isChartDisplayed, setIsChartDisplayed] = useExchangeChartManager(isMobile)
+  const [isChartDisplayed, setIsChartDisplayed] = useExchangeChartManager()
   const [isChartExpanded, setIsChartExpanded] = useState(false)
 
   const loadedUrlParams = useDefaultsFromURLSearch()
