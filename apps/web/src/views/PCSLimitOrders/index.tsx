@@ -9,8 +9,8 @@ import { useTranslation } from '@pancakeswap/localization'
 import { Suspense } from 'react'
 import styled from 'styled-components'
 import { useAtom, useAtomValue } from 'jotai'
-import { chartDisplayAtom } from 'views/SwapSimplify/InfinitySwap/atoms'
 import ChartWithPriceHeader from 'components/Chart/ChartWithPriceHeader'
+import { useExchangeChartManager } from 'state/user/hooks'
 import { LimitOrderForm } from './components/LimitOrderForm'
 import { CommitButton } from './components/CommitButton'
 import { MarketPriceInput } from './components/MarketPriceInput'
@@ -58,7 +58,7 @@ export const PCSLimitOrdersView = () => {
 
   const inputCurrency = useAtomValue(inputCurrencyAtom)
   const outputCurrency = useAtomValue(outputCurrencyAtom)
-  const [isChartDisplayed_, setIsChartDisplayed] = useAtom(chartDisplayAtom)
+  const [isChartDisplayed_, setIsChartDisplayed] = useExchangeChartManager()
   const isChartDisplayed = isChartDisplayed_ && Boolean(inputCurrency) && Boolean(outputCurrency)
 
   return (
