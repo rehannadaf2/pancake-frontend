@@ -85,7 +85,6 @@ const TwapAndLimitSwapInner = ({ limit }: { limit?: boolean }) => {
               currency0={inputCurrency || undefined}
               currency1={outputCurrency || undefined}
               symbol={`${inputCurrency?.symbol}/${outputCurrency?.symbol}`}
-              theme="Dark"
             />
           }
           isOpen={isChartDisplayed}

@@ -93,7 +93,7 @@ const InfinitySwapInner = () => {
               />
             }
             isOpen={isChartDisplayed}
-            setIsOpen={(isOpen) => setIsChartDisplayed?.(isOpen)}
+            setIsOpen={setIsChartDisplayed}
             hideCloseButton
           />
         )}
