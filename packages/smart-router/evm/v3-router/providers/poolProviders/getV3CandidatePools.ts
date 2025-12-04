@@ -150,7 +150,7 @@ export async function getV3CandidatePools(params: DefaultParams) {
     fallbacks.push(getV3PoolsWithTvlFromOnChainStaticFallback)
   }
 
-  // Deafult try get pools from on chain and ref tvl by subgraph cache
+  // Default try get pools from on chain and ref tvl by subgraph cache
   const getV3PoolsWithFallback = createGetV3CandidatePools(getV3PoolsWithTvlFromOnChainFallback, {
     fallbacks,
     fallbackTimeout,
