@@ -272,7 +272,7 @@ export default {
     [ChainId.BSC_TESTNET]: '0x5F1076A98a1b9AA8584DaC02F38C616C3A431794',
   },
 
-  // inifinity
+  // infinity
   poolManagerCL: INFI_CL_POOL_MANAGER_ADDRESSES,
   poolManagerBin: INFI_BIN_POOL_MANAGER_ADDRESSES,
   positionManagerCL: INFI_CL_POSITION_MANAGER_ADDRESSES,

@@ -1,6 +1,6 @@
 import { Protocol } from '@pancakeswap/farms'
 import { useTranslation } from '@pancakeswap/localization'
-import { Currency, CurrencyAmount, Percent } from '@pancakeswap/sdk'
+import { ChainId, Currency, CurrencyAmount, Percent } from '@pancakeswap/sdk'
 import { Price, UnifiedCurrency } from '@pancakeswap/swap-sdk-core'
 import {
   AutoColumn,
@@ -385,6 +385,13 @@ export default function V3FormView({
     }
     getViemClients({ chainId })
       ?.estimateGas(txn)
+      .catch((error) => {
+        if (chainId === ChainId.MONAD_MAINNET && error?.message?.includes('Execution reverted for an unknown reason')) {
+          console.info('estimateGas failed on MONAD with unknown revert, using fallback gas limit 800000', error)
+          return 800000n
+        }
+        throw error
+      })
       .then((gas) => {
         sendTransactionAsync({
           ...txn,

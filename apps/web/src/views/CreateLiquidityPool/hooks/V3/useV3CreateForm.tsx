@@ -61,6 +61,7 @@ import { formatPreviewPrice } from 'views/CreateLiquidityPool/utils'
 import { transactionErrorToUserReadableMessage } from 'utils/transactionErrorToUserReadableMessage'
 import { PreviewModal } from 'views/CreateLiquidityPool/components/PreviewModal'
 import { QUICK_ACTION_CONFIGS } from 'views/AddLiquidityV3/types'
+import { ChainId } from '@pancakeswap/chains'
 import { useCurrencies } from '../useCurrencies'
 
 export const useV3CreateForm = () => {
@@ -404,6 +405,13 @@ export const useV3CreateForm = () => {
     }
     getViemClients({ chainId })
       ?.estimateGas(txn)
+      .catch((error) => {
+        if (chainId === ChainId.MONAD_MAINNET && error?.message?.includes('Execution reverted for an unknown reason')) {
+          console.info('estimateGas failed on MONAD with unknown revert, using fallback gas limit 800000', error)
+          return 800000n
+        }
+        throw error
+      })
       .then((gas) => {
         sendTransactionAsync({
           ...txn,

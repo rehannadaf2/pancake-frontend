@@ -386,6 +386,13 @@ export const LiquidityView = () => {
 
     getViemClients({ chainId })
       ?.estimateGas(txn)
+      .catch((error) => {
+        if (chainId === ChainId.MONAD_MAINNET && error?.message?.includes('Execution reverted for an unknown reason')) {
+          console.info('estimateGas failed on MONAD with unknown revert, using fallback gas limit 800000', error)
+          return 800000n
+        }
+        throw error
+      })
       .then(async (estimate) => {
         const newTxn = {
           ...txn,

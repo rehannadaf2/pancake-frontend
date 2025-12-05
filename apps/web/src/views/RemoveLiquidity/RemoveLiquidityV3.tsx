@@ -1,5 +1,5 @@
 import { useTranslation } from '@pancakeswap/localization'
-import { CurrencyAmount, WNATIVE } from '@pancakeswap/sdk'
+import { ChainId, CurrencyAmount, WNATIVE } from '@pancakeswap/sdk'
 import {
   ArrowDownIcon,
   AutoColumn,
@@ -194,36 +194,45 @@ function Remove({ tokenId }: { tokenId?: bigint }) {
 
     const publicClient = getViemClients({ chainId })
 
-    publicClient?.estimateGas(txn).then((gas) => {
-      sendTransactionAsync({
-        ...txn,
-        gas: calculateGasMargin(gas),
-        chainId,
+    publicClient
+      ?.estimateGas(txn)
+      .catch((error) => {
+        if (chainId === ChainId.MONAD_MAINNET && error?.message?.includes('Execution reverted for an unknown reason')) {
+          console.info('estimateGas failed on MONAD with unknown revert, using fallback gas limit 800000', error)
+          return 800000n
+        }
+        throw error
       })
-        .then((response) => {
-          const amount0 = formatRawAmount(liquidityValue0.quotient.toString(), liquidityValue0.currency.decimals, 4)
-          const amount1 = formatRawAmount(liquidityValue1.quotient.toString(), liquidityValue1.currency.decimals, 4)
+      .then((gas) => {
+        sendTransactionAsync({
+          ...txn,
+          gas: calculateGasMargin(gas),
+          chainId,
+        })
+          .then((response) => {
+            const amount0 = formatRawAmount(liquidityValue0.quotient.toString(), liquidityValue0.currency.decimals, 4)
+            const amount1 = formatRawAmount(liquidityValue1.quotient.toString(), liquidityValue1.currency.decimals, 4)
 
-          setTxnHash(response)
-          setAttemptingTxn(false)
-          addTransaction(
-            { hash: response },
-            {
-              type: 'remove-liquidity-v3',
-              summary: `Remove ${amount0} ${liquidityValue0.currency.symbol} and ${amount1} ${liquidityValue1.currency.symbol}`,
-            },
-          )
-        })
-        .catch((err) => {
-          if (isUserRejected(err)) {
-            setErrorMessage(t('Transaction rejected'))
-          } else {
-            setErrorMessage(transactionErrorToUserReadableMessage(err, t))
-          }
-          setAttemptingTxn(false)
-          console.error(err)
-        })
-    })
+            setTxnHash(response)
+            setAttemptingTxn(false)
+            addTransaction(
+              { hash: response },
+              {
+                type: 'remove-liquidity-v3',
+                summary: `Remove ${amount0} ${liquidityValue0.currency.symbol} and ${amount1} ${liquidityValue1.currency.symbol}`,
+              },
+            )
+          })
+          .catch((err) => {
+            if (isUserRejected(err)) {
+              setErrorMessage(t('Transaction rejected'))
+            } else {
+              setErrorMessage(transactionErrorToUserReadableMessage(err, t))
+            }
+            setAttemptingTxn(false)
+            console.error(err)
+          })
+      })
   }, [
     masterchefV3,
     tokenIdsInMCv3Loading,
