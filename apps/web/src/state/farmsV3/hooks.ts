@@ -82,7 +82,10 @@ export const useFarmsV3Public = () => {
       if (API_FLAG && chainId) {
         return farmV3ApiFetch(chainId).catch((err) => {
           console.error(err)
-          return fallback
+          return {
+            ...fallback,
+            chainId,
+          }
         })
       }
 
@@ -109,7 +112,10 @@ export const useFarmsV3Public = () => {
       } catch (error) {
         console.error(error)
         // return fallback for now since not all chains supported
-        return fallback
+        return {
+          ...fallback,
+          chainId,
+        }
       }
     },
     refetchInterval: 1_000 * 60 * 10,
@@ -121,7 +127,14 @@ export const useFarmsV3Public = () => {
 
   return {
     ...resp,
-    data: resp?.data ?? fallback,
+    data: useMemo(
+      () =>
+        resp?.data ?? {
+          ...fallback,
+          chainId,
+        },
+      [resp?.data, chainId],
+    ),
   }
 }
 
