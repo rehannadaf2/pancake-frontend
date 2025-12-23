@@ -94,6 +94,7 @@ const SOCIAL_LOGIN_ALLOWED_CHAINS: ChainId[] = [
   ChainId.ARBITRUM_ONE,
   ChainId.LINEA,
   ChainId.OPBNB,
+  ChainId.MONAD_MAINNET,
 ]
 
 const allowedChainNames = SOCIAL_LOGIN_ALLOWED_CHAINS.map((id) => chainFullNames[id]).join(', ')
