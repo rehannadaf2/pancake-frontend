@@ -173,6 +173,7 @@ const useFarmV3Actions = ({
     masterChefV3Address,
     nftPositionManagerAddress,
     publicClient,
+    chainId,
     sendTransactionAsync,
     signer,
     t,
@@ -246,7 +247,6 @@ export function useFarmsV3BatchHarvest() {
   const { t } = useTranslation()
   const { data: signer } = useWalletClient()
   const { toastSuccess } = useToast()
-  const { chainId } = useActiveChainId()
   const { address: account } = useAccount()
   const { sendTransactionAsync } = useSendTransaction()
   const { loading, fetchWithCatchTxError } = useCatchTxError()
@@ -274,7 +274,7 @@ export function useFarmsV3BatchHarvest() {
           .estimateGas(txn)
           .catch((error) => {
             if (
-              chainId === ChainId.MONAD_MAINNET &&
+              signer?.chain?.id === ChainId.MONAD_MAINNET &&
               error?.message?.includes('Execution reverted for an unknown reason')
             ) {
               console.info('estimateGas failed on MONAD with unknown revert, using fallback gas limit 800000', error)
