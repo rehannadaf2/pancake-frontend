@@ -34,7 +34,9 @@ function collectVersions(nodes: any[], pkgName: string): string[] {
 
 function getWorkspaceVersion(pkg: string, app: string): string | null {
   try {
-    const output = execSync(`pnpm --filter=${app}... list ${pkg} --prod --depth 0 --json`, { encoding: 'utf-8' })
+    const output = execSync(`pnpm --silent --filter=${app}... list ${pkg} --prod --no-optional --depth 0 --json`, {
+      encoding: 'utf-8',
+    })
     const tree = JSON.parse(output)
     if (tree[0]?.dependencies?.[pkg]?.version) {
       return tree[0].dependencies[pkg].version
@@ -58,19 +60,26 @@ function compareVersions(v1: string, v2: string): number {
 describe('singleton dependency check', () => {
   for (const app of APPS) {
     describe(app, () => {
+      const workspaceVersions = new Map<string, string | null>()
+
       for (const pkg of SINGLETONS) {
         it(`${pkg} should not exceed workspace version`, () => {
-          const cmd = `pnpm --filter=${app}... list ${pkg} --prod --depth Infinity --json`
-          const output = execSync(cmd, { encoding: 'utf-8' })
-          const tree = JSON.parse(output)
-
-          const versions = collectVersions(tree, pkg)
-          const workspaceVersion = getWorkspaceVersion(pkg, app)
+          let workspaceVersion = workspaceVersions.get(pkg)
+          if (!workspaceVersion) {
+            workspaceVersion = getWorkspaceVersion(pkg, app)
+            workspaceVersions.set(pkg, workspaceVersion)
+          }
 
           if (!workspaceVersion) {
             console.warn(`Workspace version for ${pkg} not found.`)
             return
           }
+
+          const cmd = `pnpm --silent --filter=${app}... list ${pkg} --prod --no-optional --depth Infinity --json`
+          const output = execSync(cmd, { encoding: 'utf-8' })
+          const tree = JSON.parse(output)
+
+          const versions = collectVersions(tree, pkg)
 
           const higherVersions = versions.filter((v) => compareVersions(v, workspaceVersion) > 0)
 
