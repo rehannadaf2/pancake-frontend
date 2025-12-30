@@ -2,6 +2,8 @@
 import { FARMS_API } from 'config/constants/endpoints'
 import Document, { DocumentContext, Head, Html, Main, NextScript } from 'next/document'
 import { ServerStyleSheet } from 'styled-components'
+import { buildAllowedOrigins } from 'utils/allowedRpcOrigins'
+import Script from 'next/script'
 
 class MyDocument extends Document {
   static async getInitialProps(ctx: DocumentContext) {
@@ -31,6 +33,8 @@ class MyDocument extends Document {
   }
 
   render() {
+    const allowedOrigins = buildAllowedOrigins()
+
     return (
       <Html translate="no">
         <Head>
@@ -58,6 +62,106 @@ class MyDocument extends Document {
           </noscript>
           <Main />
           <NextScript />
+          <Script
+            id="network-guard"
+            strategy="beforeInteractive"
+            dangerouslySetInnerHTML={{
+              __html: `
+              (function () {
+                if (typeof window === 'undefined') return;
+                const ALLOWED_ORIGINS = Object.freeze(${JSON.stringify(allowedOrigins)});
+                const ALLOWED_PATTERNS = Object.freeze(
+                    ALLOWED_ORIGINS.map((allowed) => {
+                      if (allowed.includes('*')) {
+                        const escaped = allowed
+                          .replace(/*./g, 'WILDCARD_PLACEHOLDER')
+                          .replace(/[-/\\^$+?.()|[]{}]/g, '\\$&')
+                          .replace(/WILDCARD_PLACEHOLDER/g, '([^/]*\\.)?'); 
+                        return new RegExp('^' + pattern + '$');
+                      }
+                      return allowed;
+                    })
+                  );
+                
+                function isAllowed(origin) {
+                  return ALLOWED_PATTERNS.some((pattern) => {
+                    if (typeof pattern === 'string') {
+                      return origin === pattern;
+                    }
+                    return pattern.test(origin);
+                  });
+                }
+
+                // ---------- FETCH ----------
+                const originalFetch = window.fetch;
+
+                function secureFetch(input, init) {
+                  const url =
+                    typeof input === 'string'
+                      ? input
+                      : input.url;
+
+                  const parsed = new URL(url, window.location.origin);
+
+                  if (!isAllowed(parsed.origin)) {
+                    console.error('[SECURITY] Blocked fetch payload to ' + targetOrigin)
+                    throw new Error(
+                      '[SECURITY] Blocked fetch payload to ' + parsed.origin
+                    );
+                  }
+
+                  return originalFetch.apply(this, arguments);
+                }
+
+              Object.defineProperty(window, 'fetch', {
+                get() {
+                  return secureFetch;
+                },
+                set(_) {
+                  // swallow attempts to overwrite fetch
+                  // do NOT throw
+                },
+                configurable: false,
+              });
+
+                // ---------- XHR ----------
+                const OriginalXHR = window.XMLHttpRequest;
+
+                function SecureXHR() {
+                  const xhr = new OriginalXHR();
+                  let targetOrigin = '';
+
+                  const originalOpen = xhr.open;
+                  xhr.open = function (method, url) {
+                    const parsed = new URL(url, window.location.origin);
+                    targetOrigin = parsed.origin;
+                    return originalOpen.apply(xhr, arguments);
+                  };
+
+                  const originalSend = xhr.send;
+                  xhr.send = function (body) {
+                    if (!isAllowed(targetOrigin)) {
+                      console.error('[SECURITY] Blocked XHR payload to ' + targetOrigin)
+                      throw new Error(
+                        '[SECURITY] Blocked XHR payload to ' + targetOrigin
+                      );
+                    }
+                    return originalSend.apply(xhr, arguments);
+                  };
+
+                  return xhr;
+                }
+
+                Object.defineProperty(window, 'XMLHttpRequest', {
+                  value: SecureXHR,
+                  writable: false,
+                  configurable: false,
+                });
+
+              })();
+    `,
+            }}
+          />
           <div id="portal-root" />
         </body>
       </Html>
