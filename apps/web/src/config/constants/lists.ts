@@ -6,7 +6,7 @@ const COINGECKO_BSC = 'https://tokens.coingecko.com/binance-smart-chain/all.json
 const COINGECKO_ARB = 'https://tokens.coingecko.com/arbitrum-one/all.json'
 const COINGECKO_BASE = 'https://tokens.coingecko.com/base/all.json'
 const COINGECKO_LINEA = 'https://tokens.coingecko.com/linea/all.json'
-const PANCAKE_ONDO_RWA_LIST = 'https://tokens.pancakeswap.finance/ondo-rwa-tokens.json'
+const PANCAKE_ONDO_RWA_LIST = 'https://tokens.pancakeswap.finance/ondo-rwa-tokens-staging.json'
 export const RWA_URLS = [PANCAKE_ONDO_RWA_LIST]
 
 export const PANCAKE_ETH_DEFAULT = 'https://tokens.pancakeswap.finance/pancakeswap-eth-default.json'
