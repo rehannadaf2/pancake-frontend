@@ -2,7 +2,14 @@ import { useState, KeyboardEvent, useEffect, useCallback } from 'react'
 import { Button, Flex, FlexGap, Input, QuestionHelper, Spinner, Text } from '@pancakeswap/uikit'
 import { useTranslation } from '@pancakeswap/localization'
 import { useAtom, useAtomValue } from 'jotai'
-import { isValidUrl, isCustomRpcAtom, rpcUrlAtom, validateRpcEndpoint, rpcs } from '@pancakeswap/utils/user'
+import {
+  isValidUrl,
+  isCustomRpcAtom,
+  rpcUrlAtom,
+  validateRpcEndpoint,
+  rpcs,
+  defaultRpcState,
+} from '@pancakeswap/utils/user'
 
 export function RPCConnectionSettingField() {
   const { t } = useTranslation()
@@ -13,9 +20,10 @@ export function RPCConnectionSettingField() {
   const [customUrl, setCustomUrl] = useState(isCurrentCustom ? rpcNodeUrl || 'https://' : 'https://')
 
   useEffect(() => {
+    // disable existing custom rpc's
     if (isCurrentCustom) {
-      setCustom(true)
-      setCustomUrl(rpcNodeUrl)
+      setCustom(false)
+      setCustomUrl(defaultRpcState.url)
     }
   }, [isCurrentCustom, rpcNodeUrl])
 
@@ -50,7 +58,7 @@ export function RPCConnectionSettingField() {
             {rpc.name}
           </Button>
         ))}
-        <Button
+        {/* <Button
           key="Custom"
           variant={isCurrentCustom || isCustom ? 'primary' : 'tertiary'}
           scale="sm"
@@ -60,7 +68,7 @@ export function RPCConnectionSettingField() {
           }}
         >
           {t('Custom')}
-        </Button>
+        </Button> */}
       </FlexGap>
       <Flex mt="16px">
         <Input

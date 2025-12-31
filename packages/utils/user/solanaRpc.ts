@@ -41,7 +41,7 @@ export const isValidUrl = (url: string): boolean => {
 const RPC_STORAGE_KEY = 'solanaRpcConnection'
 
 // Default to empty object - will be populated by the component
-const defaultRpcState: RPCConnectionState = {
+export const defaultRpcState: RPCConnectionState = {
   url: rpcs[0]?.url || 'https://api.mainnet-beta.solana.com',
   name: rpcs[0]?.name,
 }
