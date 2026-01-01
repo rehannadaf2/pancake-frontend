@@ -4,7 +4,7 @@ import { FetchStatus } from 'config/constants/types'
 import { useErc721CollectionContract } from 'hooks/useContract'
 import { useCallback } from 'react'
 import { getCollectionApi, getNftApi, getNftsMarketData, getNftsOnChainMarketData } from 'state/nftMarket/helpers'
-import { NftLocation, NftToken, TokenMarketData } from 'state/nftMarket/types'
+import { NftAttribute, NftLocation, NftToken, TokenMarketData } from 'state/nftMarket/types'
 import { useProfile } from 'state/profile/hooks'
 import { safeGetAddress } from 'utils'
 import { Address } from 'viem'
@@ -65,7 +65,22 @@ export const useCompleteNft = (collectionAddress: Address | undefined, tokenId: 
           name: metadata.name,
           description: metadata.description,
           image: metadata.image,
-          attributes: metadata.attributes,
+          attributes: (metadata.attributes ?? [])
+            .map((attr: any) => {
+              if (!attr) return undefined
+              if (
+                typeof attr.traitType === 'string' &&
+                (typeof attr.value === 'string' || typeof attr.value === 'number' || attr.value === undefined)
+              ) {
+                return attr as NftAttribute
+              }
+              return {
+                traitType: attr.value?.trait_type ?? '',
+                value: attr.value?.value,
+                displayType: attr.displayType ?? null,
+              }
+            })
+            .filter((attr): attr is NftAttribute => Boolean(attr)),
         }
         return basicNft
       }
@@ -83,7 +98,9 @@ export const useCompleteNft = (collectionAddress: Address | undefined, tokenId: 
       ])
       const onChainMarketData = onChainMarketDatas[0]
 
-      if (!marketDatas[0] && !onChainMarketData) return undefined
+      if (!marketDatas[0] && !onChainMarketData) {
+        throw new Error('Market data not found')
+      }
 
       if (!onChainMarketData) return marketDatas[0]
 
