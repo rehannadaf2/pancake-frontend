@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { SUGGESTED_BASES } from 'config/constants/exchange'
+import { SUGGESTED_BASES, SUGGESTED_BASES_WITH_CAKE } from 'config/constants/exchange'
 import { useUnifiedNativeCurrency } from 'hooks/useNativeCurrency'
 import { styled } from 'styled-components'
 
@@ -65,6 +65,15 @@ export default function CommonBases({
   const native = useUnifiedNativeCurrency(chainId)
   const { t } = useTranslation()
   const pinTokenDescText = commonBasesType === CommonBasesType.SWAP_LIMITORDER ? t('Popular tokens') : t('Common bases')
+  const suggestedBases = useMemo(
+    () =>
+      chainId
+        ? (commonBasesType === CommonBasesType.SWAP_LIMITORDER ? SUGGESTED_BASES_WITH_CAKE : SUGGESTED_BASES)[
+            chainId
+          ] || []
+        : [],
+    [chainId, commonBasesType],
+  )
 
   const isNativeDisabled = useMemo(
     () =>
@@ -108,7 +117,7 @@ export default function CommonBases({
             </Text>
           </BaseWrapper>
         </ButtonWrapper>
-        {(chainId ? SUGGESTED_BASES[chainId] || [] : []).map((token: UnifiedToken) => {
+        {suggestedBases.map((token: UnifiedToken) => {
           const selected = selectedCurrency?.equals?.(token)
           const disabled = selected || Boolean(disabledCurrencies?.find((c) => c.equals(token)))
           return (

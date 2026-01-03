@@ -54,6 +54,7 @@ import 'core-js/features/array/to-reversed'
 import 'core-js/features/array/find-last'
 import 'core-js/features/array/to-spliced'
 import 'core-js/features/string/replace-all'
+import 'core-js/features/object/from-entries'
 import 'utils/abortcontroller-polyfill'
 
 const EasterEgg = dynamic(() => import('components/EasterEgg'), { ssr: false })

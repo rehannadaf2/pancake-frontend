@@ -24,8 +24,10 @@ import {
   WBTC_ETH,
   zkSyncTestnetTokens,
   zksyncTokens,
+  CAKE,
 } from '@pancakeswap/tokens'
 
+import mapValues from 'lodash/mapValues'
 import { ChainTokenList } from './types'
 
 // Remove toSolanaTokenInfo function
@@ -90,6 +92,25 @@ export const SUGGESTED_BASES: ChainTokenList = {
   [NonEVMChainId.SOLANA]: [solanaTokens.usdc, solanaTokens.usdt],
   [NonEVMChainId.APTOS]: [],
 }
+
+// used for display in the default list when swapping
+export const SUGGESTED_BASES_WITH_CAKE: ChainTokenList = Object.fromEntries(
+  Object.entries(SUGGESTED_BASES).map(([chainIdStr, tokens]) => {
+    const chainId = Number(chainIdStr)
+    const cake = CAKE[chainId]
+
+    if (!cake || !tokens?.length || tokens.some((t) => t.equals(cake))) {
+      return [chainId, tokens]
+    }
+
+    const usdtIndex = tokens.findIndex((t) => USDT[chainId] && t.equals(USDT[chainId]))
+    const index = usdtIndex !== -1 ? usdtIndex : tokens.findIndex((t) => USDC[chainId] && t.equals(USDC[chainId]))
+
+    if (index === -1) return [chainId, tokens]
+
+    return [chainId, [...tokens.slice(0, index + 1), cake, ...tokens.slice(index + 1)]]
+  }),
+) as ChainTokenList
 
 // used to construct the list of all pairs we consider by default in the frontend
 export const BASES_TO_TRACK_LIQUIDITY_FOR: ChainTokenList = {

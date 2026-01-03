@@ -109,10 +109,7 @@ export default function SwapNetworkSelection({
         return false
       }
 
-      if (
-        chain.id !== ChainId.MONAD_TESTNET &&
-        (('testnet' in chain && chain.testnet) || evmChains.find((c) => c.id === chain.id)?.testnet)
-      ) {
+      if (('testnet' in chain && chain.testnet) || evmChains.find((c) => c.id === chain.id)?.testnet) {
         return false
       }
 

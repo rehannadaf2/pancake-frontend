@@ -6,7 +6,7 @@ import { useMemo } from 'react'
 import { useUserShowTestnet } from 'state/user/hooks/useUserShowTestnet'
 
 export const MAINNET_CHAINS = CHAINS.filter((chain) => {
-  if ('testnet' in chain && chain.testnet && chain.id !== ChainId.BSC_TESTNET && chain.id !== ChainId.MONAD_TESTNET) {
+  if ('testnet' in chain && chain.testnet && chain.id !== ChainId.BSC_TESTNET) {
     return false
   }
   return true
