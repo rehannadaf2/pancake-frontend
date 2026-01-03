@@ -451,7 +451,7 @@ function CurrencySearch({
         {supportCrossChain ? (
           <SwapNetworkSelection
             chainId={selectedChainId}
-            onSelect={(currentChainId) => setSelectedChainId(currentChainId)}
+            onSelect={setSelectedChainId}
             isDependent={mode === 'swap-currency-output'}
           />
         ) : null}

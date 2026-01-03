@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import { SUGGESTED_BASES, SUGGESTED_BASES_WITH_CAKE } from 'config/constants/exchange'
 import { useUnifiedNativeCurrency } from 'hooks/useNativeCurrency'
 import { styled } from 'styled-components'
@@ -82,6 +82,10 @@ export default function CommonBases({
     [chainId, disabledCurrencies, native, selectedCurrency?.chainId, selectedCurrency?.isNative],
   )
 
+  const handleClick = useCallback(() => {
+    onSelect(native)
+  }, [onSelect, native])
+
   return (
     <AutoColumn gap="sm">
       <AutoRow>
@@ -94,16 +98,7 @@ export default function CommonBases({
       </AutoRow>
       <RowWrapper>
         <ButtonWrapper>
-          <BaseWrapper
-            onClick={() => {
-              if (isNativeDisabled) {
-                return
-              }
-
-              onSelect(native)
-            }}
-            disable={isNativeDisabled}
-          >
+          <BaseWrapper onClick={isNativeDisabled ? undefined : handleClick} disable={isNativeDisabled}>
             <CurrencyLogo
               showChainLogo={supportCrossChain}
               currency={native}
@@ -122,7 +117,7 @@ export default function CommonBases({
           const disabled = selected || Boolean(disabledCurrencies?.find((c) => c.equals(token)))
           return (
             <ButtonWrapper key={`buttonBase#${token.address}`}>
-              <BaseWrapper onClick={() => !disabled && onSelect(token)} disable={disabled}>
+              <BaseWrapper onClick={disabled ? undefined : () => onSelect(token)} disable={disabled}>
                 <CurrencyLogo
                   showChainLogo={supportCrossChain}
                   currency={token}
