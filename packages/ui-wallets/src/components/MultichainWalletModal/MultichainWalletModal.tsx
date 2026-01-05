@@ -43,6 +43,7 @@ export const MultichainWalletModal: React.FC<MultichainWalletModalProps> = (prop
     onDiscordLogin,
     onDismiss,
     docLink,
+    supportedSocialLoginChains,
     ...rest
   } = props
 
@@ -277,6 +278,7 @@ export const MultichainWalletModal: React.FC<MultichainWalletModalProps> = (prop
               onXLogin={handleSocialLoginWithCleanup(onXLogin)}
               onTelegramLogin={handleSocialLoginWithCleanup(onTelegramLogin)}
               onDiscordLogin={handleSocialLoginWithCleanup(onDiscordLogin)}
+              supportedSocialLoginChains={supportedSocialLoginChains}
             />
           </AtomBox>
         </AtomBox>

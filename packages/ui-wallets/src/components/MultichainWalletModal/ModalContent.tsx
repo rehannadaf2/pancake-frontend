@@ -34,6 +34,7 @@ export type ModalContentProps = Pick<
   onXLogin?: () => void
   onTelegramLogin?: () => void
   onDiscordLogin?: () => void
+  supportedSocialLoginChains?: ChainId[]
 }
 
 export const ModalContent: React.FC<ModalContentProps> = ({
@@ -54,6 +55,7 @@ export const ModalContent: React.FC<ModalContentProps> = ({
   onXLogin,
   onTelegramLogin,
   onDiscordLogin,
+  supportedSocialLoginChains,
 }) => {
   const { isMobile } = useMatchBreakpoints()
   const { type: walletFilter, value: walletFilterChecked } = useWalletFilter()
@@ -233,15 +235,12 @@ export const ModalContent: React.FC<ModalContentProps> = ({
         <PreviewSection.NotInstalled qrCode={qrCode} wallet={uninstalledWallet} />
       )}
       {previewStatus === PreviewStatus.Confirming && selected && selectedNetwork && (
-        <PreviewSection.Confirming
-          wallet={selected}
-          network={selectedNetwork}
-          reConnect={() => connectWallet(selected, selectedNetwork)}
-        />
+        <PreviewSection.Confirming wallet={selected} network={selectedNetwork} reConnect={connectWallet} />
       )}
       {previewStatus === PreviewStatus.SocialLogin && (
         <SocialLogin
           chainId={chainId}
+          supportedSocialLoginChains={supportedSocialLoginChains}
           onDismiss={() => setPreviewStatus(PreviewStatus.Intro)}
           onGoogleLogin={onGoogleLogin}
           onXLogin={onXLogin}

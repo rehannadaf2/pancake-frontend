@@ -21,4 +21,5 @@ export interface MultichainWalletModalProps extends ModalV2Props {
   onTelegramLogin?: () => void
   onDiscordLogin?: () => void
   onReopenWalletModal?: () => void
+  supportedSocialLoginChains?: ChainId[]
 }

@@ -4,13 +4,15 @@ import { createQrCode, getDocLink } from 'config/wallet'
 import { useActiveChainId } from 'hooks/useActiveChainId'
 import useAuth from 'hooks/useAuth'
 
-import { ChainId } from '@pancakeswap/chains'
+import { ChainId, isTestnetChainId } from '@pancakeswap/chains'
 import { useFirebaseAuth } from 'wallet/Privy/firebase'
 import { useCallback, useMemo } from 'react'
 import { logGTMWalletConnectedEvent } from 'utils/customGTMEventTracking'
 import { useConnect } from 'wagmi'
 import useAccountActiveChain from 'hooks/useAccountActiveChain'
 import { useWalletFilterEffect } from '@pancakeswap/ui-wallets/src/state/hooks'
+import { usePrivySupportedChainIds } from 'hooks/usePrivySupportedChainIds'
+import { useUserShowTestnet } from 'state/user/hooks/useUserShowTestnet'
 
 const WalletModalManager: React.FC<{ isOpen: boolean; onDismiss?: () => void }> = ({ isOpen, onDismiss }) => {
   const { login } = useAuth()
@@ -39,6 +41,14 @@ const WalletModalManager: React.FC<{ isOpen: boolean; onDismiss?: () => void }> 
 
   useWalletFilterEffect({ evmAddress: evmAccount ?? undefined, solanaAddress: solanaAccount ?? undefined })
 
+  const { data: rawSupportedChains } = usePrivySupportedChainIds({ enabled: isOpen })
+  const [userShowTestnet] = useUserShowTestnet()
+
+  const supportedSocialLoginChains = useMemo(
+    () => rawSupportedChains?.filter((chainId) => userShowTestnet || !isTestnetChainId(chainId)),
+    [rawSupportedChains, userShowTestnet],
+  )
+
   return (
     <MultichainWalletModal
       evmAddress={evmAccount}
@@ -55,6 +65,7 @@ const WalletModalManager: React.FC<{ isOpen: boolean; onDismiss?: () => void }> 
       onXLogin={loginWithX}
       onTelegramLogin={loginWithTelegram}
       onDiscordLogin={loginWithDiscord}
+      supportedSocialLoginChains={supportedSocialLoginChains}
     />
   )
 }

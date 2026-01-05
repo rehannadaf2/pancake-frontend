@@ -18,10 +18,12 @@ import {
 } from '@pancakeswap/uikit'
 import styled, { useTheme } from 'styled-components'
 import { chainFullNames, ChainId } from '@pancakeswap/chains'
+import { useMemo } from 'react'
 import { ASSET_CDN } from '../config/url'
 
 interface SocialLoginProps {
   chainId?: ChainId
+  supportedSocialLoginChains?: ChainId[]
   onGoogleLogin?: () => void
   onXLogin?: () => void
   onTelegramLogin?: () => void
@@ -87,20 +89,9 @@ const NoticeCard = styled.div`
   width: 100%;
 `
 
-const SOCIAL_LOGIN_ALLOWED_CHAINS: ChainId[] = [
-  ChainId.BSC,
-  ChainId.ETHEREUM,
-  ChainId.BASE,
-  ChainId.ARBITRUM_ONE,
-  ChainId.LINEA,
-  ChainId.OPBNB,
-  ChainId.MONAD_MAINNET,
-]
-
-const allowedChainNames = SOCIAL_LOGIN_ALLOWED_CHAINS.map((id) => chainFullNames[id]).join(', ')
-
 const SocialLogin: React.FC<SocialLoginProps> = ({
   chainId,
+  supportedSocialLoginChains,
   onGoogleLogin,
   onXLogin,
   onTelegramLogin,
@@ -110,8 +101,11 @@ const SocialLogin: React.FC<SocialLoginProps> = ({
   const { t } = useTranslation()
   const { isMobile } = useMatchBreakpoints()
   const { isDark } = useTheme()
-
-  const isChainAllowed = chainId && SOCIAL_LOGIN_ALLOWED_CHAINS.includes(chainId)
+  const isChainAllowed = Boolean(chainId && supportedSocialLoginChains?.includes(chainId))
+  const allowedChainNames = useMemo(
+    () => supportedSocialLoginChains?.map((id) => chainFullNames[id]).join(', '),
+    [supportedSocialLoginChains],
+  )
 
   return (
     <>
