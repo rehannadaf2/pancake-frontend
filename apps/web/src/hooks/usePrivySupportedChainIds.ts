@@ -1,4 +1,3 @@
-import { ChainId } from '@pancakeswap/chains'
 import { useQuery } from '@tanstack/react-query'
 
 type PrivySmartWalletResponse = {
@@ -41,11 +40,6 @@ export function usePrivySupportedChainIds({ enabled = true }: { enabled?: boolea
           return Number.isFinite(chainId) ? chainId : null
         })
         .filter((id): id is number => id !== null)
-        .sort((a, b) => {
-          if (a === ChainId.BSC) return -1
-          if (b === ChainId.BSC) return 1
-          return a - b
-        })
     },
     staleTime: Infinity,
     refetchOnReconnect: false,

@@ -24,8 +24,6 @@ const WalletModalManager: React.FC<{ isOpen: boolean; onDismiss?: () => void }> 
   const { connectAsync } = useConnect()
   const { chainId } = useActiveChainId()
 
-  const docLink = useMemo(() => getDocLink(code), [code])
-
   const handleWalletConnect = useCallback(
     (connectedChainId: number | undefined, name?: string, address?: string) => {
       logGTMWalletConnectedEvent(connectedChainId ?? chainId, name, address)
@@ -45,7 +43,14 @@ const WalletModalManager: React.FC<{ isOpen: boolean; onDismiss?: () => void }> 
   const [userShowTestnet] = useUserShowTestnet()
 
   const supportedSocialLoginChains = useMemo(
-    () => rawSupportedChains?.filter((chainId) => userShowTestnet || !isTestnetChainId(chainId)),
+    () =>
+      rawSupportedChains
+        ?.filter((chainId) => userShowTestnet || !isTestnetChainId(chainId))
+        .sort((a, b) => {
+          if (a === ChainId.BSC) return -1
+          if (b === ChainId.BSC) return 1
+          return a - b
+        }),
     [rawSupportedChains, userShowTestnet],
   )
 
@@ -55,7 +60,7 @@ const WalletModalManager: React.FC<{ isOpen: boolean; onDismiss?: () => void }> 
       solanaAddress={solanaAccount ?? undefined}
       chainId={chainId}
       docText={t('Learn How to Connect')}
-      docLink={docLink}
+      docLink={getDocLink(code)}
       isOpen={isOpen}
       evmLogin={login}
       createEvmQrCode={createEvmQrCode}
