@@ -6,14 +6,15 @@ import { useTranslation } from '@pancakeswap/localization'
 import { useToast } from '@pancakeswap/uikit'
 import { useEIP5792Status } from 'hooks/useIsEIP5792Supported'
 import { ConfirmModalState } from '@pancakeswap/widgets-internal'
-import { RetryableError, retry } from 'state/multicall/retry'
+import { RetryableError, retryExp } from 'state/multicall/retry'
 import { useActiveChainId } from 'hooks/useAccountActiveChain'
-import { ChainId as EvmChainId } from '@pancakeswap/chains'
+import { AVERAGE_CHAIN_BLOCK_TIMES, ChainId as EvmChainId } from '@pancakeswap/chains'
 import { InterfaceOrder, isBridgeOrder } from 'views/Swap/utils'
 import { activeBridgeOrderMetadataAtom } from 'views/Swap/Bridge/CrossChainConfirmSwapModal/state/orderDataState'
 import { useSetAtom } from 'jotai'
 
 import { useTransactionAdder } from 'state/transactions/hooks'
+import { BSC_BLOCK_TIME } from 'config'
 import { BatchCall, getBatchedTransaction as getBatchedTransactionHelper } from '../batchHelper'
 import { eip5792UserRejectUpgradeError, userRejectedError } from '../useSendSwapTransaction'
 import useSwapRecordTransaction from '../useSwapRecordTransaction'
@@ -141,8 +142,10 @@ export const useBatchSwapTransaction = ({
         if (!result?.id || !result.client) {
           return
         }
-
-        const { promise: statusPromise } = retry(
+        const chainId = order?.trade?.inputAmount?.currency?.chainId
+        const bufferedAvgBlockTime =
+          (chainId ? AVERAGE_CHAIN_BLOCK_TIMES[chainId] ?? BSC_BLOCK_TIME : BSC_BLOCK_TIME) * 1000 + 1000
+        const { promise: statusPromise } = retryExp(
           async () => {
             const status = await result.client.getCallsStatus({ id: result.id })
 
@@ -154,7 +157,12 @@ export const useBatchSwapTransaction = ({
             }
             return status
           },
-          { n: 10, minWait: 2000, maxWait: 3500 },
+          {
+            n: 10,
+            base: bufferedAvgBlockTime,
+            delay: bufferedAvgBlockTime,
+            factor: 1.5,
+          },
         )
 
         const status = await statusPromise

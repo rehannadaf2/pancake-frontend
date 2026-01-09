@@ -4,7 +4,7 @@ import { useToast } from '@pancakeswap/uikit'
 import { ConfirmModalState } from '@pancakeswap/widgets-internal'
 import { SolanaDescriptionWithTx } from 'components/Toast'
 import { useCallback, useMemo } from 'react'
-import { RetryableError, retry } from 'state/multicall/retry'
+import { RetryableError, retryExp } from 'state/multicall/retry'
 import { isSVMOrder } from 'views/Swap/utils'
 import { VersionedTransaction } from '@solana/web3.js'
 import { UltraSwapError, UltraSwapErrorType, ultraSwapService } from '@pancakeswap/solana-router-sdk'
@@ -15,6 +15,8 @@ import { useRefreshSolanaTokenBalances } from 'state/token/solanaTokenBalances'
 import { useSolanaConnectionWithRpcAtom } from 'hooks/solana/useSolanaConnectionWithRpcAtom'
 import MultisigToastDescription from 'components/Toast/MultisigToastDescription'
 import { isMultisigWallet } from 'utils/solana/isMultisigWallet'
+import { AVERAGE_CHAIN_BLOCK_TIMES, NonEVMChainId } from '@pancakeswap/chains'
+import { BSC_BLOCK_TIME } from 'config'
 import useSwapRecordTransaction from '../useSwapRecordTransaction'
 import { ConfirmStepContext } from './step.type'
 
@@ -37,7 +39,13 @@ export const useSolSwapStep = (context: ConfirmStepContext) => {
           throw new RetryableError()
         }
       }
-      const { promise } = retry(waitTx, { n: 5, minWait: 3000, maxWait: 5000 })
+      const bufferedAvgBlockTime = (AVERAGE_CHAIN_BLOCK_TIMES[NonEVMChainId.SOLANA] ?? BSC_BLOCK_TIME) * 1000 + 1000
+      const { promise } = retryExp(waitTx, {
+        n: 10,
+        base: bufferedAvgBlockTime,
+        delay: bufferedAvgBlockTime,
+        factor: 1.5,
+      })
       return promise
     },
     [connection],

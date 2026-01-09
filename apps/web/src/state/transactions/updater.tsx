@@ -14,7 +14,7 @@ import {
   WaitForTransactionReceiptTimeoutError,
 } from 'viem'
 import { usePublicClient } from 'wagmi'
-import { retry, RetryableError } from 'state/multicall/retry'
+import { RetryableError, retryExp } from 'state/multicall/retry'
 import { useQuery } from '@tanstack/react-query'
 import { AVERAGE_CHAIN_BLOCK_TIMES, NonEVMChainId } from '@pancakeswap/chains'
 import { BSC_BLOCK_TIME } from 'config'
@@ -108,11 +108,13 @@ export const Updater: React.FC<{ chainId: number }> = ({ chainId }) => {
             merge(fetchedTransactions.current, { [transaction.hash]: transactions[transaction.hash] })
           }
         }
-        retry(getTransaction, {
+        const bufferedAvgBlockTime =
+          (chainId ? AVERAGE_CHAIN_BLOCK_TIMES[chainId] ?? BSC_BLOCK_TIME : BSC_BLOCK_TIME) * 1000 + 1000
+        retryExp(getTransaction, {
           n: 10,
-          minWait: 5000,
-          maxWait: 10000,
-          delay: (AVERAGE_CHAIN_BLOCK_TIMES[chainId] ?? BSC_BLOCK_TIME) * 1000 + 1000,
+          base: bufferedAvgBlockTime,
+          delay: bufferedAvgBlockTime,
+          factor: 1.5,
         })
       },
     )
@@ -302,11 +304,12 @@ export const SolanaTransactionUpdater = () => {
             merge(fetchedTransactions.current, { [transaction.hash]: transactions[transaction.hash] })
           }
         }
-        retry(getTransaction, {
+        const bufferedAvgBlockTime = (AVERAGE_CHAIN_BLOCK_TIMES[NonEVMChainId.SOLANA] ?? BSC_BLOCK_TIME) * 1000 + 1000
+        retryExp(getTransaction, {
           n: 10,
-          minWait: 5000,
-          maxWait: 10000,
-          delay: BSC_BLOCK_TIME * 1000 + 1000,
+          base: bufferedAvgBlockTime,
+          delay: bufferedAvgBlockTime,
+          factor: 1.5,
         })
       },
     )

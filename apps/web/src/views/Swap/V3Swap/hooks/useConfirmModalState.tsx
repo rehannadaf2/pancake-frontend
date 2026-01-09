@@ -17,7 +17,7 @@ import { usePermit2Requires } from 'hooks/usePermit2Requires'
 import { useSafeTxHashTransformer } from 'hooks/useSafeTxHashTransformer'
 import { useTransactionDeadline } from 'hooks/useTransactionDeadline'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { RetryableError, retry } from 'state/multicall/retry'
+import { RetryableError, retryExp } from 'state/multicall/retry'
 import { useCurrencyBalance } from 'state/wallet/hooks'
 import { logGTMSwapTxSentEvent } from 'utils/customGTMEventTracking'
 import { UserUnexpectedTxError } from 'utils/errors'
@@ -42,7 +42,7 @@ import { useSetAtom } from 'jotai'
 import { getBridgeCalldata, getSolanaToEVMBridgeCalldata } from 'views/Swap/Bridge/api'
 import { useBridgeCheckApproval } from 'views/Swap/Bridge/hooks'
 
-import { ChainId as EvmChainId, isSolana } from '@pancakeswap/chains'
+import { AVERAGE_CHAIN_BLOCK_TIMES, ChainId as EvmChainId, isSolana } from '@pancakeswap/chains'
 import { useUserSlippage } from '@pancakeswap/utils/user'
 import { useSwapState } from 'state/swap/hooks'
 import { activeBridgeOrderMetadataAtom } from 'views/Swap/Bridge/CrossChainConfirmSwapModal/state/orderDataState'
@@ -62,6 +62,7 @@ import { calculateGasMargin } from 'utils'
 import { viemClients } from 'utils/viem'
 import MultisigToastDescription from 'components/Toast/MultisigToastDescription'
 import { isMultisigWallet } from 'utils/solana/isMultisigWallet'
+import { BSC_BLOCK_TIME } from 'config'
 import { ConfirmStepContext, ConfirmAction } from './steps/step.type'
 import { useBatchSwapTransaction } from './steps/useBatchSwapTransaction'
 import { useSolSwapStep } from './steps/useSolSwapStep'
@@ -236,10 +237,13 @@ const useConfirmActions = (
             throw error
           }
         }
-        const { promise } = retry<TransactionReceipt>(getReceipt, {
-          n: 6,
-          minWait: 2000,
-          maxWait: confirmations ? confirmations * 5000 : 5000,
+        const bufferedAvgBlockTime =
+          (chainId ? AVERAGE_CHAIN_BLOCK_TIMES[chainId] ?? BSC_BLOCK_TIME : BSC_BLOCK_TIME) * 1000 + 1000
+        const { promise } = retryExp(getReceipt, {
+          n: 10,
+          base: bufferedAvgBlockTime,
+          delay: bufferedAvgBlockTime,
+          factor: 1.5,
         })
         return promise
       }

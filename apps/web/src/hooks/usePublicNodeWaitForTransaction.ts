@@ -103,7 +103,7 @@ export function usePublicNodeWaitForTransaction(chainId_?: number) {
         }
       }
       const bufferedAvgBlockTime =
-        (selectedChain ? AVERAGE_CHAIN_BLOCK_TIMES[selectedChain] : BSC_BLOCK_TIME) * 1000 + 1000
+        ((selectedChain && AVERAGE_CHAIN_BLOCK_TIMES[selectedChain]) || BSC_BLOCK_TIME) * 1000 + 1000
       return retryExp(getTransaction, {
         n: 10,
         base: bufferedAvgBlockTime,

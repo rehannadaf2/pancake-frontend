@@ -1,9 +1,9 @@
-import { ChainId } from './chainId'
+import { ChainId, NonEVMChainId, UnifiedChainId } from './chainId'
 
 export const AVERAGE_CHAIN_BLOCK_TIMES: Record<ChainId, number> = {
   [ChainId.BSC]: 0.45,
   [ChainId.BSC_TESTNET]: 0.45,
-  [ChainId.OPBNB]: 0.5,
+  [ChainId.OPBNB]: 0.25,
   [ChainId.OPBNB_TESTNET]: 0.5,
   [ChainId.ETHEREUM]: 12,
   [ChainId.GOERLI]: 3,
@@ -21,4 +21,6 @@ export const AVERAGE_CHAIN_BLOCK_TIMES: Record<ChainId, number> = {
   [ChainId.SEPOLIA]: 0,
   [ChainId.MONAD_MAINNET]: 1,
   [ChainId.MONAD_TESTNET]: 1,
+  [NonEVMChainId.SOLANA]: 0.4,
+  [NonEVMChainId.APTOS]: 0.1,
 }
