@@ -102,7 +102,7 @@ const DataRow = ({
 
           <Text style={{ marginLeft: '10px' }}>
             <RowFixed>
-              {isMobile ? <HoverInlineText text={tokenSymbol} /> : <HoverInlineText text={tokenName} />}
+              {isMobile ? <HoverInlineText text={tokenSymbol} /> : <HoverInlineText text={tokenName} trigger="hover" />}
               {!isMobile && (
                 <Text ml="8px" color={theme.colors.text99}>
                   ({tokenSymbol})
@@ -117,7 +117,7 @@ const DataRow = ({
         </Text>
         <Text fontWeight={400}>{formatDollarAmount(tokenData.volumeUSD)}</Text>
         <Text fontWeight={400}>{formatDollarAmount(tokenData.tvlUSD)}</Text>
-      </ResponsiveGrid>{' '}
+      </ResponsiveGrid>
     </LinkWrapper>
   )
 }

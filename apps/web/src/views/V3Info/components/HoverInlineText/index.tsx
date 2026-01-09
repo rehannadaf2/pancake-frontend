@@ -1,4 +1,4 @@
-import { Text, useTooltip } from '@pancakeswap/uikit'
+import { TooltipOptions, useTooltip } from '@pancakeswap/uikit'
 import { styled } from 'styled-components'
 
 const TextWrapper = styled.div<{
@@ -30,6 +30,7 @@ const HoverInlineText = ({
   fontSize,
   color,
   link,
+  trigger = 'click',
   ...rest
 }: {
   text: string
@@ -39,10 +40,11 @@ const HoverInlineText = ({
   fontSize?: string
   color?: string
   link?: boolean
+  trigger?: TooltipOptions['trigger']
 }) => {
-  const { targetRef, tooltip, tooltipVisible } = useTooltip(<Text>{text}</Text>, {
+  const { targetRef, tooltip, tooltipVisible } = useTooltip(text, {
     placement: 'right-end',
-    trigger: 'click',
+    trigger,
   })
 
   if (!text) {
