@@ -5,4 +5,4 @@ export const ADMINS = [
 ].map((address) => address.toLowerCase())
 export const IPFS_GATEWAY = 'https://snapshot.4everland.link/ipfs'
 export const PANCAKE_SPACE = 'cakevote.eth'
-export const VOTE_THRESHOLD = 10 * 1_000
+export const VOTE_THRESHOLD = 1
