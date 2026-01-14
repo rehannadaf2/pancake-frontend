@@ -1,6 +1,6 @@
 import { ChainId, NonEVMChainId, UnifiedChainId } from './chainId'
 
-export const AVERAGE_CHAIN_BLOCK_TIMES: Record<ChainId, number> = {
+export const AVERAGE_CHAIN_BLOCK_TIMES: Record<UnifiedChainId, number> = {
   [ChainId.BSC]: 0.45,
   [ChainId.BSC_TESTNET]: 0.45,
   [ChainId.OPBNB]: 0.25,
