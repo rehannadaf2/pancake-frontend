@@ -42,7 +42,7 @@ export const InfinitySwapForm = memo(() => {
     useAllTypeBestTrade()
 
   const isWrapping = useIsWrapping()
-  const { chainId: activeChianId } = useActiveChainId()
+  const { chainId: activeChainId } = useActiveChainId()
   const isUserInsufficientBalance = useUserInsufficientBalance(bestOrder)
   const { shouldShowBuyCrypto, buyCryptoLink } = useBuyCryptoInfo(bestOrder)
 
@@ -74,15 +74,15 @@ export const InfinitySwapForm = memo(() => {
 
   const [solanaSlippage] = useSolanaUserSlippage()
 
-  const userSlippageCurrentChain = isSolana(activeChianId) ? solanaSlippage : userSlippageTolerance
+  const userSlippageCurrentChain = isSolana(activeChainId) ? solanaSlippage : userSlippageTolerance
 
   const isSlippageTooHigh = useMemo(() => userSlippageCurrentChain > 500, [userSlippageCurrentChain])
   const shouldRiskPanelDisplay = useShouldRiskPanelDisplay(inputCurrency?.wrapped, outputCurrency?.wrapped)
   const isExactOutWarning = useMemo(
     () =>
-      (independentField === Field.OUTPUT && isSolana(activeChianId) && !!typedValue) ||
+      (independentField === Field.OUTPUT && isSolana(activeChainId) && !!typedValue) ||
       (bestOrder?.type === OrderType.PCS_SVM && bestOrder.trade.tradeType === TradeType.EXACT_OUTPUT),
-    [bestOrder?.trade.tradeType, bestOrder?.type, independentField, activeChianId, typedValue],
+    [bestOrder?.trade.tradeType, bestOrder?.type, independentField, activeChainId, typedValue],
   )
   const token0Risk = useTokenRisk(inputCurrency?.wrapped)
   const token1Risk = useTokenRisk(outputCurrency?.wrapped)
@@ -139,7 +139,7 @@ export const InfinitySwapForm = memo(() => {
                   <RefreshButton
                     onRefresh={refreshOrder}
                     refreshDisabled={refreshDisabled}
-                    chainId={activeChianId}
+                    chainId={activeChainId}
                     loading={!tradeLoaded}
                   />
                   <PricingAndSlippage priceLoading={!tradeLoaded} price={executionPrice ?? undefined} />
