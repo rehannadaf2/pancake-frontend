@@ -16,7 +16,6 @@ import { useIsSmartAccount } from 'hooks/useIsSmartAccount'
 import { useRouter } from 'next/router'
 import { useCallback, useContext, useMemo } from 'react'
 import { styled } from 'styled-components'
-import { isEvm } from '@pancakeswap/chains'
 import { SWAP_CHART_UNSUPPORTED_CHAINS } from 'config/constants/supportChains'
 
 import { SwapFeaturesContext } from 'views/Swap/SwapFeaturesContext'
@@ -73,12 +72,10 @@ export const SwapSelection = ({
   swapType,
   withToolkit = false,
   style,
-  outputChainId,
 }: {
   swapType: SwapType
   withToolkit?: boolean
   style?: React.CSSProperties
-  outputChainId?: number
 }) => {
   const { t } = useTranslation()
   const router = useRouter()
@@ -119,8 +116,6 @@ export const SwapSelection = ({
   )
 
   const { setIsChartDisplayed, isChartDisplayed } = useContext(SwapFeaturesContext)
-
-  const isEvmSwap = isEvm(chainId) && isEvm(outputChainId)
 
   const toggleChartDisplayed = useCallback(() => {
     setIsChartDisplayed?.((currentIsChartDisplayed) => !currentIsChartDisplayed)
@@ -178,9 +173,7 @@ export const SwapSelection = ({
 
       {withToolkit && !SWAP_CHART_UNSUPPORTED_CHAINS.includes(chainId) && (
         <ColoredIconButton
-          onClick={() => {
-            toggleChartDisplayed()
-          }}
+          onClick={toggleChartDisplayed}
           variant="text"
           scale="sm"
           data-dd-action-name="Price chart button"
