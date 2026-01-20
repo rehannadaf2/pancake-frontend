@@ -18,7 +18,6 @@ import { useCallback, useContext, useMemo } from 'react'
 import { styled } from 'styled-components'
 import { isEvm } from '@pancakeswap/chains'
 import { SWAP_CHART_UNSUPPORTED_CHAINS } from 'config/constants/supportChains'
-import { chartDisplayAtom } from './atoms'
 
 import { SwapFeaturesContext } from 'views/Swap/SwapFeaturesContext'
 import { SwapType } from '../../Swap/types'

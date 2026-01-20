@@ -20,7 +20,6 @@ import Page from '../Page'
 import { StyledSwapContainer } from '../Swap/styles'
 import { SwapFeaturesContext } from '../Swap/SwapFeaturesContext'
 import { InfinitySwapForm } from './InfinitySwap'
-import { chartDisplayAtom } from './InfinitySwap/atoms'
 import { Festival } from './InfinitySwap/Festival'
 
 const ChartWithPriceHeader = dynamic(() => import('components/Chart/ChartWithPriceHeader'), { ssr: false })
