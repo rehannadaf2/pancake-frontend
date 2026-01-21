@@ -15,13 +15,14 @@ import {
   useTooltip,
   WalletFilledIcon,
 } from '@pancakeswap/uikit'
-import { Address } from 'viem'
+import { Address, createWalletClient, custom } from 'viem'
 import { watchAsset } from 'viem/actions'
 import { useAccount, useWalletClient } from 'wagmi'
 import { useQuery } from '@tanstack/react-query'
 import { checkWalletCanRegisterToken } from 'utils/wallet'
 import { useCallback } from 'react'
 import { ChainId } from '@pancakeswap/chains'
+import { chains } from 'utils/wagmi'
 import { BAD_SRCS } from '../Logo/constants'
 
 export enum AddToWalletTextOptions {
@@ -150,7 +151,6 @@ const AddToWalletButton: React.FC<AddToWalletButtonProps & ButtonProps> = ({
 }) => {
   const { t } = useTranslation()
   const { connector, isConnected } = useAccount()
-  const { data: walletClient } = useWalletClient({ chainId: tokenChain })
   const { isCanRegisterToken } = useWalletCanRegisterToken()
   const { data: walletIcon } = useWalletIcon(marginTextBetweenLogo, isCanRegisterToken)
 
@@ -161,9 +161,16 @@ const AddToWalletButton: React.FC<AddToWalletButtonProps & ButtonProps> = ({
 
   const handleOnClick = useCallback(async () => {
     const image = tokenLogo ? (BAD_SRCS[tokenLogo] ? undefined : tokenLogo) : undefined
-    if (!walletClient || !tokenAddress || !tokenSymbol || !tokenDecimals) return
+    if (!tokenChain || !connector || !tokenAddress || !tokenSymbol || !tokenDecimals) return
     try {
-      await watchAsset(walletClient, {
+      const provider = await connector.getProvider()
+      if (!provider) return
+
+      const targetWalletClient = createWalletClient({
+        chain: chains.find((c) => c.id === tokenChain),
+        transport: custom(provider as any),
+      })
+      await watchAsset(targetWalletClient, {
         // TODO: Add more types
         type: 'ERC20',
         options: {
@@ -176,9 +183,8 @@ const AddToWalletButton: React.FC<AddToWalletButtonProps & ButtonProps> = ({
     } catch (error) {
       console.error('Error watchAsset', error)
     }
-  }, [tokenLogo, walletClient, tokenAddress, tokenSymbol, tokenDecimals])
+  }, [tokenLogo, connector, tokenChain, tokenAddress, tokenSymbol, tokenDecimals])
 
-  if (!walletClient) return null
   if (connector && connector.name === 'Binance') return null
   if (!(connector && isConnected)) return null
   if (!isCanRegisterToken) return null
