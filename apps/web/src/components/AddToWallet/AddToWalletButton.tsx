@@ -21,6 +21,7 @@ import { useAccount, useWalletClient } from 'wagmi'
 import { useQuery } from '@tanstack/react-query'
 import { checkWalletCanRegisterToken } from 'utils/wallet'
 import { useCallback } from 'react'
+import { ChainId } from '@pancakeswap/chains'
 import { BAD_SRCS } from '../Logo/constants'
 
 export enum AddToWalletTextOptions {
@@ -31,6 +32,7 @@ export enum AddToWalletTextOptions {
 
 export interface AddToWalletButtonProps {
   tokenAddress?: string
+  tokenChain?: ChainId
   tokenSymbol?: string
   tokenDecimals?: number
   tokenLogo?: string
@@ -131,6 +133,7 @@ const useWalletCanRegisterToken = () => {
 
 const AddToWalletButton: React.FC<AddToWalletButtonProps & ButtonProps> = ({
   tokenAddress,
+  tokenChain,
   tokenSymbol,
   tokenDecimals,
   tokenLogo,
@@ -147,7 +150,7 @@ const AddToWalletButton: React.FC<AddToWalletButtonProps & ButtonProps> = ({
 }) => {
   const { t } = useTranslation()
   const { connector, isConnected } = useAccount()
-  const { data: walletClient } = useWalletClient()
+  const { data: walletClient } = useWalletClient({ chainId: tokenChain })
   const { isCanRegisterToken } = useWalletCanRegisterToken()
   const { data: walletIcon } = useWalletIcon(marginTextBetweenLogo, isCanRegisterToken)
 

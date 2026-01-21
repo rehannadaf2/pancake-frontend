@@ -44,6 +44,7 @@ export const IfoAllocationDisplay: React.FC<IfoAllocationCardProps> = ({
           variant="primary60Outline"
           wrapperProps={{ flex: 1 }}
           tokenAddress={tokenAddress}
+          tokenChain={chainId}
           showTooltip={false}
           tokenSymbol={symbol}
           tokenDecimals={tokenDecimals}

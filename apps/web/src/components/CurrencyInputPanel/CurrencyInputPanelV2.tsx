@@ -220,6 +220,7 @@ const CurrencyInputPanelV2 = memo(function CurrencyInputPanelV2({
                   height="auto"
                   width="fit-content"
                   tokenAddress={tokenAddress}
+                  tokenChain={token.chainId}
                   tokenSymbol={token.symbol}
                   tokenDecimals={token.decimals}
                   tokenLogo={token instanceof WrappedTokenInfo ? token.logoURI : undefined}

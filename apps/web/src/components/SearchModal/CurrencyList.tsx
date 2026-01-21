@@ -139,6 +139,7 @@ function ComplementSection({
                 height="auto"
                 width="fit-content"
                 tokenAddress={selectedCurrency.wrapped.address}
+                tokenChain={selectedCurrency.wrapped.chainId}
                 tokenSymbol={selectedCurrency.symbol}
                 tokenDecimals={selectedCurrency.decimals}
                 tokenLogo={

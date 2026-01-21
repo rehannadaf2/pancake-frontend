@@ -90,6 +90,7 @@ export function TransactionSubmittedContent({
               marginTextBetweenLogo="6px"
               textOptions={AddToWalletTextOptions.TEXT_WITH_ASSET}
               tokenAddress={token?.address}
+              tokenChain={token?.chainId}
               tokenSymbol={currencyToAdd!.symbol}
               tokenDecimals={token?.decimals}
               tokenLogo={token instanceof WrappedTokenInfo ? token.logoURI : undefined}
