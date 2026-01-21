@@ -165,9 +165,11 @@ const AddToWalletButton: React.FC<AddToWalletButtonProps & ButtonProps> = ({
     try {
       const provider = await connector.getProvider()
       if (!provider) return
+      const chain = chains.find((c) => c.id === tokenChain)
+      if (!chain) return
 
       const targetWalletClient = createWalletClient({
-        chain: chains.find((c) => c.id === tokenChain),
+        chain,
         transport: custom(provider as any),
       })
       await watchAsset(targetWalletClient, {
