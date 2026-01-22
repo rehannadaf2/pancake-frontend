@@ -211,9 +211,7 @@ const PoolPage: React.FC<React.PropsWithChildren<{ address: string }>> = ({ addr
                   <Button
                     mr="8px"
                     variant="secondary"
-                    onClick={() => {
-                      logGTMClickAddLiquidityEvent()
-                    }}
+                    onClick={logGTMClickAddLiquidityEvent}
                     disabled={!!DISABLED_ADD_LIQUIDITY_CHAINS[chainId]}
                   >
                     {t('Add Liquidity')}

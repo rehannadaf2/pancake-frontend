@@ -20,7 +20,7 @@ import { multiChainId, multiChainPaths, multiChainShortName } from 'state/info/c
 import { useChainNameByQuery, useMultiChainPath } from 'state/info/hooks'
 import { styled } from 'styled-components'
 import { chains } from 'utils/wagmi'
-import { arbitrum, bsc, mainnet, zkSync, linea, base, opBNB } from 'wagmi/chains'
+import { arbitrum, bsc, mainnet, zksync, linea, base, opBNB } from 'wagmi/chains'
 import { v3InfoPath } from '../../constants'
 import Search from '../Search'
 
@@ -75,7 +75,7 @@ const InfoNav: React.FC<{ isStableSwap: boolean }> = ({ isStableSwap }) => {
   )
 }
 
-const targetChains = [mainnet, bsc, zkSync, arbitrum, linea, base, opBNB, { id: ChainId.MONAD_MAINNET, name: 'Monad' }]
+const targetChains = [mainnet, bsc, zksync, arbitrum, linea, base, opBNB, { id: ChainId.MONAD_MAINNET, name: 'Monad' }]
 
 export const NetworkSwitcher: React.FC<{ activeIndex: number }> = ({ activeIndex }) => {
   const { t } = useTranslation()

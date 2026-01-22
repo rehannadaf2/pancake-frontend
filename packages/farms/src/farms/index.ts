@@ -3,7 +3,7 @@ import { fetchUniversalFarms } from '../fetchUniversalFarms'
 import { UniversalFarmConfig } from '../types'
 import { getFarmConfigKey } from '../utils'
 import { bscTestnetFarmConfig } from './bscTestnet'
-import { monadFarmConfig, monadTestnetFarmConfig } from './monad'
+import { monadTestnetFarmConfig } from './monad'
 import { zkSyncTestnetFarmConfig } from './zkSyncTestnet'
 
 const chainIds: ChainId[] = [
@@ -17,9 +17,10 @@ const chainIds: ChainId[] = [
   ChainId.MONAD_MAINNET,
 ]
 
-export const fetchAllUniversalFarms = async (): Promise<UniversalFarmConfig[]> => {
+export const fetchAllUniversalFarms = async (chainId?: ChainId | ChainId[]): Promise<UniversalFarmConfig[]> => {
   try {
-    const farmPromises = chainIds.map((chainId) => fetchUniversalFarms(chainId))
+    const targetChainIds: ChainId[] = Array.isArray(chainId) ? chainId : chainId ? [chainId] : chainIds
+    const farmPromises = targetChainIds.map((id) => fetchUniversalFarms(id))
     const results = await Promise.allSettled(farmPromises)
     const allFarms = results.flatMap((result) => {
       if (result.status === 'fulfilled') return result.value

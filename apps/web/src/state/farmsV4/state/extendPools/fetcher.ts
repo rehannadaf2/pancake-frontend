@@ -102,8 +102,7 @@ export const fetchExplorerPoolInfo = async <TPoolType extends PoolInfo>(
   try {
     // @ts-ignore
     resp.data.chainId = chainId
-    const farmConfig = await fetchAllUniversalFarms()
-
+    const farmConfig = await fetchAllUniversalFarms(chainId)
     const isFarming = farmConfig.some((farm) => farm.lpAddress?.toLowerCase() === poolAddress.toLowerCase())
 
     const farm = await parseFarmPools([resp.data], { isFarming })

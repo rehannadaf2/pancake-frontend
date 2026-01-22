@@ -80,7 +80,7 @@ export const getTrackedV2LpTokens = memoize(
     userSavedPairs: AppState['user']['pairs'],
   ): Promise<[ERC20Token, ERC20Token][]> => {
     const pairTokens: ITokenPair[] = []
-    const fetchFarmConfig = await fetchAllUniversalFarms()
+    const fetchFarmConfig = await fetchAllUniversalFarms(chainId)
 
     // from farms
     fetchFarmConfig
@@ -225,7 +225,7 @@ export const getAccountV2LpDetails = async (
     return acc
   }, [] as Array<readonly [bigint, bigint, bigint, bigint, bigint] | undefined>)
 
-  const farmConfig = await fetchAllUniversalFarms()
+  const farmConfig = await fetchAllUniversalFarms(chainId)
   const V2_UNIVERSAL_FARMS = farmConfig.filter((farm) => farm.protocol === Protocol.V2)
 
   return balances
@@ -390,7 +390,7 @@ export const getStablePairDetails = async (
       .then((res) => res.map((item) => item.result ?? [0n, 0n])),
   ])
 
-  const farmConfig = await fetchAllUniversalFarms()
+  const farmConfig = await fetchAllUniversalFarms(chainId)
 
   const result = validStablePairs.map((pair, index) => {
     const nativeBalance = CurrencyAmount.fromRawAmount(pair.liquidityToken, balances[index])

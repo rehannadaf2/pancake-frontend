@@ -28,7 +28,7 @@ const handler: NextApiHandler = async (req, res) => {
   }
 
   try {
-    const fetchFarmConfig = await fetchAllUniversalFarms()
+    const fetchFarmConfig = await fetchAllUniversalFarms(chainId)
     const farmConfig = [...fetchFarmConfig, ...UNIVERSAL_FARMS_WITH_TESTNET].filter((farm) => farm.chainId === chainId)
     const legacyFarmConfig = await formatUniversalFarmToSerializedFarm(farmConfig)
     // cache for long time, it should revalidate on every deployment

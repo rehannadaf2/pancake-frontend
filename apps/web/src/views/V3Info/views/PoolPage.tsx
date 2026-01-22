@@ -19,7 +19,6 @@ import dayjs from 'dayjs'
 import Page from 'components/Layout/Page'
 import { TabToggle, TabToggleGroup } from 'components/TabToggle'
 import { CHAIN_QUERY_NAME } from 'config/chains'
-// import { useActiveChainId } from 'hooks/useActiveChainId'
 import useTheme from 'hooks/useTheme'
 import { useEffect, useMemo, useState } from 'react'
 import { ChainLinkSupportChains, multiChainId, multiChainScan } from 'state/info/constant'
@@ -76,7 +75,6 @@ enum ChartView {
 }
 
 const PoolPage: React.FC<{ address: string }> = ({ address }) => {
-  // const { chainId } = useActiveChainId()
   const { isXs, isSm } = useMatchBreakpoints()
 
   const now = dayjs()
@@ -240,9 +238,7 @@ const PoolPage: React.FC<{ address: string }> = ({ address }) => {
                     mr="8px"
                     variant="secondary"
                     disabled={!!DISABLED_ADD_LIQUIDITY_CHAINS[multiChainId[chainName]]}
-                    onClick={() => {
-                      logGTMClickAddLiquidityEvent()
-                    }}
+                    onClick={logGTMClickAddLiquidityEvent}
                   >
                     {t('Add Liquidity')}
                   </Button>

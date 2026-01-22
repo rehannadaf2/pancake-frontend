@@ -76,7 +76,8 @@ export async function getLinkForPool(pool: UnifiedPoolInfo, type: 'detail' | 'in
   }
 
   // info page
-  const toLink = (addr: string, p: string, q: string = '') => `/info/${p}${multiChainPaths[chainId]}/pairs/${addr}?${q}`
+  const toLink = (addr: string, p: string, q: string = '') =>
+    `/info/${p}${multiChainPaths[chainId]}/pairs/${addr}${q ? `?${q}` : ''}`
   if (protocol === Protocol.STABLE) {
     const pairs = await LegacyRouter.getStableSwapPairs(chainId)
     const ssPair = pairs?.find((pair) => isAddressEqual(pair.lpAddress, lpAddress))

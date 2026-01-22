@@ -22,7 +22,7 @@ import { useChainNameByQuery, useMultiChainPath } from 'state/info/hooks'
 import { useUserShowTestnet } from 'state/user/hooks/useUserShowTestnet'
 import { styled } from 'styled-components'
 import { chains } from 'utils/wagmi'
-import { arbitrum, base, bsc, bscTestnet, linea, mainnet, opBNB, zkSync } from 'wagmi/chains'
+import { arbitrum, base, bsc, bscTestnet, linea, mainnet, opBNB, zksync } from 'wagmi/chains'
 import { infinityInfoPath } from '../../constants'
 import Search from '../Search'
 
@@ -83,7 +83,7 @@ const InfoNav: React.FC<{ isStableSwap: boolean }> = ({ isStableSwap }) => {
   )
 }
 
-const targetChains = [mainnet, bsc, bscTestnet, zkSync, arbitrum, linea, base, opBNB].filter((chain) =>
+const targetChains = [mainnet, bsc, bscTestnet, zksync, arbitrum, linea, base, opBNB].filter((chain) =>
   INFINITY_SUPPORTED_CHAINS.includes(chain.id as any),
 )
 
