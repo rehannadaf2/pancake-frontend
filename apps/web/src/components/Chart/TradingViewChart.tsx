@@ -103,7 +103,7 @@ const TradingViewChart: React.FC<TradingViewChartProps> = ({ currency0, currency
     if (!debouncedCurrency0 || !debouncedCurrency1) return ''
 
     if (quotePricingMode === 'usd') {
-      return `${debouncedCurrency0?.symbol}/USD`
+      return `${debouncedCurrency0?.symbol}/USDT`
     }
     return `${debouncedCurrency0?.symbol}/${debouncedCurrency1?.symbol}`
   }, [debouncedCurrency0, debouncedCurrency1, quotePricingMode])
