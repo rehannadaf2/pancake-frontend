@@ -2,8 +2,9 @@ import { useDebounce } from '@pancakeswap/hooks'
 import { UnifiedCurrency } from '@pancakeswap/sdk'
 import { tokens } from '@pancakeswap/uikit'
 import useTheme from 'hooks/useTheme'
-import React, { useCallback, useEffect, useRef } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { styled } from 'styled-components'
+import { truncateText } from 'utils'
 import type { TradingViewWidget, TradingViewWidgetOptions } from './lib/pancakeswap-charting-library.d.ts'
 import { createTradingViewWidget, loadTradingViewLibrary } from './lib/pancakeswap-charting-library.es.js'
 import { AggregatePricingModal } from './AggregatePricingModal'
@@ -35,6 +36,17 @@ const ChartContainer = styled.div`
     height: 450px;
   }
 `
+
+const buttonStyles = {
+  default: {
+    color: '#B8ADD2',
+    fontWeight: '400',
+  },
+  active: {
+    color: '#F4EEFF',
+    fontWeight: '600',
+  },
+}
 
 const update24HPriceData = async (
   on24HPriceDataChange: (low24h: number, high24h: number, priceChangePercent: number, price: number) => void,
@@ -76,6 +88,7 @@ const TradingViewChart: React.FC<TradingViewChartProps> = ({ currency0, currency
   const currentCurrency1Address = useRef<string | undefined>(undefined)
   const initializationTimeout = useRef<NodeJS.Timeout | null>(null)
   const customButtonRef = useRef<HTMLButtonElement | null>(null)
+  const pricingModeButtonRef = useRef<HTMLButtonElement | null>(null)
   const { isDark, theme } = useTheme()
 
   const modalRef = useRef<HTMLButtonElement | null>(null)
@@ -84,8 +97,64 @@ const TradingViewChart: React.FC<TradingViewChartProps> = ({ currency0, currency
   const debouncedCurrency0 = useDebounce(currency0, 300)
   const debouncedCurrency1 = useDebounce(currency1, 300)
 
-  const symbol =
-    debouncedCurrency0 && debouncedCurrency1 ? `${debouncedCurrency0?.symbol}/${debouncedCurrency1?.symbol}` : ''
+  const [quotePricingMode, setQuotePricingMode] = useState<'usd' | 'quote'>('quote')
+
+  const symbol = useMemo(() => {
+    if (!debouncedCurrency0 || !debouncedCurrency1) return ''
+
+    if (quotePricingMode === 'usd') {
+      return `${debouncedCurrency0?.symbol}/USD`
+    }
+    return `${debouncedCurrency0?.symbol}/${debouncedCurrency1?.symbol}`
+  }, [debouncedCurrency0, debouncedCurrency1, quotePricingMode])
+
+  const handleQuotePricingModeChange = useCallback((mode: 'usd' | 'quote') => {
+    setQuotePricingMode(mode)
+  }, [])
+
+  const createPricingModeButton = useCallback(() => {
+    if (!widgetRef.current || !isWidgetReady.current) return
+
+    try {
+      if (widgetRef.current && typeof widgetRef.current.createButton === 'function') {
+        const button = widgetRef.current.createButton()
+        if (button) {
+          button.style.color = buttonStyles.default.color
+          button.style.fontWeight = buttonStyles.default.fontWeight
+          button.style.cursor = 'pointer'
+
+          const quoteSymbol = debouncedCurrency1?.symbol
+          const truncatedSymbol = truncateText(quoteSymbol || '', 24)
+
+          const activeStyle = `color:${buttonStyles.active.color};font-weight:${buttonStyles.active.fontWeight}`
+
+          if (quotePricingMode === 'usd') {
+            button.innerHTML = `<span style="${activeStyle}">USD</span> / ${quoteSymbol}`
+            button.setAttribute('title', `Switch to price in ${quoteSymbol}`)
+            button.addEventListener('click', () => handleQuotePricingModeChange('quote'))
+          } else {
+            button.innerHTML = `USD / <span style="${activeStyle}">${truncatedSymbol}</span>`
+            button.setAttribute('title', 'Switch to price in USD')
+            button.addEventListener('click', () => handleQuotePricingModeChange('usd'))
+          }
+
+          pricingModeButtonRef.current = button
+        }
+      }
+    } catch (error) {
+      console.error('Error creating pricing mode button:', error)
+    }
+  }, [quotePricingMode, debouncedCurrency0, debouncedCurrency1, handleQuotePricingModeChange])
+
+  // Update pricing mode button when quotePricingMode changes
+  useEffect(() => {
+    if (pricingModeButtonRef.current) {
+      pricingModeButtonRef.current = null
+      setTimeout(() => {
+        createPricingModeButton()
+      }, 100)
+    }
+  }, [quotePricingMode, createPricingModeButton])
 
   // Function to create custom button in TradingView toolbar
   const createCustomButton = useCallback(() => {
@@ -135,6 +204,7 @@ const TradingViewChart: React.FC<TradingViewChartProps> = ({ currency0, currency
 
       // If currency addresses changed, force widget recreation
       if (currency0AddressChanged || currency1AddressChanged) {
+        setQuotePricingMode('quote')
         if (widgetRef.current) {
           try {
             if (widgetRef.current.remove) {
@@ -339,6 +409,7 @@ const TradingViewChart: React.FC<TradingViewChartProps> = ({ currency0, currency
                 // Create custom button after widget is ready
                 setTimeout(() => {
                   createCustomButton()
+                  createPricingModeButton()
                 }, 300)
               })
             } else {
@@ -348,6 +419,7 @@ const TradingViewChart: React.FC<TradingViewChartProps> = ({ currency0, currency
                 // Create custom button after widget is ready
                 setTimeout(() => {
                   createCustomButton()
+                  createPricingModeButton()
                 }, 300)
               }, 1000)
             }
@@ -433,6 +505,9 @@ const TradingViewChart: React.FC<TradingViewChartProps> = ({ currency0, currency
       // Clean up custom button
       if (customButtonRef.current) {
         customButtonRef.current = null
+      }
+      if (pricingModeButtonRef.current) {
+        pricingModeButtonRef.current = null
       }
     }
   }, [])
