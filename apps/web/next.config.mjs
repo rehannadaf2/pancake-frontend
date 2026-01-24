@@ -251,6 +251,11 @@ const config = {
         permanent: true,
       },
       {
+        source: '/ido/:path*',
+        destination: 'https://legacy-zkevm.pancakeswap.finance/ido/:path*',
+        permanent: true,
+      },
+      {
         source: '/images/tokens/:address',
         destination: 'https://tokens.pancakeswap.finance/images/:address',
         permanent: false,
