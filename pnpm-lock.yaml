@@ -64,7 +64,7 @@ catalogs:
       specifier: 3.81.0
       version: 3.81.0
     zod:
-      specifier: ^3.25.67
+      specifier: 3.25.67
       version: 3.25.67
 
 overrides:

@@ -2,7 +2,7 @@ import { execSync } from 'child_process'
 import { describe, it, expect } from 'vitest'
 
 const APPS = ['web']
-const SINGLETONS = ['viem', '@wagmi/core']
+const SINGLETONS = ['viem', '@wagmi/core', 'zod']
 
 function collectVersions(nodes: any[], pkgName: string): string[] {
   const versions = new Set<string>()
@@ -75,7 +75,7 @@ describe('singleton dependency check', () => {
             return
           }
 
-          const cmd = `pnpm --silent --filter=${app}... list ${pkg} --prod --no-optional --depth Infinity --json`
+          const cmd = `pnpm --silent --filter=${app}... why ${pkg} --depth Infinity --prod --json`
           const output = execSync(cmd, { encoding: 'utf-8' })
           const tree = JSON.parse(output)
 
