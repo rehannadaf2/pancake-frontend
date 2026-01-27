@@ -20,7 +20,23 @@ export const useBaseMiniAppAutoConnect = () => {
 
     const init = async () => {
       try {
-        const isInMiniApp = await sdk.isInMiniApp()
+        try {
+          sdk.actions.ready()
+        } catch (error) {
+          console.warn('[wallet] Base miniapp ready() failed', error)
+        }
+        await new Promise((resolve) => setTimeout(resolve, 100))
+
+        const checkIsInMiniApp = async (attemptsLeft: number): Promise<boolean> => {
+          const result = await sdk.isInMiniApp()
+          if (cancelled || result || attemptsLeft <= 1) {
+            return result
+          }
+          await new Promise((resolve) => setTimeout(resolve, 100))
+          return checkIsInMiniApp(attemptsLeft - 1)
+        }
+
+        const isInMiniApp = await checkIsInMiniApp(3)
         if (cancelled) return
         if (!isInMiniApp) {
           checkedRef.current = true
