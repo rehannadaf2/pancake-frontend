@@ -75,6 +75,12 @@ const View = () => {
     let cancelled = false
     const check = async () => {
       try {
+        try {
+          sdk.actions.ready()
+        } catch (error) {
+          console.warn('[swap] miniapp ready() failed', error)
+        }
+        await new Promise((resolve) => setTimeout(resolve, 100))
         const isInMiniApp = await sdk.isInMiniApp()
         if (cancelled) return
         setMiniAppStatus(isInMiniApp ? 'yes' : 'no')
