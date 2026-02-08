@@ -118,6 +118,9 @@ importers:
       eslint-plugin-lodash:
         specifier: ^7.4.0
         version: 7.4.0(eslint@8.53.0)
+      eslint-plugin-unused-imports:
+        specifier: 4.2.0
+        version: 4.2.0(@typescript-eslint/eslint-plugin@6.10.0(@typescript-eslint/parser@6.10.0(eslint@8.53.0)(typescript@5.7.3))(eslint@8.53.0)(typescript@5.7.3))(eslint@8.53.0)
       husky:
         specifier: ^7.0.0
         version: 7.0.4
@@ -17623,6 +17626,15 @@ packages:
 
   eslint-plugin-tsdoc@0.2.17:
     resolution: {integrity: sha512-xRmVi7Zx44lOBuYqG8vzTXuL6IdGOeF9nHX17bjJ8+VE6fsxpdGem0/SBTmAwgYMKYB1WBkqRJVQ+n8GK041pA==}
+
+  eslint-plugin-unused-imports@4.2.0:
+    resolution: {integrity: sha512-hLbJ2/wnjKq4kGA9AUaExVFIbNzyxYdVo49QZmKCnhk5pc9wcYRbfgLHvWJ8tnsdcseGhoUAddm9gn/lt+d74w==}
+    peerDependencies:
+      '@typescript-eslint/eslint-plugin': ^8.0.0-0 || ^7.0.0 || ^6.0.0 || ^5.0.0
+      eslint: ^9.0.0 || ^8.0.0
+    peerDependenciesMeta:
+      '@typescript-eslint/eslint-plugin':
+        optional: true
 
   eslint-scope@5.1.1:
     resolution: {integrity: sha512-2NxwbF/hZ0KpepYN0cNbo+FN6XoK7GaHlQhgx/hIZl6Va0bF45RQOOwhLIy8lQDbuCiadSLCBnH2CFYquit5bw==}
@@ -53106,6 +53118,12 @@ snapshots:
     dependencies:
       '@microsoft/tsdoc': 0.14.2
       '@microsoft/tsdoc-config': 0.16.2
+
+  eslint-plugin-unused-imports@4.2.0(@typescript-eslint/eslint-plugin@6.10.0(@typescript-eslint/parser@6.10.0(eslint@8.53.0)(typescript@5.7.3))(eslint@8.53.0)(typescript@5.7.3))(eslint@8.53.0):
+    dependencies:
+      eslint: 8.53.0
+    optionalDependencies:
+      '@typescript-eslint/eslint-plugin': 6.10.0(@typescript-eslint/parser@6.10.0(eslint@8.53.0)(typescript@5.7.3))(eslint@8.53.0)(typescript@5.7.3)
 
   eslint-scope@5.1.1:
     dependencies:
