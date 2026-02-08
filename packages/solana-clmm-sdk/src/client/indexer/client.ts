@@ -1,4 +1,4 @@
-import createClient, { Middleware } from 'openapi-fetch'
+import createClient from 'openapi-fetch'
 import { paths } from './schema'
 
 const endpoints = process.env.NEXT_PUBLIC_EXPLORE_API_ENDPOINT

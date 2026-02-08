@@ -18,7 +18,6 @@ import { createOnChainPoolFactory } from '../../v3-router/providers'
 import { PoolMeta } from '../../v3-router/providers/poolProviders/internalTypes'
 import { InfinityClPool, OnChainProvider, PoolType } from '../../v3-router/types'
 import { GetInfinityCandidatePoolsParams } from '../types'
-import { fetchCompactPoolsTick } from '../../utils/compactTickQuery.helper'
 import { fetchCombinedPoolsTick } from '../../utils/combinedTickQuery.helper'
 
 type WithMulticallGasLimit = {

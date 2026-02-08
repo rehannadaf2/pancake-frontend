@@ -25,7 +25,6 @@ import { getInterestBreakdown } from "@pancakeswap/utils/compoundApyHelpers";
 import { formatNumber, getDecimalAmount, getFullDisplayBalance } from "@pancakeswap/utils/formatBalance";
 import { trimTrailZero } from "@pancakeswap/utils/trimTrailZero";
 import BigNumber from "bignumber.js";
-import _toNumber from "lodash/toNumber";
 import { useCallback, useMemo, useState } from "react";
 import { styled } from "styled-components";
 

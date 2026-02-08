@@ -16,7 +16,6 @@ import {
   InfinityClPool,
   PoolType,
   StablePool,
-  SVMPool,
   V2Pool,
   V3Pool,
   WithTvl,

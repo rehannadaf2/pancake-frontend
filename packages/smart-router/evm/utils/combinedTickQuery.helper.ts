@@ -1,5 +1,5 @@
 import { BigintIsh } from '@pancakeswap/swap-sdk-core'
-import { Tick, FeeAmount, TICK_SPACINGS } from '@pancakeswap/v3-sdk'
+import { Tick } from '@pancakeswap/v3-sdk'
 
 import { OnChainProvider, V3Pool, InfinityClPool, PoolType } from '../v3-router/types'
 import { fetchCompactPoolsTick } from './compactTickQuery.helper'

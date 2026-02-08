@@ -3,7 +3,7 @@ import { fetchUniversalFarms } from '../fetchUniversalFarms'
 import { UniversalFarmConfig } from '../types'
 import { getFarmConfigKey } from '../utils'
 import { bscTestnetFarmConfig } from './bscTestnet'
-import { monadFarmConfig, monadTestnetFarmConfig } from './monad'
+import { monadTestnetFarmConfig } from './monad'
 import { zkSyncTestnetFarmConfig } from './zkSyncTestnet'
 
 const chainIds: ChainId[] = [

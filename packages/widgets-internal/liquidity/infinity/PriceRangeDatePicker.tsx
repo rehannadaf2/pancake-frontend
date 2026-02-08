@@ -1,4 +1,4 @@
-import { Button, ButtonMenu, ButtonMenuItem, FlexGap, Text, useMatchBreakpoints } from "@pancakeswap/uikit";
+import { Button, ButtonMenu, ButtonMenuItem, FlexGap, useMatchBreakpoints } from "@pancakeswap/uikit";
 import { useCallback, useMemo } from "react";
 import styled from "styled-components";
 

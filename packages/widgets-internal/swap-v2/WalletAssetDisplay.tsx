@@ -1,4 +1,4 @@
-import { MotionBox, Text, TooltipText, useTooltip, WalletFilledV2Icon } from "@pancakeswap/uikit";
+import { MotionBox, TooltipText, useTooltip, WalletFilledV2Icon } from "@pancakeswap/uikit";
 import { memo } from "react";
 import { styled } from "styled-components";
 import { truncateDecimals } from "../utils/numbers";

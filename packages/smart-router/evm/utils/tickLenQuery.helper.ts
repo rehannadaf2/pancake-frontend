@@ -8,9 +8,8 @@ import { infinityCLTickLensAbi } from '../abis/IInfinityCLTickLens'
 import { tickLensAbi } from '../abis/ITickLens'
 import { V3_TICK_LENS_ADDRESSES } from '../constants/v3'
 import { INFI_CL_TICK_LENS_ADDRESSES } from '../constants/infinity'
-import { getTickLensFetchConfig, getV3PoolFetchConfig } from '../infinity-router/constants/v3PoolFetchGasLimit'
+import { getTickLensFetchConfig } from '../infinity-router/constants/v3PoolFetchGasLimit'
 import { InfinityClPool, OnChainProvider, PoolType, V3Pool } from '../v3-router/types'
-import { formatGas } from './compactTickQuery.helper'
 
 type WithMulticallGasLimit = {
   gasLimit?: BigintIsh

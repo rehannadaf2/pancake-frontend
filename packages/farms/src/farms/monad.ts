@@ -1,4 +1,3 @@
-import { ChainId } from '@pancakeswap/chains'
 import { UniversalFarmConfig } from '../types'
 
 export const monadFarmConfig: UniversalFarmConfig[] = [

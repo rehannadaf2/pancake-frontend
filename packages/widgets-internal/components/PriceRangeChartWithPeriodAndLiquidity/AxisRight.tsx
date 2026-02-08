@@ -1,7 +1,6 @@
 import { useTheme } from "@pancakeswap/hooks";
 import { useMatchBreakpoints } from "@pancakeswap/uikit";
 import { axisLeft, Axis as d3Axis, NumberValue, ScaleLinear, select } from "d3";
-import { useCallback } from "react";
 import { styled } from "styled-components";
 
 const StyledGroup = styled.g<{ $isMobile: boolean }>`
