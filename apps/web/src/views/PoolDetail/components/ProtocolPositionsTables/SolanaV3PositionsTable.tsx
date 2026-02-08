@@ -1,4 +1,4 @@
-import { useMemo, ReactElement, FC, useCallback, useState, useEffect } from 'react'
+import { useMemo, ReactElement, FC, useCallback, useState } from 'react'
 import { NonEVMChainId } from '@pancakeswap/chains'
 import { Box, Text, Tag, FlexGap } from '@pancakeswap/uikit'
 import useAccountActiveChain from 'hooks/useAccountActiveChain'

@@ -13,9 +13,7 @@ import {
   PublicKey,
   Transaction,
   VersionedTransaction,
-  TransactionInstruction,
   ComputeBudgetProgram,
-  TransactionMessage,
 } from '@solana/web3.js'
 import { WalletContextState } from '@solana/wallet-adapter-react'
 import { buildTransaction, detectWalletTransactionSupport } from 'components/WalletModalV2/utils/solanaSendTransaction'

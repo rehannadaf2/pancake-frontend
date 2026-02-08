@@ -1,7 +1,7 @@
 import { atom } from 'jotai'
 import { Field } from 'views/PCSLimitOrders/types/limitOrder.types'
 import { BigNumber as BN } from 'bignumber.js'
-import { currencyUSDPriceAtom, currencyUSDPriceUnwrapAtom } from 'hooks/useCurrencyUsdPrice'
+import { currencyUSDPriceUnwrapAtom } from 'hooks/useCurrencyUsdPrice'
 import { ticksAtom } from './ticksAtom'
 import { formattedAmountsAtom } from './inputAtoms'
 import { selectedPoolAtom } from '../pools/selectedPoolAtom'

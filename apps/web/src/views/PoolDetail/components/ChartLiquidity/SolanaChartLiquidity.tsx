@@ -5,7 +5,6 @@ import { useTheme } from '@pancakeswap/hooks'
 import { Text } from '@pancakeswap/uikit'
 import styled from 'styled-components'
 
-import { formatDollarAmount } from 'views/V3Info/utils/numbers'
 import { useSolanaPoolChartVolumeData } from 'views/PoolDetail/hooks/useSolanaChartData'
 
 const TooltipCard = styled.div`

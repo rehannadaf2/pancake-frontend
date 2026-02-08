@@ -1,5 +1,4 @@
 import dynamic from 'next/dynamic'
-import { useRouter } from 'next/router'
 import { NextPageWithLayout } from 'utils/page.types'
 import PastIfo from 'views/Ifos/PastIfo'
 import { PageMeta } from 'components/Layout/Page'

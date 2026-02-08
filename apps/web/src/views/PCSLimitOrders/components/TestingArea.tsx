@@ -1,5 +1,5 @@
 import { useAtomValue } from 'jotai'
-import { Card, CardBody, Text, Box, Flex, FlexGap } from '@pancakeswap/uikit'
+import { Card, CardBody, Text, Box, FlexGap } from '@pancakeswap/uikit'
 import { stringify } from 'viem/utils'
 import { useMemo } from 'react'
 import { inputCurrencyAtom, outputCurrencyAtom } from '../state/currency/currencyAtoms'

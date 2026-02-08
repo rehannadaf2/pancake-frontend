@@ -36,7 +36,6 @@ import {
 } from 'state/farmsV4/state/accountPositions/type'
 import type { PoolInfo, UnifiedPoolInfo } from 'state/farmsV4/state/type'
 import styled from 'styled-components'
-import { isInfinityProtocol } from 'utils/protocols'
 import { formatDollarAmount } from 'views/V3Info/utils/numbers'
 import { BigNumber as BN } from 'bignumber.js'
 import { isSolana } from '@pancakeswap/chains'

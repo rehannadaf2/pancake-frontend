@@ -1,6 +1,6 @@
 import { Protocol } from '@pancakeswap/farms'
 import { getPoolId } from '@pancakeswap/infinity-sdk'
-import { Box, ChevronRightIcon, Flex, FlexGap, Text, FeeTier, Button, OpenNewIcon } from '@pancakeswap/uikit'
+import { Box, Flex, FlexGap, Text, FeeTier, Button } from '@pancakeswap/uikit'
 import { FiatNumberDisplay, NextLinkFromReactRouter } from '@pancakeswap/widgets-internal'
 import { TokenPairLogo } from 'components/TokenImage'
 import { unwrappedToken } from '@pancakeswap/tokens'

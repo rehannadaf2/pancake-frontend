@@ -1,4 +1,3 @@
-import { useCurrencyUsdPrice } from 'hooks/useCurrencyUsdPrice'
 import { useStablecoinPrice } from 'hooks/useStablecoinPrice'
 import { useMemo } from 'react'
 import { PoolInfo } from 'state/farmsV4/state/type'

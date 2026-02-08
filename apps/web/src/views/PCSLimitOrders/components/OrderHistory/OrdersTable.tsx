@@ -12,7 +12,6 @@ import {
   SwapHorizIcon,
   Table,
   Text,
-  Toggle,
   useMatchBreakpoints,
 } from '@pancakeswap/uikit'
 import { useTranslation } from '@pancakeswap/localization'

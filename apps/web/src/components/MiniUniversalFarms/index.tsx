@@ -7,7 +7,6 @@ import styled from 'styled-components'
 import { searchQueryAtom, updateFilterAtom } from 'views/universalFarms/atom/searchQueryAtom'
 import { PoolsFilterPanel } from 'views/universalFarms/components/PoolsFilterPanel'
 import { getIndexByProtocols } from 'views/universalFarms/utils/queryParser'
-import { isEvm, NonEVMChainId } from '@pancakeswap/chains'
 import { PoolsTable } from './components/PoolsTable'
 
 const Container = styled(Box)`

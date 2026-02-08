@@ -17,7 +17,6 @@ import { useAtom } from 'jotai'
 import { useRouter } from 'next/router'
 import { useCallback, useMemo } from 'react'
 import { styled } from 'styled-components'
-import { isEvm } from '@pancakeswap/chains'
 import { SWAP_CHART_UNSUPPORTED_CHAINS } from 'config/constants/supportChains'
 import { chartDisplayAtom } from './atoms'
 

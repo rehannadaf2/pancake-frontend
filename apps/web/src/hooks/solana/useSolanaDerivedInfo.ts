@@ -7,7 +7,7 @@ import {
   UnifiedCurrency,
   UnifiedCurrencyAmount,
 } from '@pancakeswap/swap-sdk-core'
-import { FeeAmount, Pool, Position, TickMath, encodeSqrtRatioX96, priceToClosestTick } from '@pancakeswap/v3-sdk'
+import { Pool, Position, TickMath, encodeSqrtRatioX96, priceToClosestTick } from '@pancakeswap/v3-sdk'
 import { MAX_TICK, MIN_TICK, TickUtils } from '@pancakeswap/solana-core-sdk'
 import { Bound } from 'config/constants/types'
 import { ReactNode, useMemo } from 'react'

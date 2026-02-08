@@ -9,7 +9,6 @@ import { InfinityBinPositionDetail, InfinityCLPositionDetail } from 'state/farms
 import type { InfinityPoolInfo } from 'state/farmsV4/state/type'
 import { useUserShowTestnet } from 'state/user/hooks/useUserShowTestnet'
 import { isInfinityProtocol } from 'utils/protocols'
-import { Address } from 'viem'
 
 import { fetchCampaigns } from './useCampaigns'
 

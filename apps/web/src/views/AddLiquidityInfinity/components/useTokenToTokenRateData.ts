@@ -1,4 +1,3 @@
-import { isSolana } from '@pancakeswap/chains'
 import { Protocol } from '@pancakeswap/farms'
 import { Currency, isUnifiedCurrencySorted, UnifiedCurrency } from '@pancakeswap/swap-sdk-core'
 import { useQuery } from '@tanstack/react-query'

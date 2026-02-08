@@ -38,7 +38,6 @@ import {
   CardBody as StyledCardBody,
   CardHeader as StyledCardHeader,
   useSelectedProtocols,
-  PositionCard,
   PositionsTable,
   PositionsList,
 } from './components'
@@ -48,7 +47,6 @@ import { useV3Positions } from './hooks/useV3Positions'
 import { useV2Positions } from './hooks/useV2Positions'
 import { useStablePositions } from './hooks/useStablePositions'
 import { positionEarningAmountAtom } from './hooks/usePositionEarningAmount'
-import { getPositionKey } from './components/PositionItem/PositionCard'
 import { matchPositionSearch } from './utils/matchPositionSearch'
 import { useSolanaV3PositionItems } from './hooks/useSolanaV3Positions'
 

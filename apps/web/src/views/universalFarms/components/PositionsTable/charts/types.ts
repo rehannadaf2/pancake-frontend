@@ -2,7 +2,7 @@ import type { Protocol } from '@pancakeswap/farms'
 import type { Currency } from '@pancakeswap/swap-sdk-core'
 import type { FeeAmount } from '@pancakeswap/v3-sdk'
 import type { Address } from 'viem'
-import type { UnifiedPositionDetail, SolanaV3PositionDetail } from 'state/farmsV4/state/accountPositions/type'
+import type { UnifiedPositionDetail } from 'state/farmsV4/state/accountPositions/type'
 import type { SolanaV3Pool } from 'state/pools/solana'
 
 export const CHART_HEIGHT = 200

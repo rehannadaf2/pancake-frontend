@@ -7,14 +7,14 @@ import { Bar, BarChart, ResponsiveContainer, XAxis, ReferenceLine, ReferenceArea
 import { useSolanaV3PositionIdRouteParams } from 'hooks/dynamicRoute/usePositionIdRoute'
 import { formatNumber } from '@pancakeswap/utils/formatNumber'
 import { usePriceRangeData } from 'hooks/solana/usePriceRange'
-import { POSITION_STATUS, SolanaV3PositionDetail } from 'state/farmsV4/state/accountPositions/type'
+import { SolanaV3PositionDetail } from 'state/farmsV4/state/accountPositions/type'
 import { SolanaV3Pool } from 'state/pools/solana'
 import { TickMath, TickUtils } from '@pancakeswap/solana-core-sdk'
 import { useTranslation } from '@pancakeswap/localization'
 import { useIsMounted } from '@pancakeswap/hooks'
 import { useFlipCurrentPrice } from 'views/PoolDetail/state/flipCurrentPrice'
 import Decimal from 'decimal.js'
-import { usePoolChartData, ChartEntry } from '../hooks/usePoolChartData'
+import { usePoolChartData } from '../hooks/usePoolChartData'
 
 interface PositionChartProps {
   poolId: string

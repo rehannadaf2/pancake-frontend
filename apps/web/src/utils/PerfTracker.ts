@@ -76,7 +76,7 @@ export class PerfTracker<TTraceData extends BasePerf> {
     const records = this.getRecords()
     this.trace.perf = records
     const end = this.trace.perf.success || this.trace.perf.fail
-    const start = this.trace.perf.start
+    const { start } = this.trace.perf
     const duration = end - start
     this.trace.perf.duration = duration
     const logger = await this.getLogger()

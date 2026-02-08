@@ -1,5 +1,5 @@
 import { useTranslation } from '@pancakeswap/localization'
-import { Box, Image, Link, Text } from '@pancakeswap/uikit'
+import { Box, Image, Link } from '@pancakeswap/uikit'
 import truncateHash from '@pancakeswap/utils/truncateHash'
 import { solanaExplorerAtom } from '@pancakeswap/utils/user'
 import { SwapTransactionReceiptModalContent } from '@pancakeswap/widgets-internal'

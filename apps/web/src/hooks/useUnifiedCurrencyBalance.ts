@@ -1,11 +1,4 @@
-import {
-  Currency,
-  CurrencyAmount,
-  SPLNativeCurrency,
-  SPLToken,
-  UnifiedCurrency,
-  UnifiedCurrencyAmount,
-} from '@pancakeswap/sdk'
+import { Currency, CurrencyAmount, SPLToken, UnifiedCurrency, UnifiedCurrencyAmount } from '@pancakeswap/sdk'
 
 import { useMemo } from 'react'
 import { useSolanaTokenBalance, useSolanaTokenBalances } from 'state/token/solanaTokenBalances'

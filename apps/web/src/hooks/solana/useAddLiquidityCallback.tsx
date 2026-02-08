@@ -1,5 +1,4 @@
 import { SolanaV3PositionDetail } from 'state/farmsV4/state/accountPositions/type'
-import { useSolanaUserSlippage } from '@pancakeswap/utils/user'
 import { useCallback } from 'react'
 import { SolanaV3Pool } from 'state/pools/solana'
 import BN from 'bn.js'

@@ -1,8 +1,7 @@
 // TODO: Using IFO v10 ABI for testing
 // import { ifoABI } from 'config/abi/ifo'
 import { getContract } from 'utils/contractHelpers'
-import { Address, createPublicClient, custom, http, isAddress, type WalletClient } from 'viem'
-import { bsc } from 'viem/chains'
+import { Address, isAddress, type WalletClient } from 'viem'
 import { getViemClients } from 'utils/viem'
 import { IFOConfig } from 'views/Cakepad/ifov2.types'
 import { ifoV10Abi as ifoABI } from '../../abi/ifoV10Abi'

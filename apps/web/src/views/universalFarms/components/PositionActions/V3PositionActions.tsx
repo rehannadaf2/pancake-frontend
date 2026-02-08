@@ -1,17 +1,7 @@
 import { useTranslation } from '@pancakeswap/localization'
 import { Currency } from '@pancakeswap/sdk'
 import { Pool } from '@pancakeswap/v3-sdk'
-import {
-  AutoColumn,
-  AutoRow,
-  Button,
-  Flex,
-  IconButton,
-  MinusIcon,
-  Text,
-  useModal,
-  useModalV2,
-} from '@pancakeswap/uikit'
+import { AutoRow, Button, Flex, IconButton, MinusIcon, Text, useModal, useModalV2 } from '@pancakeswap/uikit'
 import { ConfirmationModalContent } from '@pancakeswap/widgets-internal'
 import { LightGreyCard } from 'components/Card'
 import { CurrencyLogo } from 'components/Logo'

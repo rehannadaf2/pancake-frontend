@@ -1,5 +1,4 @@
 import { ChainId } from '@pancakeswap/chains'
-import { perpLangMap } from 'utils/getPerpetualLanguageCode'
 import { perpTheme } from 'utils/getPerpetualTheme'
 
 export interface GetPerpetualUrlProps {

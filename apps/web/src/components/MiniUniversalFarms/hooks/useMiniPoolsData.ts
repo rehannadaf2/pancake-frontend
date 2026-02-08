@@ -1,9 +1,9 @@
 import { ISortOrder } from '@pancakeswap/uikit'
-import { useAtomValue, useSetAtom } from 'jotai'
+import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 import { PoolInfo } from 'state/farmsV4/state/type'
 import { PoolSearcherState } from 'views/universalFarms/atom/PoolSearcher'
-import { searchQueryAtom, updateSortAtom } from 'views/universalFarms/atom/searchQueryAtom'
+import { updateSortAtom } from 'views/universalFarms/atom/searchQueryAtom'
 import { useFarmSearch } from 'views/universalFarms/hooks/useFarmSearch'
 
 interface UseMiniPoolsDataReturn {

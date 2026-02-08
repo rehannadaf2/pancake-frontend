@@ -13,7 +13,6 @@ import { Address } from 'viem'
 import useAccountActiveChain from 'hooks/useAccountActiveChain'
 import { isEvm, isSolana } from '@pancakeswap/chains'
 
-import { isSol } from '@pancakeswap/sdk'
 import ConnectWalletButton from '../../ConnectWalletButton'
 import { AutoRow } from '../../Layout/Row'
 import { CrossChainTransaction } from './CrossChainTransaction'

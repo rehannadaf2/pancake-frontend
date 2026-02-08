@@ -1,4 +1,4 @@
-import { type Currency, CurrencyAmount } from '@pancakeswap/swap-sdk-core'
+import { CurrencyAmount } from '@pancakeswap/swap-sdk-core'
 import dayjs from 'dayjs'
 import { useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'

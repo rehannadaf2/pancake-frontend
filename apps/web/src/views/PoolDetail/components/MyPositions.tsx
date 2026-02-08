@@ -17,9 +17,8 @@ import { useCheckShouldSwitchNetwork } from 'views/universalFarms/hooks'
 
 import { useAtom } from 'jotai'
 import { positionEarningAmountAtom } from 'views/universalFarms/hooks/usePositionEarningAmount'
-import { isSolana, NonEVMChainId } from '@pancakeswap/chains'
+import { isSolana } from '@pancakeswap/chains'
 
-import { useAccount } from 'wagmi'
 import useAccountActiveChain from 'hooks/useAccountActiveChain'
 import { MyPositionsProvider } from './MyPositionsContext'
 import {

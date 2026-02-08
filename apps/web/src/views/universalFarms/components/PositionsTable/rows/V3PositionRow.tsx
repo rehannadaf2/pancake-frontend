@@ -9,7 +9,6 @@ import {
   useV3PoolsLength,
 } from 'state/farmsV4/hooks'
 import { getPoolMultiplier } from 'state/farmsV4/state/utils'
-import { useAccount } from 'wagmi'
 import { useMemo, useState, memo, useCallback } from 'react'
 import type { Currency as CoreCurrency } from '@pancakeswap/swap-sdk-core'
 import { ZERO_ADDRESS } from '@pancakeswap/swap-sdk-core'

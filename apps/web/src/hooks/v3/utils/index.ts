@@ -1,4 +1,4 @@
-import { Currency, Price, Token, UnifiedCurrency, UnifiedToken } from '@pancakeswap/swap-sdk-core'
+import { Currency, Price, UnifiedCurrency } from '@pancakeswap/swap-sdk-core'
 import {
   encodeSqrtRatioX96,
   FeeAmount,

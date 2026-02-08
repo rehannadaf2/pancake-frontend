@@ -1,5 +1,5 @@
 import { Flex, Text } from '@pancakeswap/uikit'
-import { UnifiedPositionDetail, V2LPDetail, StableLPDetail } from 'state/farmsV4/state/accountPositions/type'
+import { UnifiedPositionDetail } from 'state/farmsV4/state/accountPositions/type'
 import { Protocol } from '@pancakeswap/farms'
 import styled from 'styled-components'
 import { useTranslation } from '@pancakeswap/localization'

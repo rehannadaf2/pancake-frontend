@@ -4,7 +4,6 @@ import { useSolanaV3PositionIdRouteParams } from 'hooks/dynamicRoute/usePosition
 import { useSolanaV3Pool } from 'hooks/solana/useSolanaV3Pools'
 import { useMemo } from 'react'
 import { SolanaV3PoolInfo } from 'state/farmsV4/state/type'
-import { SolanaV3Pool } from 'state/pools/solana'
 import { ZERO_ADDRESS } from '@pancakeswap/swap-sdk-core'
 import { Protocol } from '@pancakeswap/farms'
 import { NonEVMChainId } from '@pancakeswap/chains'

@@ -1,7 +1,6 @@
 import type { ChainId } from '@pancakeswap/chains'
 import type { IfoStatus } from '@pancakeswap/ifos'
 import type { Currency, CurrencyAmount, Price } from '@pancakeswap/swap-sdk-core'
-import type { ReactNode } from 'react'
 import type { Address } from 'viem'
 import type { getIFOContract } from './hooks/ifo/useIFOContract'
 
