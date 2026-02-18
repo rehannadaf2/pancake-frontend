@@ -9,7 +9,7 @@ import { InfinityBinPoolDerivedAprButton, InfinityCLPoolDerivedAprButton } from 
 import { usePoolInfo } from 'state/farmsV4/hooks'
 import { InfinityBinPoolInfo, InfinityCLPoolInfo } from 'state/farmsV4/state/type'
 import { Protocol } from '@pancakeswap/farms'
-import { PoolInfoDisplay } from '../shared/PoolInfoDisplay'
+import { PoolInfoDisplay } from '../../shared/PoolInfoDisplay'
 
 interface InfinityPositionModalContentProps {
   poolId?: Hex
