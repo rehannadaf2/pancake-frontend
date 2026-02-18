@@ -14,6 +14,7 @@ import {
   Skeleton,
   SwapVertIcon,
   Text,
+  useModalV2,
 } from '@pancakeswap/uikit'
 import { formatAmount } from '@pancakeswap/utils/formatInfoNumbers'
 import { formatNumber } from '@pancakeswap/utils/formatNumber'
@@ -41,6 +42,7 @@ import { formatDollarAmount } from 'views/V3Info/utils/numbers'
 import { BigNumber as BN } from 'bignumber.js'
 import { isSolana } from '@pancakeswap/chains'
 import { useQuery } from '@tanstack/react-query'
+import { PositionModal } from 'components/PositionModals'
 import { getPositionChainId } from '../../utils'
 import { PositionChartByProtocol } from './charts'
 import { PositionActionButtons } from './PositionActionButtons'
@@ -486,6 +488,10 @@ export const ExpandedRowContent: React.FC<ExpandedRowContentProps> = memo(
       position.protocol === Protocol.STABLE ||
       position.protocol === Protocol.InfinitySTABLE
 
+    // TESTING. POSITION MODAL
+    // TODO: REMOVE COMMENTS AFTER TESTING
+    const { isOpen, setIsOpen, onDismiss } = useModalV2()
+
     return (
       <Container>
         <MainContent>
@@ -663,6 +669,16 @@ export const ExpandedRowContent: React.FC<ExpandedRowContentProps> = memo(
             </FlexGap>
           </Column>
         </MainContent>
+
+        {/* TESTING */}
+        <Button onClick={() => setIsOpen(true)}>OPEN POSITION MODAL</Button>
+        <PositionModal
+          isOpen={isOpen}
+          onDismiss={onDismiss}
+          poolId={pool?.poolId}
+          protocol={pool?.protocol}
+          chainId={pool?.chainId}
+        />
 
         {/* Action Buttons */}
         <ActionButtonsContainer>
