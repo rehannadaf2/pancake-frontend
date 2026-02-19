@@ -1,8 +1,9 @@
 import { useTranslation } from '@pancakeswap/localization'
-import { Box, PreTitle, Text } from '@pancakeswap/uikit'
+import { Box, FlexGap, IconButton, PreTitle, RowBetween, SwapHorizIcon, Text } from '@pancakeswap/uikit'
+import { formatNumber } from '@pancakeswap/utils/formatNumber'
 import { LightCard, LightGreyCard } from '@pancakeswap/widgets-internal'
 import useIsTickAtLimit from 'hooks/infinity/useIsTickAtLimit'
-import { useMemo } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { InfinityCLPositionDetail } from 'state/farmsV4/state/accountPositions/type'
 import { PoolInfo } from 'state/farmsV4/state/type'
 import { PriceRangeDisplay } from 'views/PoolDetail/components/ProtocolPositionsTables'
@@ -14,8 +15,12 @@ interface InfinityPositionAddProps {
 }
 export const InfinityCLPositionAdd = ({ position, poolInfo }: InfinityPositionAddProps) => {
   const { t } = useTranslation()
+  const { token0, token1, token0Price, token1Price } = poolInfo
+
+  const [inverted, setInverted] = useState(false)
 
   const ticksAtLimit = useIsTickAtLimit(position.tickLower, position.tickUpper, position.tickSpacing)
+
   const priceDisplay = useMemo(() => {
     return calculateTickBasedPriceRange(
       position.tickLower,
@@ -24,12 +29,17 @@ export const InfinityCLPositionAdd = ({ position, poolInfo }: InfinityPositionAd
       poolInfo.token1,
       poolInfo,
       ticksAtLimit,
+      inverted,
     )
-  }, [position, poolInfo, ticksAtLimit])
+  }, [position, poolInfo, ticksAtLimit, inverted])
+
+  const toggleInverted = useCallback(() => {
+    setInverted(!inverted)
+  }, [inverted, setInverted])
 
   return (
     <Box>
-      <LightGreyCard>
+      <LightGreyCard borderRadius="24px" padding="16px">
         <PreTitle mb="8px">{t('Price Range (Min-Max)')}</PreTitle>
         <PriceRangeDisplay
           minPrice={priceDisplay.minPriceFormatted}
@@ -41,6 +51,30 @@ export const InfinityCLPositionAdd = ({ position, poolInfo }: InfinityPositionAd
           maxPercentage="100%"
           maxWidth="unset"
         />
+        <RowBetween mt="8px">
+          <Text color="textSubtle" small>
+            {t('Current Price')}
+          </Text>
+          <FlexGap gap="2px">
+            <Text small>
+              {token0Price && token1Price
+                ? formatNumber(inverted ? token0Price : token1Price, {
+                    maximumDecimalTrailingZeroes: 5,
+                    maximumSignificantDigits: 8,
+                  })
+                : '-'}
+            </Text>
+            <Text color="textSubtle" small>
+              {t('%symbol0% per %symbol1%', {
+                symbol0: inverted ? token0.symbol : token1.symbol,
+                symbol1: inverted ? token1.symbol : token0.symbol,
+              })}
+            </Text>
+            <IconButton variant="text" onClick={toggleInverted} scale="xs">
+              <SwapHorizIcon color="primary60" width="16px" mt="2px" />
+            </IconButton>
+          </FlexGap>
+        </RowBetween>
       </LightGreyCard>
     </Box>
   )
