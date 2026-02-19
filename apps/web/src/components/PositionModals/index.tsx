@@ -4,9 +4,13 @@ import { FlexGap, Modal, ModalV2, PreTitle } from '@pancakeswap/uikit'
 import { Hex } from 'viem'
 import { isInfinityProtocol } from 'utils/protocols'
 import { useCallback, useState } from 'react'
-import { InfinityPositionModalContent } from './IncreaseLiquidity/Infinity'
-
-type TabType = 'Add' | 'Remove' | 'Harvest'
+import {
+  InfinityBinPositionDetail,
+  InfinityCLPositionDetail,
+  UnifiedPositionDetail,
+} from 'state/farmsV4/state/accountPositions/type'
+import { InfinityPositionModalContent } from './Infinity'
+import { PositionTabType } from './types'
 
 interface PositionModalProps {
   isOpen?: boolean
@@ -14,16 +18,25 @@ interface PositionModalProps {
 
   poolId: string | undefined
   protocol: Protocol | undefined
+  position: UnifiedPositionDetail
 
   chainId?: number
-  presetTab?: TabType
+  presetTab?: PositionTabType
 }
-export function PositionModal({ isOpen, onDismiss, protocol, poolId, chainId, presetTab }: PositionModalProps) {
+export function PositionModal({
+  isOpen,
+  onDismiss,
+  protocol,
+  poolId,
+  chainId,
+  position,
+  presetTab,
+}: PositionModalProps) {
   const { t } = useTranslation()
-  const [tab, setTab] = useState<TabType>(presetTab ?? 'Add')
+  const [tab, setTab] = useState<PositionTabType>(presetTab ?? 'Add')
 
   const handleTabSelect = useCallback(
-    (tab: TabType) => {
+    (tab: PositionTabType) => {
       setTab(tab)
     },
     [setTab],
@@ -36,10 +49,11 @@ export function PositionModal({ isOpen, onDismiss, protocol, poolId, chainId, pr
       <Modal
         title={t('Position Management')}
         headerBorderColor="transparent"
-        bodyPadding="0 24px 0"
+        bodyPadding="0 24px 16px"
         onDismiss={onDismiss}
+        minWidth="438px"
       >
-        <FlexGap gap="8px" mb="16px">
+        <FlexGap gap="16px" mb="16px">
           <PreTitle
             color={tab === 'Add' ? 'secondary' : 'textSubtle'}
             onClick={() => handleTabSelect('Add')}
@@ -63,7 +77,12 @@ export function PositionModal({ isOpen, onDismiss, protocol, poolId, chainId, pr
           </PreTitle>
         </FlexGap>
         {isInfinityProtocol(protocol) ? (
-          <InfinityPositionModalContent poolId={poolId as Hex} chainId={chainId} />
+          <InfinityPositionModalContent
+            poolId={poolId as Hex}
+            chainId={chainId}
+            tab={tab}
+            position={position as InfinityCLPositionDetail | InfinityBinPositionDetail}
+          />
         ) : (
           'protocol not supported (testing)'
         )}

@@ -9,13 +9,23 @@ import { InfinityBinPoolDerivedAprButton, InfinityCLPoolDerivedAprButton } from 
 import { usePoolInfo } from 'state/farmsV4/hooks'
 import { InfinityBinPoolInfo, InfinityCLPoolInfo } from 'state/farmsV4/state/type'
 import { Protocol } from '@pancakeswap/farms'
-import { PoolInfoDisplay } from '../../shared/PoolInfoDisplay'
+import { InfinityBinPositionDetail, InfinityCLPositionDetail } from 'state/farmsV4/state/accountPositions/type'
+import { PoolInfoDisplay } from '../shared/PoolInfoDisplay'
+import { PositionTabType } from '../types'
+import { InfinityCLPositionAdd } from './Add'
 
 interface InfinityPositionModalContentProps {
   poolId?: Hex
   chainId?: number
+  tab?: PositionTabType
+  position?: InfinityCLPositionDetail | InfinityBinPositionDetail
 }
-export const InfinityPositionModalContent = ({ poolId, chainId }: InfinityPositionModalContentProps) => {
+export const InfinityPositionModalContent = ({
+  poolId,
+  chainId,
+  position,
+  tab = 'Add',
+}: InfinityPositionModalContentProps) => {
   const { t } = useTranslation()
 
   const poolInfo = usePoolInfo({ poolAddress: poolId?.toLowerCase(), chainId })
@@ -44,6 +54,12 @@ export const InfinityPositionModalContent = ({ poolId, chainId }: InfinityPositi
           ) : null
         }
       />
+
+      <Box mt="16px">
+        {tab === 'Add' && poolInfo.protocol === Protocol.InfinityCLAMM ? (
+          <InfinityCLPositionAdd position={position as InfinityCLPositionDetail} poolInfo={poolInfo} />
+        ) : null}
+      </Box>
     </Box>
   )
 }

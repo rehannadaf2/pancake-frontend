@@ -678,6 +678,7 @@ export const ExpandedRowContent: React.FC<ExpandedRowContentProps> = memo(
           poolId={pool?.poolId}
           protocol={pool?.protocol}
           chainId={pool?.chainId}
+          position={position}
         />
 
         {/* Action Buttons */}
