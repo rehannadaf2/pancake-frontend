@@ -8,6 +8,7 @@ import { InfinityCLPositionDetail } from 'state/farmsV4/state/accountPositions/t
 import { PoolInfo } from 'state/farmsV4/state/type'
 import { PriceRangeDisplay } from 'views/PoolDetail/components/ProtocolPositionsTables'
 import { calculateTickBasedPriceRange } from 'views/PoolDetail/utils/priceRange'
+import { LiquiditySlippageButton } from 'views/Swap/components/SlippageButton'
 
 interface InfinityPositionAddProps {
   position: InfinityCLPositionDetail
@@ -76,6 +77,14 @@ export const InfinityCLPositionAdd = ({ position, poolInfo }: InfinityPositionAd
           </FlexGap>
         </RowBetween>
       </LightGreyCard>
+
+      <PreTitle mt="16px">{t('Amount of liquidity to add')}</PreTitle>
+      <RowBetween mt="8px">
+        <Text color="textSubtle" small>
+          {t('Slippage Tolerance')}
+        </Text>
+        <LiquiditySlippageButton />
+      </RowBetween>
     </Box>
   )
 }

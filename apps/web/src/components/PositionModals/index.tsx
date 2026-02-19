@@ -1,9 +1,9 @@
 import { Protocol } from '@pancakeswap/farms'
 import { useTranslation } from '@pancakeswap/localization'
-import { FlexGap, Modal, ModalV2, PreTitle } from '@pancakeswap/uikit'
+import { FlexGap, ModalV2, MotionModal, PreTitle } from '@pancakeswap/uikit'
 import { Hex } from 'viem'
 import { isInfinityProtocol } from 'utils/protocols'
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import {
   InfinityBinPositionDetail,
   InfinityCLPositionDetail,
@@ -11,6 +11,8 @@ import {
 } from 'state/farmsV4/state/accountPositions/type'
 import { InfinityPositionModalContent } from './Infinity'
 import { PositionTabType } from './types'
+
+const tabsOrder: PositionTabType[] = ['Add', 'Remove', 'Harvest']
 
 interface PositionModalProps {
   isOpen?: boolean
@@ -42,11 +44,34 @@ export function PositionModal({
     [setTab],
   )
 
+  // Keyboard navigation for tabs
+  useEffect(() => {
+    if (typeof window !== 'undefined' && tab) {
+      const onKeyDown = (e: KeyboardEvent) => {
+        const index = tabsOrder.indexOf(tab)
+
+        if (e.key === 'ArrowRight' && index + 1 < tabsOrder.length) {
+          setTab(tabsOrder[index + 1])
+        } else if (e.key === 'ArrowLeft' && index > 0) {
+          setTab(tabsOrder[index - 1])
+        }
+      }
+
+      document.addEventListener('keydown', onKeyDown)
+
+      return () => {
+        document.removeEventListener('keydown', onKeyDown)
+      }
+    }
+
+    return () => {}
+  }, [tab])
+
   if (!poolId || !protocol) return null
 
   return (
     <ModalV2 isOpen={isOpen} onDismiss={onDismiss} closeOnOverlayClick>
-      <Modal
+      <MotionModal
         title={t('Position Management')}
         headerBorderColor="transparent"
         bodyPadding="0 24px 16px"
@@ -86,7 +111,7 @@ export function PositionModal({
         ) : (
           'protocol not supported (testing)'
         )}
-      </Modal>
+      </MotionModal>
     </ModalV2>
   )
 }
