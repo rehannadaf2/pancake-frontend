@@ -1,11 +1,10 @@
 import { Permit2Signature } from '@pancakeswap/infinity-sdk'
 import { useTranslation } from '@pancakeswap/localization'
 import { Currency } from '@pancakeswap/swap-sdk-core'
-import { CAKE, USDT } from '@pancakeswap/tokens'
-import { Box, Button, FlexGap, IconButton, PreTitle, RowBetween, SwapHorizIcon, Text } from '@pancakeswap/uikit'
+import { Box, FlexGap, IconButton, PreTitle, RowBetween, SwapHorizIcon, Text } from '@pancakeswap/uikit'
 import { formatNumber } from '@pancakeswap/utils/formatNumber'
-import { INITIAL_ALLOWED_SLIPPAGE, useLiquidityUserSlippage, useUserSlippage } from '@pancakeswap/utils/user'
-import { LightCard, LightGreyCard } from '@pancakeswap/widgets-internal'
+import { INITIAL_ALLOWED_SLIPPAGE, useLiquidityUserSlippage } from '@pancakeswap/utils/user'
+import { LightGreyCard } from '@pancakeswap/widgets-internal'
 import CurrencyInputPanelSimplify from 'components/CurrencyInputPanelSimplify'
 import { useAddCLPoolAndPosition } from 'hooks/infinity/useAddCLLiquidity'
 import useIsTickAtLimit from 'hooks/infinity/useIsTickAtLimit'
@@ -27,6 +26,8 @@ import { PriceRangeDisplay } from 'views/PoolDetail/components/ProtocolPositions
 import { calculateTickBasedPriceRange } from 'views/PoolDetail/utils/priceRange'
 import { LiquiditySlippageButton } from 'views/Swap/components/SlippageButton'
 import { maxUint128, zeroAddress } from 'viem'
+import { BigNumber as BN } from 'bignumber.js'
+import { useCurrencyUsdPrice } from 'hooks/useCurrencyUsdPrice'
 
 interface InfinityPositionAddProps {
   position: InfinityCLPositionDetail
@@ -53,6 +54,7 @@ export const InfinityCLPositionAdd = ({ position, poolInfo }: InfinityPositionAd
   // Price Display
   const [inverted, setInverted] = useState(false)
   const ticksAtLimit = useIsTickAtLimit(position.tickLower, position.tickUpper, position.tickSpacing)
+
   const priceDisplay = useMemo(() => {
     return calculateTickBasedPriceRange(
       position.tickLower,
@@ -64,6 +66,10 @@ export const InfinityCLPositionAdd = ({ position, poolInfo }: InfinityPositionAd
       inverted,
     )
   }, [position, poolInfo, ticksAtLimit, inverted])
+
+  const toggleInverted = useCallback(() => {
+    setInverted(!inverted)
+  }, [inverted, setInverted])
 
   // Main Form
   const isOutOfRange = useMemo(() => {
@@ -112,12 +118,25 @@ export const InfinityCLPositionAdd = ({ position, poolInfo }: InfinityPositionAd
     [inputAmount, outputAmount],
   )
 
+  // Total USD Value
+  const { data: currencyPrice0 } = useCurrencyUsdPrice(currency0, { enabled: !!currency0 && !!inputAmount?.quotient })
+  const { data: currencyPrice1 } = useCurrencyUsdPrice(currency1, { enabled: !!currency1 && !!outputAmount?.quotient })
+  const totalDepositUsdValue = useMemo(() => {
+    if (!currencyPrice0 || !currencyPrice1) return 0
+
+    const usd0 = BN(currencyPrice0).multipliedBy(inputAmount?.toExact() || 0)
+    const usd1 = BN(currencyPrice1).multipliedBy(outputAmount?.toExact() || 0)
+
+    return usd0.plus(usd1).toFormat(2)
+  }, [currencyPrice0, currencyPrice1, inputAmount, outputAmount])
+
   // Token Approvals
   const {
     requirePermit: requirePermitA,
     requireApprove: requireApproveA,
     permit2Allowance: currentAllowanceA,
     isApproving: isApprovingA,
+    isPermitting: isPermittingA,
     permit: permitCallbackA,
     revoke: revokeCallbackA,
     approve: approveCallbackA,
@@ -140,6 +159,7 @@ export const InfinityCLPositionAdd = ({ position, poolInfo }: InfinityPositionAd
     requireApprove: requireApproveB,
     permit2Allowance: currentAllowanceB,
     isApproving: isApprovingB,
+    isPermitting: isPermittingB,
     permit: permitCallbackB,
     revoke: revokeCallbackB,
     approve: approveCallbackB,
@@ -172,10 +192,6 @@ export const InfinityCLPositionAdd = ({ position, poolInfo }: InfinityPositionAd
 
   // Slippage
   const [allowedSlippage] = useLiquidityUserSlippage() || [INITIAL_ALLOWED_SLIPPAGE]
-
-  const toggleInverted = useCallback(() => {
-    setInverted(!inverted)
-  }, [inverted, setInverted])
 
   // Add CL Liquidity
   const currency0Address = currency0?.isNative ? zeroAddress : currency0?.address ?? zeroAddress
@@ -297,6 +313,7 @@ export const InfinityCLPositionAdd = ({ position, poolInfo }: InfinityPositionAd
           currency={currency0}
           onUserInput={onInputAmountChange}
           onPercentInput={onInputPercentChange}
+          showUSDPrice
           showMaxButton
           disableCurrencySelect
           title={<>&nbsp;</>}
@@ -308,6 +325,7 @@ export const InfinityCLPositionAdd = ({ position, poolInfo }: InfinityPositionAd
           currency={currency1}
           onUserInput={onOutputAmountChange}
           onPercentInput={onOutputPercentChange}
+          showUSDPrice
           showMaxButton
           disableCurrencySelect
           title={<>&nbsp;</>}
@@ -318,7 +336,7 @@ export const InfinityCLPositionAdd = ({ position, poolInfo }: InfinityPositionAd
         <Text color="textSubtle" small>
           {t('Total Deposit Value')}
         </Text>
-        <Text small>~$0.00</Text>
+        <Text small>~${totalDepositUsdValue}</Text>
       </RowBetween>
 
       <Box mt="16px">
@@ -343,7 +361,7 @@ export const InfinityCLPositionAdd = ({ position, poolInfo }: InfinityPositionAd
           onClick={handleIncreaseLiquidity}
           attemptingTxn={attemptingTx}
           errorMessage={errorMessage}
-          buttonText={t('Add +')}
+          buttonText={t('Add')}
           depositADisabled={deposit0Disabled}
           depositBDisabled={deposit1Disabled}
         />
