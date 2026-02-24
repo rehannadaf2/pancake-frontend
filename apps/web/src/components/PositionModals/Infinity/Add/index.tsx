@@ -1,14 +1,32 @@
+import { Permit2Signature } from '@pancakeswap/infinity-sdk'
 import { useTranslation } from '@pancakeswap/localization'
-import { Box, FlexGap, IconButton, PreTitle, RowBetween, SwapHorizIcon, Text } from '@pancakeswap/uikit'
+import { Currency } from '@pancakeswap/swap-sdk-core'
+import { CAKE, USDT } from '@pancakeswap/tokens'
+import { Box, Button, FlexGap, IconButton, PreTitle, RowBetween, SwapHorizIcon, Text } from '@pancakeswap/uikit'
 import { formatNumber } from '@pancakeswap/utils/formatNumber'
+import { INITIAL_ALLOWED_SLIPPAGE, useLiquidityUserSlippage, useUserSlippage } from '@pancakeswap/utils/user'
 import { LightCard, LightGreyCard } from '@pancakeswap/widgets-internal'
+import CurrencyInputPanelSimplify from 'components/CurrencyInputPanelSimplify'
+import { useAddCLPoolAndPosition } from 'hooks/infinity/useAddCLLiquidity'
 import useIsTickAtLimit from 'hooks/infinity/useIsTickAtLimit'
+import { usePositionAmount } from 'hooks/infinity/usePositionAmount'
+import useAccountActiveChain from 'hooks/useAccountActiveChain'
+import { ApprovalState } from 'hooks/useApproveCallback'
+import { usePermit2 } from 'hooks/usePermit2'
 import { useCallback, useMemo, useState } from 'react'
+import { useExtraInfinityPositionInfo } from 'state/farmsV4/hooks'
 import { InfinityCLPositionDetail } from 'state/farmsV4/state/accountPositions/type'
 import { PoolInfo } from 'state/farmsV4/state/type'
+import { getInfinityPositionManagerAddress } from 'utils/addressHelpers'
+import { calculateSlippageAmount } from 'utils/exchange'
+import { CurrencyField } from 'utils/types'
+import { V3SubmitButton } from 'views/AddLiquidityV3/components/V3SubmitButton'
+import { useErrorMsg } from 'views/IncreaseLiquidity/hooks/useErrorMsg'
+import { useIncreaseForm } from 'views/IncreaseLiquidity/hooks/useIncreaseForm'
 import { PriceRangeDisplay } from 'views/PoolDetail/components/ProtocolPositionsTables'
 import { calculateTickBasedPriceRange } from 'views/PoolDetail/utils/priceRange'
 import { LiquiditySlippageButton } from 'views/Swap/components/SlippageButton'
+import { maxUint128, zeroAddress } from 'viem'
 
 interface InfinityPositionAddProps {
   position: InfinityCLPositionDetail
@@ -16,12 +34,25 @@ interface InfinityPositionAddProps {
 }
 export const InfinityCLPositionAdd = ({ position, poolInfo }: InfinityPositionAddProps) => {
   const { t } = useTranslation()
+
+  const { account, chainId: activeChainId } = useAccountActiveChain()
+
+  // Pool Info
   const { token0, token1, token0Price, token1Price } = poolInfo
+  const { pool } = useExtraInfinityPositionInfo(position)
 
+  // Currencies
+  const currency0 = token0 as Currency
+  const currency1 = token1 as Currency
+  const currencies = useMemo(
+    () => ({ [CurrencyField.CURRENCY_A]: currency0, [CurrencyField.CURRENCY_B]: currency1 }),
+    [currency0, currency1],
+  )
+  const chainId = position.chainId || poolInfo.chainId
+
+  // Price Display
   const [inverted, setInverted] = useState(false)
-
   const ticksAtLimit = useIsTickAtLimit(position.tickLower, position.tickUpper, position.tickSpacing)
-
   const priceDisplay = useMemo(() => {
     return calculateTickBasedPriceRange(
       position.tickLower,
@@ -34,9 +65,182 @@ export const InfinityCLPositionAdd = ({ position, poolInfo }: InfinityPositionAd
     )
   }, [position, poolInfo, ticksAtLimit, inverted])
 
+  // Main Form
+  const isOutOfRange = useMemo(() => {
+    if (!pool || typeof position.tickLower === 'undefined' || typeof position.tickUpper === 'undefined') return false
+    return pool.tickCurrent < position.tickLower || pool.tickCurrent > position.tickUpper
+  }, [pool, position.tickLower, position.tickUpper])
+
+  const { amount0, amount1, deposit0Disabled, deposit1Disabled, invalidRange } = usePositionAmount({
+    token0: currency0,
+    token1: currency1,
+    tickCurrent: pool?.tickCurrent,
+    tickLower: position.tickLower,
+    tickUpper: position.tickUpper,
+    sqrtRatioX96: pool?.sqrtRatioX96,
+    liquidity: position.liquidity,
+  })
+
+  const {
+    inputAmountRaw,
+    outputAmountRaw,
+    inputBalance,
+    outputBalance,
+    onInputAmountChange,
+    onOutputAmountChange,
+    onInputPercentChange,
+    onOutputPercentChange,
+    inputAmount,
+    outputAmount,
+    lastEditCurrency,
+  } = useIncreaseForm({
+    currency0,
+    currency1,
+    invalidRange,
+    tickLower: position.tickLower,
+    tickUpper: position.tickUpper,
+    outOfRange: isOutOfRange,
+    poolKey: position.poolKey,
+  })
+
+  // Convert to standard structure
+  const parsedAmounts = useMemo(
+    () => ({
+      [CurrencyField.CURRENCY_A]: inputAmount,
+      [CurrencyField.CURRENCY_B]: outputAmount,
+    }),
+    [inputAmount, outputAmount],
+  )
+
+  // Token Approvals
+  const {
+    requirePermit: requirePermitA,
+    requireApprove: requireApproveA,
+    permit2Allowance: currentAllowanceA,
+    isApproving: isApprovingA,
+    permit: permitCallbackA,
+    revoke: revokeCallbackA,
+    approve: approveCallbackA,
+  } = usePermit2(
+    currency0?.isNative ? undefined : inputAmount?.wrapped,
+    pool?.poolType ? getInfinityPositionManagerAddress(pool.poolType, chainId) : undefined,
+    {
+      overrideChainId: chainId,
+    },
+  )
+
+  const approveAState = useMemo(
+    () =>
+      isApprovingA ? ApprovalState.PENDING : requireApproveA ? ApprovalState.NOT_APPROVED : ApprovalState.APPROVED,
+    [isApprovingA, requireApproveA],
+  )
+
+  const {
+    requirePermit: requirePermitB,
+    requireApprove: requireApproveB,
+    permit2Allowance: currentAllowanceB,
+    isApproving: isApprovingB,
+    permit: permitCallbackB,
+    revoke: revokeCallbackB,
+    approve: approveCallbackB,
+  } = usePermit2(
+    currency1?.isNative ? undefined : outputAmount?.wrapped,
+    pool?.poolType ? getInfinityPositionManagerAddress(pool.poolType, chainId) : undefined,
+    {
+      overrideChainId: chainId,
+    },
+  )
+  const approveBState = useMemo(
+    () =>
+      isApprovingB ? ApprovalState.PENDING : requireApproveB ? ApprovalState.NOT_APPROVED : ApprovalState.APPROVED,
+    [isApprovingB, requireApproveB],
+  )
+
+  const showApprovalA = approveAState !== ApprovalState.APPROVED && !!amount0
+  const showApprovalB = approveBState !== ApprovalState.APPROVED && !!amount1
+
+  // Validation
+  const { errorMessage } = useErrorMsg({
+    currencyA: currency0,
+    currencyB: currency1,
+    currencyAAmount: inputAmount,
+    currencyBAmount: outputAmount,
+    allowSingleSide: deposit0Disabled !== deposit1Disabled,
+  })
+
+  const isValid = !(invalidRange || errorMessage)
+
+  // Slippage
+  const [allowedSlippage] = useLiquidityUserSlippage() || [INITIAL_ALLOWED_SLIPPAGE]
+
   const toggleInverted = useCallback(() => {
     setInverted(!inverted)
   }, [inverted, setInverted])
+
+  // Add CL Liquidity
+  const currency0Address = currency0?.isNative ? zeroAddress : currency0?.address ?? zeroAddress
+  const currency1Address = currency1?.isNative ? zeroAddress : currency1?.address ?? zeroAddress
+  const { addCLLiquidity, attemptingTx } = useAddCLPoolAndPosition(
+    chainId ?? 0,
+    account ?? zeroAddress,
+    currency0Address,
+    currency1Address,
+  )
+  const handleIncreaseLiquidity = useCallback(async () => {
+    if (!position || !position.tokenId || !pool || !currency0 || !currency1 || !account) {
+      return
+    }
+
+    if (deposit0Disabled && inputAmount?.greaterThan(0)) return
+    if (deposit1Disabled && outputAmount?.greaterThan(0)) return
+    if (inputAmount?.equalTo(0) && outputAmount?.equalTo(0)) return
+
+    let permit2Signature0: Permit2Signature | undefined
+    let permit2Signature1: Permit2Signature | undefined
+
+    if (!currency0?.isNative && requirePermitA) {
+      permit2Signature0 = await permitCallbackA()
+    }
+
+    if (!currency1?.isNative && requirePermitB) {
+      permit2Signature1 = await permitCallbackB()
+    }
+    const [, amount0Max] = inputAmount ? calculateSlippageAmount(inputAmount, allowedSlippage) : [0n, maxUint128]
+    const [, amount1Max] = outputAmount ? calculateSlippageAmount(outputAmount, allowedSlippage) : [0n, maxUint128]
+    await addCLLiquidity({
+      tokenId: BigInt(position.tokenId),
+      currency0,
+      currency1,
+      lastEditCurrency,
+      poolKey: position.poolKey,
+      tickLower: position.tickLower,
+      tickUpper: position.tickUpper,
+      sqrtPriceX96: pool.sqrtRatioX96,
+      amount0Desired: inputAmount?.quotient ?? 0n,
+      amount1Desired: outputAmount?.quotient ?? 0n,
+      recipient: account,
+      amount0Max,
+      amount1Max,
+      deadline: BigInt(Math.floor(Date.now() / 1000) + 60 * 20), // 20 minutes,
+      token0Permit2Signature: permit2Signature0,
+      token1Permit2Signature: permit2Signature1,
+    })
+  }, [
+    position,
+    pool,
+    currency0,
+    currency1,
+    account,
+    inputAmount,
+    outputAmount,
+    requirePermitA,
+    requirePermitB,
+    allowedSlippage,
+    lastEditCurrency,
+    addCLLiquidity,
+    permitCallbackA,
+    permitCallbackB,
+  ])
 
   return (
     <Box>
@@ -85,6 +289,65 @@ export const InfinityCLPositionAdd = ({ position, poolInfo }: InfinityPositionAd
         </Text>
         <LiquiditySlippageButton />
       </RowBetween>
+
+      <LightGreyCard mt="16px" borderRadius="24px" padding="16px">
+        <CurrencyInputPanelSimplify
+          id="position-modal-clamm-increase-A"
+          defaultValue={inputAmountRaw}
+          currency={currency0}
+          onUserInput={onInputAmountChange}
+          onPercentInput={onInputPercentChange}
+          showMaxButton
+          disableCurrencySelect
+          title={<>&nbsp;</>}
+        />
+        <br />
+        <CurrencyInputPanelSimplify
+          id="position-modal-clamm-increase-B"
+          defaultValue={outputAmountRaw}
+          currency={currency1}
+          onUserInput={onOutputAmountChange}
+          onPercentInput={onOutputPercentChange}
+          showMaxButton
+          disableCurrencySelect
+          title={<>&nbsp;</>}
+        />
+      </LightGreyCard>
+
+      <RowBetween mt="16px">
+        <Text color="textSubtle" small>
+          {t('Total Deposit Value')}
+        </Text>
+        <Text small>~$0.00</Text>
+      </RowBetween>
+
+      <Box mt="16px">
+        <V3SubmitButton
+          addIsWarning={false}
+          addIsUnsupported={false}
+          account={account ?? undefined}
+          isWrongNetwork={activeChainId !== chainId}
+          approvalA={approveAState}
+          approvalB={approveBState}
+          isValid={isValid}
+          showApprovalA={showApprovalA}
+          approveACallback={approveCallbackA}
+          currentAllowanceA={currentAllowanceA}
+          revokeACallback={revokeCallbackA}
+          currencies={currencies}
+          approveBCallback={approveCallbackB}
+          currentAllowanceB={currentAllowanceB}
+          revokeBCallback={revokeCallbackB}
+          showApprovalB={showApprovalB}
+          parsedAmounts={parsedAmounts}
+          onClick={handleIncreaseLiquidity}
+          attemptingTxn={attemptingTx}
+          errorMessage={errorMessage}
+          buttonText={t('Add +')}
+          depositADisabled={deposit0Disabled}
+          depositBDisabled={deposit1Disabled}
+        />
+      </Box>
     </Box>
   )
 }
