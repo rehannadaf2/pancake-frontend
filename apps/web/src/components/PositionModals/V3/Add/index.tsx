@@ -1,7 +1,7 @@
 import { Permit2Signature } from '@pancakeswap/infinity-sdk'
 import { useTranslation } from '@pancakeswap/localization'
 import { Currency, CurrencyAmount, Percent } from '@pancakeswap/swap-sdk-core'
-import { Box, FlexGap, IconButton, PreTitle, RowBetween, SwapHorizIcon, Text } from '@pancakeswap/uikit'
+import { Box, DynamicSection, FlexGap, IconButton, PreTitle, RowBetween, SwapHorizIcon, Text } from '@pancakeswap/uikit'
 import { formatNumber } from '@pancakeswap/utils/formatNumber'
 import { INITIAL_ALLOWED_SLIPPAGE, useLiquidityUserSlippage } from '@pancakeswap/utils/user'
 import { LightGreyCard } from '@pancakeswap/widgets-internal'
@@ -48,6 +48,7 @@ import { useIsTransactionUnsupported, useIsTransactionWarning } from 'hooks/Trad
 import { ZAP_V3_POOL_ADDRESSES } from 'config/constants/zap'
 import { ZapLiquidityWidget } from 'components/ZapLiquidityWidget'
 import { useRouter } from 'next/router'
+import LockedDeposit from 'views/AddLiquidityV3/formViews/V3FormView/components/LockedDeposit'
 
 interface V3PositionAddProps {
   position: PositionDetail
@@ -391,40 +392,47 @@ export const V3PositionAdd = ({ position: existingPositionDetail, poolInfo }: V3
         <LiquiditySlippageButton />
       </RowBetween>
 
-      <LightGreyCard mt="16px" borderRadius="24px" padding="16px">
-        <CurrencyInputPanelSimplify
-          id="position-modal-v3-increase-A"
-          defaultValue={formattedAmounts[Field.CURRENCY_A] ?? '0'}
-          currency={currency0}
-          onUserInput={onFieldAInput}
-          maxAmount={maxAmounts[Field.CURRENCY_A]}
-          onMax={() => onFieldAInput(maxAmounts[Field.CURRENCY_A]?.toExact() ?? '')}
-          onPercentInput={(percent) =>
-            onFieldAInput(maxAmounts?.[Field.CURRENCY_A]?.multiply(new Percent(percent, 100))?.toExact() ?? '')
-          }
-          showUSDPrice
-          showMaxButton
-          disableCurrencySelect
-          title={<>&nbsp;</>}
-          wrapperProps={{ style: { backgroundColor: 'transparent' } }}
-        />
+      <LightGreyCard mt="16px" borderRadius="24px" padding="16px" maxWidth="390px">
+        <LockedDeposit locked={depositADisabled}>
+          <CurrencyInputPanelSimplify
+            id="position-modal-v3-increase-A"
+            defaultValue={formattedAmounts[Field.CURRENCY_A] ?? '0'}
+            currency={currency0}
+            onUserInput={onFieldAInput}
+            maxAmount={maxAmounts[Field.CURRENCY_A]}
+            onMax={() => onFieldAInput(maxAmounts[Field.CURRENCY_A]?.toExact() ?? '')}
+            onPercentInput={(percent) =>
+              onFieldAInput(maxAmounts?.[Field.CURRENCY_A]?.multiply(new Percent(percent, 100))?.toExact() ?? '')
+            }
+            showUSDPrice
+            showMaxButton
+            disableCurrencySelect
+            title={<>&nbsp;</>}
+            wrapperProps={{ style: { backgroundColor: 'transparent' } }}
+            disabled={depositADisabled}
+          />
+        </LockedDeposit>
         <br />
-        <CurrencyInputPanelSimplify
-          id="position-modal-v3-increase-B"
-          defaultValue={formattedAmounts[Field.CURRENCY_B] ?? '0'}
-          currency={currency1}
-          onUserInput={onFieldBInput}
-          maxAmount={maxAmounts[Field.CURRENCY_B]}
-          onMax={() => onFieldBInput(maxAmounts[Field.CURRENCY_B]?.toExact() ?? '')}
-          onPercentInput={(percent) =>
-            onFieldBInput(maxAmounts?.[Field.CURRENCY_B]?.multiply(new Percent(percent, 100))?.toExact() ?? '')
-          }
-          showUSDPrice
-          showMaxButton
-          disableCurrencySelect
-          title={<>&nbsp;</>}
-          wrapperProps={{ style: { backgroundColor: 'transparent' } }}
-        />
+
+        <LockedDeposit locked={depositBDisabled}>
+          <CurrencyInputPanelSimplify
+            id="position-modal-v3-increase-B"
+            defaultValue={formattedAmounts[Field.CURRENCY_B] ?? '0'}
+            currency={currency1}
+            onUserInput={onFieldBInput}
+            maxAmount={maxAmounts[Field.CURRENCY_B]}
+            onMax={() => onFieldBInput(maxAmounts[Field.CURRENCY_B]?.toExact() ?? '')}
+            onPercentInput={(percent) =>
+              onFieldBInput(maxAmounts?.[Field.CURRENCY_B]?.multiply(new Percent(percent, 100))?.toExact() ?? '')
+            }
+            showUSDPrice
+            showMaxButton
+            disableCurrencySelect
+            title={<>&nbsp;</>}
+            wrapperProps={{ style: { backgroundColor: 'transparent' } }}
+            disabled={depositBDisabled}
+          />
+        </LockedDeposit>
       </LightGreyCard>
 
       <RowBetween mt="16px">
@@ -462,7 +470,7 @@ export const V3PositionAdd = ({ position: existingPositionDetail, poolInfo }: V3
         />
       </Box>
       {hasZapV3Pool && hasInsufficentBalance && (
-        <Box mt="16px" mx="auto" maxWidth={['auto', 'auto', 'auto', '400px']}>
+        <Box mt="16px" mx="auto" maxWidth={['auto', 'auto', 'auto', '390px']}>
           <ZapLiquidityWidget
             tokenId={tokenId.toString()}
             pool={pool}
