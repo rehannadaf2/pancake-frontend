@@ -29,11 +29,11 @@ import { maxUint128, zeroAddress } from 'viem'
 import { BigNumber as BN } from 'bignumber.js'
 import { useCurrencyUsdPrice } from 'hooks/useCurrencyUsdPrice'
 
-interface InfinityPositionAddProps {
+interface V3PositionAddProps {
   position: InfinityCLPositionDetail
   poolInfo: PoolInfo
 }
-export const InfinityCLPositionAdd = ({ position, poolInfo }: InfinityPositionAddProps) => {
+export const V3PositionAdd = ({ position, poolInfo }: V3PositionAddProps) => {
   const { t } = useTranslation()
 
   const { account, chainId: activeChainId } = useAccountActiveChain()
