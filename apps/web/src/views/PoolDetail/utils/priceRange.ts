@@ -257,7 +257,7 @@ export const calculateTickBasedPriceRange = (
   token0: any,
   token1: any,
   pool: any,
-  isTickAtLimit: { [bound in Bound]: boolean },
+  isTickAtLimit: { [bound in Bound]?: boolean | undefined },
   isFlipped?: boolean,
 ): PriceRangeData => {
   let minPriceFormatted = '-'

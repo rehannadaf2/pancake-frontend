@@ -1,15 +1,9 @@
-import { Box, FlexGap, LoadingDot, Tag } from '@pancakeswap/uikit'
-import { usePoolById } from 'hooks/infinity/usePool'
-import { PoolState } from 'hooks/v3/types'
+import { Box, FlexGap, Tag } from '@pancakeswap/uikit'
 import { Hex } from 'viem'
-import { InfinityFeeTierBreakdown } from 'components/FeeTierBreakdown'
 import { RangeTag } from 'components/RangeTag'
 import { useTranslation } from '@pancakeswap/localization'
-import { InfinityBinPoolDerivedAprButton, InfinityCLPoolDerivedAprButton } from 'views/universalFarms/components'
 import { usePoolInfo } from 'state/farmsV4/hooks'
-import { InfinityBinPoolInfo, InfinityCLPoolInfo } from 'state/farmsV4/state/type'
-import { Protocol } from '@pancakeswap/farms'
-import { InfinityBinPositionDetail, InfinityCLPositionDetail } from 'state/farmsV4/state/accountPositions/type'
+import { PositionDetail, UnifiedPositionDetail } from 'state/farmsV4/state/accountPositions/type'
 import { FeeTierTooltip } from '@pancakeswap/widgets-internal'
 import { Percent } from '@pancakeswap/sdk'
 import { AprCalculatorV2 } from 'views/AddLiquidityV3/components/AprCalculatorV2'
@@ -21,7 +15,7 @@ interface V3PositionModalContentProps {
   poolId?: Hex
   chainId?: number
   tab?: PositionTabType
-  position?: InfinityCLPositionDetail | InfinityBinPositionDetail
+  position?: UnifiedPositionDetail
 }
 export const V3PositionModalContent = ({ poolId, chainId, position, tab = 'Add' }: V3PositionModalContentProps) => {
   const { t } = useTranslation()
@@ -53,7 +47,7 @@ export const V3PositionModalContent = ({ poolId, chainId, position, tab = 'Add' 
       />
 
       <Box mt="16px">
-        {tab === 'Add' ? <V3PositionAdd position={position as InfinityCLPositionDetail} poolInfo={poolInfo} /> : null}
+        {tab === 'Add' ? <V3PositionAdd position={position as PositionDetail} poolInfo={poolInfo} /> : null}
       </Box>
     </Box>
   )
