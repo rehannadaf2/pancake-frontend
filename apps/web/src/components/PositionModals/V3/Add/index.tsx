@@ -346,6 +346,7 @@ export const V3PositionAdd = ({ position: existingPositionDetail, poolInfo }: V3
     <Box>
       <LightGreyCard borderRadius="24px" padding="16px">
         <PreTitle mb="8px">{t('Price Range (Min-Max)')}</PreTitle>
+        {/* <pre>{JSON.stringify(priceDisplay, null, 2)}</pre> */}
         {priceDisplay && (
           <PriceRangeDisplay
             minPrice={priceDisplay.minPriceFormatted}
@@ -355,6 +356,7 @@ export const V3PositionAdd = ({ position: existingPositionDetail, poolInfo }: V3
             currentPriceRaw={priceDisplay.currentPriceValue}
             minPercentage="0%"
             maxPercentage="100%"
+            rangePosition={priceDisplay.rangePosition}
             maxWidth="unset"
           />
         )}
