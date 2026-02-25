@@ -65,6 +65,8 @@ export const V3PositionAdd = ({ position: existingPositionDetail, poolInfo }: V3
   // Transaction Management
   const addTransaction = useTransactionAdder()
   const { sendTransactionAsync } = useSendTransaction()
+
+  // TODO: Remove txnHash or txnErrorMessage if not using in this page, or start using it.
   const [txHash, setTxHash] = useState<string>('')
   const [attemptingTxn, setAttemptingTxn] = useState<boolean>(false) // clicked confirm
   const [txnErrorMessage, setTxnErrorMessage] = useState<string | undefined>()

@@ -8,10 +8,12 @@ import {
   InfinityBinPositionDetail,
   InfinityCLPositionDetail,
   UnifiedPositionDetail,
+  V2LPDetail,
 } from 'state/farmsV4/state/accountPositions/type'
 import { InfinityPositionModalContent } from './Infinity'
 import { PositionTabType } from './types'
 import { V3PositionModalContent } from './V3'
+import { V2PositionModalContent } from './V2'
 
 const tabsOrder: PositionTabType[] = ['Add', 'Remove', 'Harvest']
 
@@ -115,6 +117,13 @@ export function PositionModal({
             chainId={chainId}
             tab={tab}
             position={position as InfinityCLPositionDetail}
+          />
+        ) : protocol === Protocol.V2 || protocol === Protocol.STABLE ? (
+          <V2PositionModalContent
+            poolId={poolId as Hex}
+            chainId={chainId}
+            tab={tab}
+            position={position as V2LPDetail}
           />
         ) : (
           'protocol not supported (testing)'

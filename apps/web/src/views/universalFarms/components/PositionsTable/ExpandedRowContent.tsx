@@ -675,7 +675,7 @@ export const ExpandedRowContent: React.FC<ExpandedRowContentProps> = memo(
         <PositionModal
           isOpen={isOpen}
           onDismiss={onDismiss}
-          poolId={pool?.poolId ?? pool?.lpAddress}
+          poolId={pool?.poolId ?? pool?.lpAddress ?? pool?.stableSwapAddress}
           protocol={pool?.protocol}
           chainId={pool?.chainId}
           position={position}
