@@ -10,6 +10,14 @@ interface AprMap {
 }
 
 const FETCH_CHAIN_ID = [ChainId.BSC, ChainId.ETHEREUM]
+const getExistingAprs = (path: string): AprMap => {
+  try {
+    return JSON.parse(fs.readFileSync(path, 'utf8')) as AprMap
+  } catch {
+    return {}
+  }
+}
+
 const fetchAndUpdateLPsAPR = async () => {
   Promise.all(
     FETCH_CHAIN_ID.map(async (chainId) => {
@@ -34,15 +42,17 @@ const fetchAndUpdateLPsAPR = async () => {
         ...(v2Aprs.status === 'fulfilled' ? getAprs(v2Aprs.value) : {}),
         ...(stableAprs.status === 'fulfilled' ? getAprs(stableAprs.value) : {}),
       }
+      const path = `apps/web/src/config/constants/lpAprs/${chainId}.json`
+      const existingAprs = getExistingAprs(path)
+      if (Object.keys(aprs).length === 0 && Object.keys(existingAprs).length > 0) {
+        console.warn(`⚠️  - Skip updating lpAprs/${chainId}.json because fetched APR data is empty`)
+        return
+      }
 
-      fs.writeFile(
-        `apps/web/src/config/constants/lpAprs/${chainId}.json`,
-        JSON.stringify(aprs, null, 2) + os.EOL,
-        (err) => {
-          if (err) throw err
-          console.info(` ✅ - lpAprs.json has been updated!`)
-        },
-      )
+      fs.writeFile(path, JSON.stringify(aprs, null, 2) + os.EOL, (err) => {
+        if (err) throw err
+        console.info(` ✅ - lpAprs.json has been updated!`)
+      })
     }),
   )
 }
