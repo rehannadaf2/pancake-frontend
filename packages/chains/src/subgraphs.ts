@@ -15,16 +15,16 @@ export const BLOCKS_SUBGRAPHS = getBlocksSubgraphs(publicSubgraphParams)
 
 export const STABLESWAP_SUBGRAPHS = getStableSwapSubgraphs(publicSubgraphParams)
 
-function filterSubgraphs<T extends Record<string | number, string | null | undefined>>(
+export function filterSubgraphs<T extends Record<string | number, string | null | undefined>>(
   subgraphs: T,
 ): { [K in keyof T]: Exclude<T[K], undefined> } {
   const isProduction = process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_VERCEL_ENV !== 'preview'
   if (!isProduction) return subgraphs as any
 
   return Object.fromEntries(
-    Object.entries(subgraphs).filter(
-      ([, value]) => value !== undefined && (value === null || !value.includes('undefined')),
-    ),
+    Object.entries(subgraphs)
+      .filter(([, value]) => value !== undefined)
+      .map(([key, value]) => [key, typeof value === 'string' && value.includes('undefined') ? null : value]),
   ) as any
 }
 
