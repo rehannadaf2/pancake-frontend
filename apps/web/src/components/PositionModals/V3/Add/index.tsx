@@ -49,6 +49,7 @@ import { ZAP_V3_POOL_ADDRESSES } from 'config/constants/zap'
 import { ZapLiquidityWidget } from 'components/ZapLiquidityWidget'
 import { useRouter } from 'next/router'
 import LockedDeposit from 'views/AddLiquidityV3/formViews/V3FormView/components/LockedDeposit'
+import { MevProtectToggle } from 'views/Mev/MevProtectToggle'
 
 interface V3PositionAddProps {
   position: PositionDetail
@@ -445,6 +446,10 @@ export const V3PositionAdd = ({ position: existingPositionDetail, poolInfo }: V3
         </Text>
         <Text small>~${totalDepositUsdValue}</Text>
       </RowBetween>
+
+      <Box mt="16px">
+        <MevProtectToggle size="sm" />
+      </Box>
 
       <Box mt="16px">
         <V3SubmitButton

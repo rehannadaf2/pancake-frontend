@@ -30,6 +30,7 @@ import ApproveLiquidityTokens from 'views/AddLiquidityV3/components/ApproveLiqui
 import { ChainLinkSupportChains } from 'state/info/constant'
 import { getBlockExploreLink } from 'utils'
 import { Pair } from '@pancakeswap/sdk'
+import { MevProtectToggle } from 'views/Mev/MevProtectToggle'
 
 interface V2PositionAddProps {
   position: V2LPDetail // Unused
@@ -238,6 +239,10 @@ const V2PositionAddInner = ({
         </Text>
         <Text small>~${totalDepositUsdValue}</Text>
       </RowBetween>
+
+      <Box mt="16px">
+        <MevProtectToggle size="sm" />
+      </Box>
 
       <Box mt="16px">{renderButtons()}</Box>
     </>

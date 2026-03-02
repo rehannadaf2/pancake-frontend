@@ -28,6 +28,7 @@ import { LiquiditySlippageButton } from 'views/Swap/components/SlippageButton'
 import { maxUint128, zeroAddress } from 'viem'
 import { BigNumber as BN } from 'bignumber.js'
 import { useCurrencyUsdPrice } from 'hooks/useCurrencyUsdPrice'
+import { MevProtectToggle } from 'views/Mev/MevProtectToggle'
 
 interface InfinityPositionAddProps {
   position: InfinityCLPositionDetail
@@ -340,6 +341,10 @@ export const InfinityCLPositionAdd = ({ position, poolInfo }: InfinityPositionAd
         </Text>
         <Text small>~${totalDepositUsdValue}</Text>
       </RowBetween>
+
+      <Box mt="16px">
+        <MevProtectToggle size="sm" />
+      </Box>
 
       <Box mt="16px">
         <V3SubmitButton
