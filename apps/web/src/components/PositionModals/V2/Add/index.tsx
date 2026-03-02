@@ -1,6 +1,17 @@
 import { useTranslation } from '@pancakeswap/localization'
 import { Currency, Percent } from '@pancakeswap/swap-sdk-core'
-import { Box, Flex, LinkExternal, Message, MessageText, PreTitle, RowBetween, ScanLink, Text } from '@pancakeswap/uikit'
+import {
+  Box,
+  Button,
+  Flex,
+  LinkExternal,
+  Message,
+  MessageText,
+  PreTitle,
+  RowBetween,
+  ScanLink,
+  Text,
+} from '@pancakeswap/uikit'
 import { LightGreyCard } from '@pancakeswap/widgets-internal'
 import CurrencyInputPanelSimplify from 'components/CurrencyInputPanelSimplify'
 import { V2LPDetail } from 'state/farmsV4/state/accountPositions/type'
@@ -114,7 +125,8 @@ const V2PositionAddInner = ({
   }, [currencyPrice0, currencyPrice1, amount0, amount1])
 
   const renderButtons = useCallback(() => {
-    // if (isWrongNetwork) return <CommitButton checkChainId={pair?.chainId} width="100%" />
+    if (isWrongNetwork) return <CommitButton checkChainId={pair?.chainId} width="100%" />
+    if (addIsUnsupported || addIsWarning) return <Button disabled>{t('Unsupported Asset')}</Button>
     return (
       <>
         <Box mb={shouldShowApprovalGroup ? '8px' : null}>
