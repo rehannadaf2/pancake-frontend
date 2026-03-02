@@ -95,6 +95,7 @@ export function useStableInfinitySupportedTokens(chainId?: ChainId, token?: Toke
         return Array.from(matchingTokenAddresses)
           .map((addr) => tokenMap.get(addr))
           .filter((t): t is Token => Boolean(t))
+          .filter((t) => process.env.NODE_ENV !== 'production' || t.name !== 'PCS Mock Token')
       }
 
       // If no token filter, return all unique tokens from existing pairs
@@ -139,6 +140,7 @@ export function useStableInfinitySupportedTokens(chainId?: ChainId, token?: Toke
       return Array.from(allTokenAddresses)
         .map((addr) => tokenMap.get(addr))
         .filter((t): t is Token => Boolean(t))
+        .filter((t) => process.env.NODE_ENV !== 'production' || t.name !== 'PCS Mock Token')
     },
     enabled: !!finalChainId && !!publicClient,
     ...QUERY_SETTINGS_IMMUTABLE,
