@@ -1,6 +1,6 @@
 import { useTranslation } from '@pancakeswap/localization'
 import { Currency, Percent } from '@pancakeswap/swap-sdk-core'
-import { Box, PreTitle, RowBetween, Text } from '@pancakeswap/uikit'
+import { Box, Flex, LinkExternal, Message, MessageText, PreTitle, RowBetween, ScanLink, Text } from '@pancakeswap/uikit'
 import { LightGreyCard } from '@pancakeswap/widgets-internal'
 import CurrencyInputPanelSimplify from 'components/CurrencyInputPanelSimplify'
 import { V2LPDetail } from 'state/farmsV4/state/accountPositions/type'
@@ -15,12 +15,16 @@ import { useExpertMode } from '@pancakeswap/utils/user'
 import { logGTMClickAddLiquidityEvent } from 'utils/customGTMEventTracking'
 import { useCurrencyUsdPrice } from 'hooks/useCurrencyUsdPrice'
 import { BigNumber as BN } from 'bignumber.js'
+import ApproveLiquidityTokens from 'views/AddLiquidityV3/components/ApproveLiquidityTokens'
+import { ChainLinkSupportChains } from 'state/info/constant'
+import { getBlockExploreLink } from 'utils'
+import { Pair } from '@pancakeswap/sdk'
 
 interface V2PositionAddProps {
-  position: V2LPDetail
+  position: V2LPDetail // Unused
   poolInfo: PoolInfo
 }
-export const V2PositionAdd = ({ position, poolInfo }: V2PositionAddProps) => {
+export const V2PositionAdd = ({ poolInfo }: V2PositionAddProps) => {
   const { t } = useTranslation()
 
   // Currencies
@@ -78,6 +82,13 @@ const V2PositionAddInner = ({
   const isWrongNetwork = activeChainId !== pair?.chainId
   const [expertMode] = useExpertMode()
 
+  // Pool
+  const chainId = pair?.chainId
+  const pairExplorerLink = useMemo(
+    () => (pair && getBlockExploreLink(Pair.getAddress(pair.token0, pair.token1), 'address', chainId)) || undefined,
+    [pair, chainId],
+  )
+
   // Currencies
   const currency0 = currencies[Field.CURRENCY_A]
   const currency1 = currencies[Field.CURRENCY_B]
@@ -103,20 +114,63 @@ const V2PositionAddInner = ({
   }, [currencyPrice0, currencyPrice1, amount0, amount1])
 
   const renderButtons = useCallback(() => {
-    if (isWrongNetwork) return <CommitButton checkChainId={pair?.chainId} width="100%" />
+    // if (isWrongNetwork) return <CommitButton checkChainId={pair?.chainId} width="100%" />
     return (
-      <CommitButton
-        variant={buttonDisabled ? 'danger' : 'primary'}
-        onClick={() => {
-          // eslint-disable-next-line no-unused-expressions
-          expertMode ? onAdd() : onPresentAddLiquidityModal()
-          logGTMClickAddLiquidityEvent()
-        }}
-        disabled={buttonDisabled}
-        width="100%"
-      >
-        {errorText || t('Add')}
-      </CommitButton>
+      <>
+        <Box mb={shouldShowApprovalGroup ? '8px' : null}>
+          <ApproveLiquidityTokens
+            approvalA={approvalA}
+            approvalB={approvalB}
+            showFieldAApproval={showFieldAApproval}
+            showFieldBApproval={showFieldBApproval}
+            approveACallback={approveACallback}
+            approveBCallback={approveBCallback}
+            revokeACallback={revokeACallback}
+            revokeBCallback={revokeBCallback}
+            currencies={currencies}
+            currentAllowanceA={currentAllowanceA}
+            currentAllowanceB={currentAllowanceB}
+            shouldShowApprovalGroup={shouldShowApprovalGroup}
+          />
+        </Box>
+
+        {isOneWeiAttack ? (
+          <Message variant="warning" mb="8px">
+            <Flex flexDirection="column">
+              <MessageText>
+                {t(
+                  'Adding liquidity to this V2 pair is currently not available on PancakeSwap UI. Please follow the instructions to resolve it using blockchain explorer.',
+                )}
+              </MessageText>
+              <LinkExternal
+                href="https://docs.pancakeswap.finance/products/pancakeswap-exchange/faq#why-cant-i-add-liquidity-to-a-pair-i-just-created"
+                mt="0.25rem"
+              >
+                {t('Learn more how to fix')}
+              </LinkExternal>
+              <ScanLink
+                useBscCoinFallback={chainId ? ChainLinkSupportChains.includes(chainId) : undefined}
+                href={pairExplorerLink}
+                mt="0.25rem"
+              >
+                {t('View pool on explorer')}
+              </ScanLink>
+            </Flex>
+          </Message>
+        ) : null}
+        <CommitButton
+          variant={buttonDisabled ? 'danger' : 'primary'}
+          onClick={() => {
+            // eslint-disable-next-line no-unused-expressions
+            expertMode ? onAdd() : onPresentAddLiquidityModal()
+            logGTMClickAddLiquidityEvent()
+          }}
+          disabled={buttonDisabled}
+          width="100%"
+        >
+          {errorText || t('Add')}
+        </CommitButton>
+      </>
     )
   }, [isWrongNetwork, formattedAmounts, buttonDisabled, errorText, pair?.chainId, activeChainId])
 

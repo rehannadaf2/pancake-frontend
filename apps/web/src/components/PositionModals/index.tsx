@@ -128,6 +128,7 @@ export function PositionModal({
         ) : (
           'protocol not supported (testing)'
         )}
+        {/* TODO: StableSwap, InfinityBin */}
       </MotionModal>
     </ModalV2>
   )
