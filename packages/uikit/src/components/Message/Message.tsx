@@ -16,6 +16,7 @@ const Icons = {
   primary: InfoFilledIcon,
   primary60: InfoFilledIcon,
   secondary: ErrorIcon,
+  secondary60: ErrorIcon,
 };
 
 const MessageContainer = styled.div<MessageProps>`
@@ -23,6 +24,7 @@ const MessageContainer = styled.div<MessageProps>`
   padding: 16px;
   border-radius: 16px;
   border: solid 1px;
+  line-height: 1.4;
 
   ${space}
   ${systemVariant({
@@ -42,6 +44,7 @@ const colors = {
   success: "#129E7D",
   danger: "failure",
   secondary: "#D67E0A",
+  secondary60: "text",
 };
 
 export const MessageText: React.FC<React.PropsWithChildren<TextProps>> = ({ children, ...props }) => {

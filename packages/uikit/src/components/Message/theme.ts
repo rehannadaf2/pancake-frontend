@@ -1,3 +1,5 @@
+import { borderColor } from "styled-system";
+
 const variants = {
   warning: {
     background: "#FFB23719",
@@ -22,6 +24,10 @@ const variants = {
   primary60: {
     background: "#EEFBFC",
     borderColor: "#C1EDF0",
+  },
+  secondary60: {
+    backgroundColor: "secondary10",
+    borderColor: "secondary",
   },
 };
 
