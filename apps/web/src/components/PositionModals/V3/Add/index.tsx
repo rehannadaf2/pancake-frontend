@@ -479,7 +479,7 @@ export const V3PositionAdd = ({ position: existingPositionDetail, poolInfo }: V3
         />
       </Box>
       {hasZapV3Pool && hasInsufficentBalance && (
-        <Box mt="16px" mx="auto" maxWidth={['auto', 'auto', 'auto', '390px']}>
+        <Box mt="16px" mx="auto" maxWidth={['auto', 'auto', 'auto', '370px']}>
           <ZapLiquidityWidget
             tokenId={tokenId.toString()}
             pool={pool}

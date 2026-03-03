@@ -13,7 +13,7 @@ import {
 import { InfinityPositionModalContent } from './Infinity'
 import { PositionTabType } from './types'
 import { V3PositionModalContent } from './V3'
-import { V2PositionModalContent } from './V2'
+import { V2OrSSPositionModalContent } from './V2OrSS'
 
 const tabsOrder: PositionTabType[] = ['Add', 'Remove', 'Harvest']
 
@@ -119,11 +119,12 @@ export function PositionModal({
             position={position as InfinityCLPositionDetail}
           />
         ) : protocol === Protocol.V2 || protocol === Protocol.STABLE ? (
-          <V2PositionModalContent
+          <V2OrSSPositionModalContent
             poolId={poolId as Hex}
             chainId={chainId}
             tab={tab}
             position={position as V2LPDetail}
+            protocol={protocol}
           />
         ) : (
           'protocol not supported (testing)'

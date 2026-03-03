@@ -3,18 +3,21 @@ import { Currency, Percent } from '@pancakeswap/swap-sdk-core'
 import {
   Box,
   Button,
+  Dots,
   Flex,
+  FlexGap,
   LinkExternal,
   Message,
   MessageText,
   PreTitle,
+  QuestionHelper,
   RowBetween,
   ScanLink,
   Text,
 } from '@pancakeswap/uikit'
 import { LightGreyCard } from '@pancakeswap/widgets-internal'
 import CurrencyInputPanelSimplify from 'components/CurrencyInputPanelSimplify'
-import { V2LPDetail } from 'state/farmsV4/state/accountPositions/type'
+import { StableLPDetail, V2LPDetail } from 'state/farmsV4/state/accountPositions/type'
 import { PoolInfo } from 'state/farmsV4/state/type'
 import AddLiquidity, { LP2ChildrenProps } from 'views/AddLiquidity'
 import { LiquiditySlippageButton } from 'views/Swap/components/SlippageButton'
@@ -29,20 +32,35 @@ import { BigNumber as BN } from 'bignumber.js'
 import ApproveLiquidityTokens from 'views/AddLiquidityV3/components/ApproveLiquidityTokens'
 import { ChainLinkSupportChains } from 'state/info/constant'
 import { getBlockExploreLink } from 'utils'
-import { Pair } from '@pancakeswap/sdk'
+import { ChainId, Pair } from '@pancakeswap/sdk'
 import { MevProtectToggle } from 'views/Mev/MevProtectToggle'
+import useStableConfig, { StableConfigContext } from 'views/Swap/hooks/useStableConfig'
+import AddStableLiquidity, { AddStableChildrenProps } from 'views/AddLiquidity/AddStableLiquidity'
+import StableFormView from 'views/AddLiquidityV3/formViews/StableFormView'
+import { useIsTransactionUnsupported, useIsTransactionWarning } from 'hooks/Trades'
+import { ApprovalState } from 'hooks/useApproveCallback'
+import { formatDollarAmount } from 'views/V3Info/utils/numbers'
+import { FormattedSlippage } from 'views/AddLiquidity/AddStableLiquidity/components'
+import { useCheckAndSwitchChain } from 'hooks/useCheckAndSwitchChain'
+import { useCheckShouldSwitchNetwork } from 'views/universalFarms/hooks'
 
-interface V2PositionAddProps {
-  position: V2LPDetail // Unused
+interface SSPositionAddProps {
+  position: StableLPDetail // Unused
   poolInfo: PoolInfo
 }
-export const V2PositionAdd = ({ poolInfo }: V2PositionAddProps) => {
+export const SSPositionAdd = ({ poolInfo }: SSPositionAddProps) => {
   const { t } = useTranslation()
 
   // Currencies
   const { token0, token1 } = poolInfo
   const currency0 = token0 as Currency
   const currency1 = token1 as Currency
+
+  // Stable config
+  const stableConfig = useStableConfig({
+    tokenA: currency0,
+    tokenB: currency1,
+  })
 
   return (
     <Box>
@@ -54,26 +72,26 @@ export const V2PositionAdd = ({ poolInfo }: V2PositionAddProps) => {
         <LiquiditySlippageButton />
       </RowBetween>
 
-      <AddLiquidity currencyA={currency0} currencyB={currency1}>
-        {(props) => <V2PositionAddInner {...props} />}
-      </AddLiquidity>
+      {/* <AddLiquidity currencyA={currency0} currencyB={currency1}>
+        {(props) => <SSPositionAddInner {...props} />}
+      </AddLiquidity> */}
+
+      <StableConfigContext.Provider value={stableConfig}>
+        <AddStableLiquidity currencyA={currency0} currencyB={currency1}>
+          {(props) => <SSPositionAddInner {...props} />}
+        </AddStableLiquidity>
+      </StableConfigContext.Provider>
     </Box>
   )
 }
 
-const V2PositionAddInner = ({
+const SSPositionAddInner = ({
   formattedAmounts,
-  addIsUnsupported,
-  addIsWarning,
   shouldShowApprovalGroup,
   approveACallback,
-  revokeACallback,
-  currentAllowanceA,
   approvalA,
   approvalB,
   approveBCallback,
-  revokeBCallback,
-  currentAllowanceB,
   showFieldBApproval,
   showFieldAApproval,
   currencies,
@@ -83,94 +101,68 @@ const V2PositionAddInner = ({
   errorText,
   onFieldAInput,
   onFieldBInput,
+  // poolTokenPercentage,
+  executionSlippage,
+  loading,
   maxAmounts,
-  isOneWeiAttack,
-  pair,
-}: LP2ChildrenProps) => {
+  inputAmountsTotalUsdValue,
+}: AddStableChildrenProps) => {
   const { t } = useTranslation()
-
-  // User
-  const { chainId: activeChainId } = useAccountActiveChain()
-  const isWrongNetwork = activeChainId !== pair?.chainId
-  const [expertMode] = useExpertMode()
-
-  // Pool
-  const chainId = pair?.chainId
-  const pairExplorerLink = useMemo(
-    () => (pair && getBlockExploreLink(Pair.getAddress(pair.token0, pair.token1), 'address', chainId)) || undefined,
-    [pair, chainId],
-  )
 
   // Currencies
   const currency0 = currencies[Field.CURRENCY_A]
   const currency1 = currencies[Field.CURRENCY_B]
 
-  // Amounts
-  const amount0 = formattedAmounts[Field.CURRENCY_A]
-  const amount1 = formattedAmounts[Field.CURRENCY_B]
+  // Pool
+  const chainId = currency0?.chainId
+  const addIsUnsupported = useIsTransactionUnsupported(currency0, currency1)
+  const addIsWarning = useIsTransactionWarning(currency0, currency1)
 
-  // Total USD Value
-  const { data: currencyPrice0 } = useCurrencyUsdPrice(currency0, {
-    enabled: !!currency0 && !!amount0,
-  })
-  const { data: currencyPrice1 } = useCurrencyUsdPrice(currency1, {
-    enabled: !!currency1 && !!amount1,
-  })
-  const totalDepositUsdValue = useMemo(() => {
-    if (!currencyPrice0 || !currencyPrice1) return 0
+  // User
+  const { chainId: activeChainId } = useAccountActiveChain()
+  const isWrongNetwork = activeChainId !== chainId
+  const { switchNetworkIfNecessary, isLoading: isSwitchNetworkLoading } = useCheckShouldSwitchNetwork()
 
-    const usd0 = BN(currencyPrice0).multipliedBy(amount0 || 0)
-    const usd1 = BN(currencyPrice1).multipliedBy(amount1 || 0)
+  const [expertMode] = useExpertMode()
 
-    return usd0.plus(usd1).toFormat(2)
-  }, [currencyPrice0, currencyPrice1, amount0, amount1])
-
+  // Buttons
   const renderButtons = useCallback(() => {
-    if (isWrongNetwork) return <CommitButton checkChainId={pair?.chainId} width="100%" />
+    if (isWrongNetwork)
+      return (
+        <Button
+          width="100%"
+          onClick={() => (chainId ? switchNetworkIfNecessary(chainId) : undefined)}
+          disabled={isSwitchNetworkLoading}
+        >
+          {t('Switch Network')}
+        </Button>
+      )
     if (addIsUnsupported || addIsWarning) return <Button disabled>{t('Unsupported Asset')}</Button>
     return (
       <>
-        <Box mb={shouldShowApprovalGroup ? '8px' : null}>
-          <ApproveLiquidityTokens
-            approvalA={approvalA}
-            approvalB={approvalB}
-            showFieldAApproval={showFieldAApproval}
-            showFieldBApproval={showFieldBApproval}
-            approveACallback={approveACallback}
-            approveBCallback={approveBCallback}
-            revokeACallback={revokeACallback}
-            revokeBCallback={revokeBCallback}
-            currencies={currencies}
-            currentAllowanceA={currentAllowanceA}
-            currentAllowanceB={currentAllowanceB}
-            shouldShowApprovalGroup={shouldShowApprovalGroup}
-          />
-        </Box>
-
-        {isOneWeiAttack ? (
-          <Message variant="warning" mb="8px">
-            <Flex flexDirection="column">
-              <MessageText>
-                {t(
-                  'Adding liquidity to this V2 pair is currently not available on PancakeSwap UI. Please follow the instructions to resolve it using blockchain explorer.',
+        {shouldShowApprovalGroup && (
+          <RowBetween style={{ gap: '8px' }} mb="8px">
+            {showFieldAApproval && (
+              <Button onClick={approveACallback} disabled={approvalA === ApprovalState.PENDING} width="100%">
+                {approvalA === ApprovalState.PENDING ? (
+                  <Dots>{t('Enabling %asset%', { asset: currencies[Field.CURRENCY_A]?.symbol })}</Dots>
+                ) : (
+                  t('Enable %asset%', { asset: currencies[Field.CURRENCY_A]?.symbol })
                 )}
-              </MessageText>
-              <LinkExternal
-                href="https://docs.pancakeswap.finance/products/pancakeswap-exchange/faq#why-cant-i-add-liquidity-to-a-pair-i-just-created"
-                mt="0.25rem"
-              >
-                {t('Learn more how to fix')}
-              </LinkExternal>
-              <ScanLink
-                useBscCoinFallback={chainId ? ChainLinkSupportChains.includes(chainId) : undefined}
-                href={pairExplorerLink}
-                mt="0.25rem"
-              >
-                {t('View pool on explorer')}
-              </ScanLink>
-            </Flex>
-          </Message>
-        ) : null}
+              </Button>
+            )}
+            {showFieldBApproval && (
+              <Button onClick={approveBCallback} disabled={approvalB === ApprovalState.PENDING} width="100%">
+                {approvalB === ApprovalState.PENDING ? (
+                  <Dots>{t('Enabling %asset%', { asset: currencies[Field.CURRENCY_B]?.symbol })}</Dots>
+                ) : (
+                  t('Enable %asset%', { asset: currencies[Field.CURRENCY_B]?.symbol })
+                )}
+              </Button>
+            )}
+          </RowBetween>
+        )}
+
         <CommitButton
           variant={buttonDisabled ? 'danger' : 'primary'}
           onClick={() => {
@@ -185,7 +177,16 @@ const V2PositionAddInner = ({
         </CommitButton>
       </>
     )
-  }, [isWrongNetwork, formattedAmounts, buttonDisabled, errorText, pair?.chainId, activeChainId])
+  }, [
+    isWrongNetwork,
+    formattedAmounts,
+    buttonDisabled,
+    errorText,
+    chainId,
+    activeChainId,
+    isSwitchNetworkLoading,
+    switchNetworkIfNecessary,
+  ])
 
   return (
     <>
@@ -199,11 +200,11 @@ const V2PositionAddInner = ({
           wrapperProps={{ style: { backgroundColor: 'transparent' } }}
           onPercentInput={(percent) => {
             if (maxAmounts[Field.CURRENCY_A]) {
-              onFieldBInput(maxAmounts[Field.CURRENCY_A]?.multiply(new Percent(percent, 100)).toExact() ?? '')
+              onFieldAInput(maxAmounts[Field.CURRENCY_A]?.multiply(new Percent(percent, 100)).toExact() ?? '')
             }
           }}
           onMax={() => {
-            onFieldBInput(maxAmounts[Field.CURRENCY_A]?.toExact() ?? '')
+            onFieldAInput(maxAmounts[Field.CURRENCY_A]?.toExact() ?? '')
           }}
           maxAmount={maxAmounts[Field.CURRENCY_A]}
           showMaxButton
@@ -237,7 +238,23 @@ const V2PositionAddInner = ({
         <Text color="textSubtle" small>
           {t('Total Deposit Value')}
         </Text>
-        <Text small>~${totalDepositUsdValue}</Text>
+        <Text small>~{formatDollarAmount(inputAmountsTotalUsdValue, 2, false)}</Text>
+      </RowBetween>
+
+      <RowBetween mt="8px">
+        <FlexGap gap="4px" alignItems="center">
+          <Text color="textSubtle" small>
+            {t('Slippage')}
+          </Text>
+          <QuestionHelper
+            text={t(
+              'Based on % contributed to stable pair, fees will vary. Deposits with fees >= 0.15% will be rejected',
+            )}
+            placement="top-start"
+            mt="1px"
+          />
+        </FlexGap>
+        <FormattedSlippage slippage={executionSlippage} loading={loading} small />
       </RowBetween>
 
       <Box mt="16px">
