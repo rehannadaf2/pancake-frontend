@@ -3,7 +3,7 @@ import dynamic from 'next/dynamic'
 import { useAtom, useAtomValue } from 'jotai'
 import { usePrivy } from '@privy-io/react-auth'
 import { atomWithStorage } from 'jotai/utils'
-import { useCallback, useEffect, useRef } from 'react'
+import { ReactNode, Suspense, useCallback, useEffect, useRef } from 'react'
 import { WagmiProvider as PrivyWagmiProvider } from '@privy-io/wagmi'
 import { rpcUrlAtom } from '@pancakeswap/utils/user'
 import { W3WConfigProvider } from './W3WConfigContext'
@@ -117,18 +117,26 @@ export const WalletProvider = (props: WalletProviderProps) => {
     <PrivyWagmiProvider reconnectOnMount config={wagmiConfig}>
       <W3WConfigProvider value={isInBinance()}>
         <Sync />
-        <SolanaProviders endpoint={endpoint}>
-          <SolanaWalletStateUpdater />
-          {children}
-        </SolanaProviders>
+        <Suspense fallback={null}>
+          <ChainGate>
+            <SolanaProviders endpoint={endpoint}>
+              <SolanaWalletStateUpdater />
+              {children}
+            </SolanaProviders>
+          </ChainGate>
+        </Suspense>
       </W3WConfigProvider>
     </PrivyWagmiProvider>
   )
 }
 
+const ChainGate = ({ children }: { children: ReactNode }) => {
+  useSyncPersistChain()
+  return <>{children}</>
+}
+
 const Sync = () => {
   useBaseMiniAppAutoConnect()
   useSyncWagmiState()
-  useSyncPersistChain()
   return null
 }

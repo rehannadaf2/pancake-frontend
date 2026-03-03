@@ -1,7 +1,9 @@
 import { useRouter } from 'next/router'
-import { useEffect } from 'react'
 import { allCasesNameToChainId } from '@pancakeswap/chains'
+import { useState } from 'react'
 import { useSwitchNetworkV2 } from './useSwitchNetworkV2'
+
+let switchPromise: Promise<boolean> | null = null
 
 export const useSyncPersistChain = () => {
   const router = useRouter()
@@ -9,13 +11,18 @@ export const useSyncPersistChain = () => {
   const chain = (query.chain || '') as string
   const persistChain = query.persistChain ? String(query.persistChain) : null
   const { switchNetwork } = useSwitchNetworkV2()
+  const [syncedChainId, setSyncedChainId] = useState<number | null>(null)
 
-  useEffect(() => {
-    if (chain && persistChain) {
-      const chainId = allCasesNameToChainId[chain]
-      if (chainId) {
-        switchNetwork(chainId)
-      }
+  const targetChainId = chain ? allCasesNameToChainId[chain] : null
+  const shouldSync = !!targetChainId && !!persistChain && syncedChainId !== targetChainId
+
+  if (shouldSync) {
+    if (!switchPromise) {
+      switchPromise = switchNetwork(targetChainId).finally(() => {
+        setSyncedChainId(targetChainId)
+        switchPromise = null
+      })
     }
-  }, [chain, persistChain, switchNetwork])
+    throw switchPromise
+  }
 }
