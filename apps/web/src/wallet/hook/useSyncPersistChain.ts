@@ -3,6 +3,7 @@ import { allCasesNameToChainId } from '@pancakeswap/chains'
 import { useSwitchNetworkV2 } from './useSwitchNetworkV2'
 
 let switchPromise: Promise<boolean> | null = null
+let syncedPersistChainKey: string | null = null
 
 export const useSyncPersistChain = () => {
   const router = useRouter()
@@ -13,13 +14,22 @@ export const useSyncPersistChain = () => {
 
   const targetChainId = chain ? allCasesNameToChainId[chain] : null
   const shouldSync = !!targetChainId && !!persistChain
+  const syncKey = shouldSync ? `${chain}:${persistChain}` : null
 
-  if (shouldSync) {
-    if (!switchPromise) {
-      switchPromise = switchNetwork(targetChainId).finally(() => {
-        switchPromise = null
-      })
-    }
-    throw switchPromise
+  if (!shouldSync) {
+    syncedPersistChainKey = null
+    return
   }
+
+  if (syncedPersistChainKey === syncKey) {
+    return
+  }
+
+  if (!switchPromise) {
+    switchPromise = switchNetwork(targetChainId).finally(() => {
+      syncedPersistChainKey = syncKey
+      switchPromise = null
+    })
+  }
+  throw switchPromise
 }
