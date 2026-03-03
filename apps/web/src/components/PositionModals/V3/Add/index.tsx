@@ -397,7 +397,7 @@ export const V3PositionAdd = ({ position: existingPositionDetail, poolInfo }: V3
         <LiquiditySlippageButton />
       </RowBetween>
 
-      <LightGreyCard mt="16px" borderRadius="24px" padding="16px" maxWidth="390px">
+      <LightGreyCard mt="16px" borderRadius="24px" padding="16px">
         <LockedDeposit locked={depositADisabled}>
           <CurrencyInputPanelSimplify
             id="position-modal-v3-increase-A"

@@ -10,6 +10,7 @@ import { AprCalculatorV2 } from 'views/AddLiquidityV3/components/AprCalculatorV2
 import { PoolInfoDisplay } from '../shared/PoolInfoDisplay'
 import { PositionTabType } from '../types'
 import { V3PositionAdd } from './Add'
+import { V3PositionRemove } from './Remove'
 
 interface V3PositionModalContentProps {
   poolId?: Hex
@@ -47,7 +48,11 @@ export const V3PositionModalContent = ({ poolId, chainId, position, tab = 'Add' 
       />
 
       <Box mt="16px">
-        {tab === 'Add' ? <V3PositionAdd position={position as PositionDetail} poolInfo={poolInfo} /> : null}
+        {tab === 'Add' ? (
+          <V3PositionAdd position={position as PositionDetail} poolInfo={poolInfo} />
+        ) : tab === 'Remove' ? (
+          <V3PositionRemove position={position as PositionDetail} poolInfo={poolInfo} />
+        ) : null}
       </Box>
     </Box>
   )

@@ -10,10 +10,27 @@ import {
   UnifiedPositionDetail,
   V2LPDetail,
 } from 'state/farmsV4/state/accountPositions/type'
+import styled from 'styled-components'
 import { InfinityPositionModalContent } from './Infinity'
 import { PositionTabType } from './types'
 import { V3PositionModalContent } from './V3'
 import { V2OrSSPositionModalContent } from './V2OrSS'
+
+const ClickablePreTitle = styled(PreTitle)<{ $active?: boolean }>`
+  cursor: pointer;
+  transition: scale, opacity 0.15s;
+  user-select: none;
+  ${({ $active }) =>
+    !$active &&
+    `
+      &:hover {
+        opacity: 0.7;
+      }
+    `}
+  &:active {
+    transform: translateY(1px);
+  }
+`
 
 const tabsOrder: PositionTabType[] = ['Add', 'Remove', 'Harvest']
 
@@ -79,30 +96,30 @@ export function PositionModal({
         headerBorderColor="transparent"
         bodyPadding="0 24px 16px"
         onDismiss={onDismiss}
-        minWidth="438px"
+        width="452px"
       >
         <FlexGap gap="16px" mb="16px">
-          <PreTitle
+          <ClickablePreTitle
             color={tab === 'Add' ? 'secondary' : 'textSubtle'}
             onClick={() => handleTabSelect('Add')}
-            style={{ cursor: 'pointer' }}
+            $active={tab === 'Add'}
           >
             {t('Add Liquidity')}
-          </PreTitle>
-          <PreTitle
+          </ClickablePreTitle>
+          <ClickablePreTitle
             color={tab === 'Remove' ? 'secondary' : 'textSubtle'}
             onClick={() => handleTabSelect('Remove')}
-            style={{ cursor: 'pointer' }}
+            $active={tab === 'Remove'}
           >
             {t('Remove Liquidity')}
-          </PreTitle>
-          <PreTitle
+          </ClickablePreTitle>
+          <ClickablePreTitle
             color={tab === 'Harvest' ? 'secondary' : 'textSubtle'}
             onClick={() => handleTabSelect('Harvest')}
-            style={{ cursor: 'pointer' }}
+            $active={tab === 'Harvest'}
           >
             {t('Harvest')}
-          </PreTitle>
+          </ClickablePreTitle>
         </FlexGap>
         {isInfinityProtocol(protocol) ? (
           <InfinityPositionModalContent
