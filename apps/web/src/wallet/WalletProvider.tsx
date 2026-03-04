@@ -116,9 +116,9 @@ export const WalletProvider = (props: WalletProviderProps) => {
   return (
     <PrivyWagmiProvider reconnectOnMount config={wagmiConfig}>
       <W3WConfigProvider value={isInBinance()}>
-        <Sync />
         <Suspense fallback={null}>
           <ChainGate>
+            <Sync />
             <SolanaProviders endpoint={endpoint}>
               <SolanaWalletStateUpdater />
               {children}
