@@ -13,6 +13,8 @@ import { InfinityBinPositionDetail, InfinityCLPositionDetail } from 'state/farms
 import { PoolInfoDisplay } from '../shared/PoolInfoDisplay'
 import { PositionTabType } from '../types'
 import { InfinityCLPositionAdd } from './Add'
+import { InfinityCLPositionRemove } from './Remove/InfinityCLPositionRemove'
+import { InfinityBinPositionRemove } from './Remove/InfinityBinPositionRemove'
 
 interface InfinityPositionModalContentProps {
   poolId?: Hex
@@ -58,6 +60,10 @@ export const InfinityPositionModalContent = ({
       <Box mt="16px">
         {tab === 'Add' && poolInfo.protocol === Protocol.InfinityCLAMM ? (
           <InfinityCLPositionAdd position={position as InfinityCLPositionDetail} poolInfo={poolInfo} />
+        ) : tab === 'Remove' && poolInfo.protocol === Protocol.InfinityCLAMM ? (
+          <InfinityCLPositionRemove position={position as InfinityCLPositionDetail} poolInfo={poolInfo} />
+        ) : tab === 'Remove' && poolInfo.protocol === Protocol.InfinityBIN ? (
+          <InfinityBinPositionRemove position={position as InfinityBinPositionDetail} poolInfo={poolInfo} />
         ) : null}
       </Box>
     </Box>

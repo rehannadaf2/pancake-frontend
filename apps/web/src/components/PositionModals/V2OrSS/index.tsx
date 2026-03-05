@@ -12,6 +12,8 @@ import { PoolInfoDisplay } from '../shared/PoolInfoDisplay'
 import { PositionTabType } from '../types'
 import { V2PositionAdd } from './Add/V2PositionAdd'
 import { SSPositionAdd } from './Add/SSPositionAdd'
+import { V2PositionRemove } from './Remove/V2PositionRemove'
+import { SSPositionRemove } from './Remove/SSPositionRemove'
 
 interface V2PositionModalContentProps {
   poolId?: Hex
@@ -57,10 +59,14 @@ export const V2OrSSPositionModalContent = ({
         {protocol === Protocol.V2 ? (
           tab === 'Add' ? (
             <V2PositionAdd position={position as V2LPDetail} poolInfo={poolInfo} />
+          ) : tab === 'Remove' ? (
+            <V2PositionRemove position={position as V2LPDetail} poolInfo={poolInfo} />
           ) : null
         ) : protocol === Protocol.STABLE ? (
           tab === 'Add' ? (
             <SSPositionAdd position={position as StableLPDetail} poolInfo={poolInfo} />
+          ) : tab === 'Remove' ? (
+            <SSPositionRemove position={position as StableLPDetail} poolInfo={poolInfo} />
           ) : null
         ) : null}
       </Box>
