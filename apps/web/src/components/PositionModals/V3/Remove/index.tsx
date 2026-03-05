@@ -3,14 +3,12 @@ import { useTranslation } from '@pancakeswap/localization'
 import { WNATIVE } from '@pancakeswap/sdk'
 import { Currency } from '@pancakeswap/swap-sdk-core'
 import {
-  ArrowForwardIcon,
   Box,
   Button,
   ChevronRightIcon,
   Flex,
   FlexGap,
   Message,
-  PreTitle,
   RowBetween,
   Slider,
   Text,
@@ -18,7 +16,8 @@ import {
 } from '@pancakeswap/uikit'
 import { formatBigInt } from '@pancakeswap/utils/formatBalance'
 import { useLiquidityUserSlippage } from '@pancakeswap/utils/user'
-import { CurrencyLogo, LightGreyCard } from '@pancakeswap/widgets-internal'
+import { LightGreyCard } from '@pancakeswap/widgets-internal'
+import { BalanceDifferenceDisplay } from 'components/PositionModals/shared/BalanceDifferenceDisplay'
 import { INITIAL_ALLOWED_SLIPPAGE } from 'config/constants'
 import useAccountActiveChain from 'hooks/useAccountActiveChain'
 import { useMasterchefV3 } from 'hooks/useContract'
@@ -31,8 +30,6 @@ import { PositionDetail } from 'state/farmsV4/state/accountPositions/type'
 import { PoolInfo } from 'state/farmsV4/state/type'
 import { LiquiditySlippageButton } from 'views/Swap/components/SlippageButton'
 import { BigNumber as BN } from 'bignumber.js'
-
-const MIN_COL_WIDTH = '80px'
 
 interface V3PositionRemoveProps {
   position: PositionDetail
@@ -168,75 +165,17 @@ export const V3PositionRemove = ({ position, poolInfo }: V3PositionRemoveProps) 
         </FlexGap>
       </LightGreyCard>
 
-      <LightGreyCard mt="16px" padding="16px" borderRadius="24px" style={{ fontVariantNumeric: 'tabular-nums' }}>
-        <RowBetween>
-          <PreTitle>{t('Position')}</PreTitle>
-          <FlexGap gap="8px" alignItems="center">
-            <Text color="textSubtle" small>
-              {t('Current')}
-            </Text>
-            <ArrowForwardIcon color="textSubtle" width="16px" mt="2px" />
-            <Text color="textSubtle" minWidth={MIN_COL_WIDTH} small>
-              {t('New Balance')}
-            </Text>
-          </FlexGap>
-        </RowBetween>
-
-        <RowBetween mt="8px">
-          <FlexGap gap="8px">
-            <CurrencyLogo currency={currency0} size="24px" />
-            <Text mt="2px" color="textSubtle" small>
-              {currency0.name ?? 'UNKNOWN'}
-            </Text>
-          </FlexGap>
-
-          <FlexGap gap="8px" alignItems="center">
-            <Text small>999,999.99</Text>
-            <ArrowForwardIcon color="textSubtle" width="16px" mt="2px" />
-            <Text minWidth={MIN_COL_WIDTH} textAlign="right" small>
-              999,999.99
-            </Text>
-          </FlexGap>
-        </RowBetween>
-
-        <RowBetween mt="8px">
-          <FlexGap gap="8px">
-            <CurrencyLogo currency={currency1} size="24px" />
-            <Text mt="2px" color="textSubtle" small>
-              {currency1.name ?? 'UNKNOWN'}
-            </Text>
-          </FlexGap>
-
-          <FlexGap gap="8px" alignItems="center">
-            <Text small>999,999.99</Text>
-            <ArrowForwardIcon color="textSubtle" width="16px" mt="2px" />
-            <Text minWidth={MIN_COL_WIDTH} textAlign="right" small>
-              999,999.99
-            </Text>
-          </FlexGap>
-        </RowBetween>
-
-        <RowBetween mt="8px" gap="8px">
-          <PreTitle>{t('Total Position Value (USD)')}</PreTitle>
-          <FlexGap gap="8px" alignItems="center">
-            <Text small>$999,999.99</Text>
-            <ArrowForwardIcon color="textSubtle" width="16px" mt="2px" />
-            <Text minWidth={MIN_COL_WIDTH} textAlign="right" small>
-              $999,999.99
-            </Text>
-          </FlexGap>
-        </RowBetween>
-
-        <RowBetween mt="8px">
-          <Text color="textSubtle" small>
-            {t('Total removed value (USD)')}
-          </Text>
-
-          <Text minWidth={MIN_COL_WIDTH} textAlign="right" small>
-            {/* $999,999.99 */}${removedTokensUsd}
-          </Text>
-        </RowBetween>
-      </LightGreyCard>
+      <BalanceDifferenceDisplay
+        currency0={currency0}
+        currency1={currency1}
+        currency0Amount="999,999.99"
+        currency0NewAmount="999,999.99"
+        currency1Amount="999,999.99"
+        currency1NewAmount="999,999.99"
+        totalPositionUsd="$999,999.99"
+        totalPositionNewUsd="$999,999.99"
+        removedAmountUsd={`$${removedTokensUsd}`}
+      />
 
       {isStakedInMCv3 ? (
         <Message variant="secondary60" mt="16px">
