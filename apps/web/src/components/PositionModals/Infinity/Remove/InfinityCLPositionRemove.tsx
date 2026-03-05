@@ -1,14 +1,13 @@
 import { useDebouncedChangeHandler } from '@pancakeswap/hooks'
-import { getPoolId } from '@pancakeswap/infinity-sdk'
+import { getPoolId, type PoolKey } from '@pancakeswap/infinity-sdk'
 import { useTranslation } from '@pancakeswap/localization'
 import { zeroAddress } from '@pancakeswap/price-api-sdk'
 import { Percent } from '@pancakeswap/swap-sdk-core'
-import { Box, Button, Flex, FlexGap, Message, PreTitle, RowBetween, Slider, Text, Toggle } from '@pancakeswap/uikit'
+import { Box, Button, Flex, FlexGap, PreTitle, RowBetween, Slider, Text, Toggle } from '@pancakeswap/uikit'
 import { INITIAL_ALLOWED_SLIPPAGE, useLiquidityUserSlippage } from '@pancakeswap/utils/user'
 import { LightGreyCard } from '@pancakeswap/widgets-internal'
 import { BigNumber as BN } from 'bignumber.js'
 import { BalanceDifferenceDisplay } from 'components/PositionModals/shared/BalanceDifferenceDisplay'
-import { useFeesEarned } from 'hooks/infinity/useFeesEarned'
 import { usePoolById } from 'hooks/infinity/usePool'
 import { usePositionAmount } from 'hooks/infinity/usePositionAmount'
 import { useRemoveClLiquidity } from 'hooks/infinity/useRemoveClLiquidity'
@@ -67,15 +66,6 @@ export const InfinityCLPositionRemove = ({ position, poolInfo }: InfinityCLPosit
     [allAmount0, allAmount1, percent],
   )
 
-  const [feeValue0, feeValue1] = useFeesEarned({
-    currency0,
-    currency1,
-    tokenId: position.tokenId ? BigInt(position.tokenId) : undefined,
-    poolId,
-    tickLower,
-    tickUpper,
-  })
-
   const { data: currency0Usd } = useCurrencyUsdPrice(currency0)
   const { data: currency1Usd } = useCurrencyUsdPrice(currency1)
 
@@ -97,8 +87,8 @@ export const InfinityCLPositionRemove = ({ position, poolInfo }: InfinityCLPosit
     const [amount1Min] = amount1 ? calculateSlippageAmount(amount1, allowedSlippage) : [maxUint128]
 
     await removeCLLiquidity({
-      tokenId: BigInt(position.tokenId),
-      poolKey: position.poolKey,
+      tokenId: position.tokenId,
+      poolKey: position.poolKey as PoolKey<'CL'>,
       liquidity: (position.liquidity * BigInt(percent)) / 100n,
       amount0Min,
       amount1Min,

@@ -37,7 +37,7 @@ interface V3PositionRemoveProps {
 export const V3PositionRemove = ({ position, poolInfo }: V3PositionRemoveProps) => {
   const { t } = useTranslation()
 
-  const { account, chainId: activeChainId } = useAccountActiveChain()
+  const { account } = useAccountActiveChain()
 
   const currency0 = poolInfo.token0 as Currency
   const currency1 = poolInfo.token1 as Currency
@@ -67,7 +67,6 @@ export const V3PositionRemove = ({ position, poolInfo }: V3PositionRemoveProps) 
     liquidityValue1,
     feeValue0,
     feeValue1,
-    outOfRange,
     error,
   } = useDerivedV3BurnInfo(position, percent, receiveWNATIVE)
 

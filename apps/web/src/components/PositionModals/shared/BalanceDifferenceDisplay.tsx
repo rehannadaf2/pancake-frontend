@@ -49,7 +49,7 @@ export function BalanceDifferenceDisplay({
         <FlexGap gap="8px">
           <CurrencyLogo currency={currency0} size="24px" />
           <Text mt="2px" color="textSubtle" small>
-            {currency0.name ?? 'UNKNOWN'}
+            {currency0.symbol ?? 'UNKNOWN'}
           </Text>
         </FlexGap>
 
@@ -66,7 +66,7 @@ export function BalanceDifferenceDisplay({
         <FlexGap gap="8px">
           <CurrencyLogo currency={currency1} size="24px" />
           <Text mt="2px" color="textSubtle" small>
-            {currency1.name ?? 'UNKNOWN'}
+            {currency1.symbol ?? 'UNKNOWN'}
           </Text>
         </FlexGap>
 

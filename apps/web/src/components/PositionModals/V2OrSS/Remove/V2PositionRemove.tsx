@@ -320,19 +320,21 @@ const V2PositionRemoveInner = ({ position, poolInfo }: V2PositionRemoveProps) =>
       {showDetailed ? (
         <Box mt="8px">
           <CurrencyInputPanelSimplify
-            value={formattedAmounts[Field.CURRENCY_A]}
+            defaultValue={formattedAmounts[Field.CURRENCY_A]}
             onUserInput={onCurrencyAInput}
             currency={currency0}
             id="remove-liquidity-tokena"
             disableCurrencySelect
+            showMaxButton={false}
           />
           <Box mt="8px">
             <CurrencyInputPanelSimplify
-              value={formattedAmounts[Field.CURRENCY_B]}
+              defaultValue={formattedAmounts[Field.CURRENCY_B]}
               onUserInput={onCurrencyBInput}
               currency={currency1}
               id="remove-liquidity-tokenb"
               disableCurrencySelect
+              showMaxButton={false}
             />
           </Box>
         </Box>
