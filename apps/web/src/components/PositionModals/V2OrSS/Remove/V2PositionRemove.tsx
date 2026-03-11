@@ -246,20 +246,37 @@ const V2PositionRemoveInner = ({ position, poolInfo }: V2PositionRemoveProps) =>
     return BN(amt.toExact()).dividedBy(BN(pct.numerator.toString()).dividedBy(pct.denominator.toString()))
   }, [parsedAmounts])
 
-  const currency0Amount = fullAmountA?.toFormat(6) ?? '0'
-  const currency1Amount = fullAmountB?.toFormat(6) ?? '0'
+  const currency0Amount = useMemo(() => {
+    const amt = parsedAmounts[Field.CURRENCY_A]
+    const pct = parsedAmounts[Field.LIQUIDITY_PERCENT]
+    if (!amt || pct.equalTo('0')) return '0'
+    return amt.multiply(new Percent(pct.denominator.toString(), pct.numerator.toString())).toSignificant(6)
+  }, [parsedAmounts])
+
+  const currency1Amount = useMemo(() => {
+    const amt = parsedAmounts[Field.CURRENCY_B]
+    const pct = parsedAmounts[Field.LIQUIDITY_PERCENT]
+    if (!amt || pct.equalTo('0')) return '0'
+    return amt.multiply(new Percent(pct.denominator.toString(), pct.numerator.toString())).toSignificant(6)
+  }, [parsedAmounts])
 
   const currency0NewAmount = useMemo(() => {
-    if (!fullAmountA || !parsedAmounts[Field.CURRENCY_A]) return currency0Amount
-    const result = fullAmountA.minus(BN(parsedAmounts[Field.CURRENCY_A].toExact()))
-    return result.isNegative() ? '0' : result.toFormat(6)
-  }, [fullAmountA, parsedAmounts, currency0Amount])
+    const amt = parsedAmounts[Field.CURRENCY_A]
+    const pct = parsedAmounts[Field.LIQUIDITY_PERCENT]
+    if (!amt || pct.equalTo('0')) return currency0Amount
+    const remainingNum = Number(pct.denominator.toString()) - Number(pct.numerator.toString())
+    if (remainingNum <= 0) return '0'
+    return amt.multiply(new Percent(remainingNum, pct.numerator.toString())).toSignificant(6)
+  }, [parsedAmounts, currency0Amount])
 
   const currency1NewAmount = useMemo(() => {
-    if (!fullAmountB || !parsedAmounts[Field.CURRENCY_B]) return currency1Amount
-    const result = fullAmountB.minus(BN(parsedAmounts[Field.CURRENCY_B].toExact()))
-    return result.isNegative() ? '0' : result.toFormat(6)
-  }, [fullAmountB, parsedAmounts, currency1Amount])
+    const amt = parsedAmounts[Field.CURRENCY_B]
+    const pct = parsedAmounts[Field.LIQUIDITY_PERCENT]
+    if (!amt || pct.equalTo('0')) return currency1Amount
+    const remainingNum = Number(pct.denominator.toString()) - Number(pct.numerator.toString())
+    if (remainingNum <= 0) return '0'
+    return amt.multiply(new Percent(remainingNum, pct.numerator.toString())).toSignificant(6)
+  }, [parsedAmounts, currency1Amount])
 
   const totalPositionUsd = useMemo(() => {
     if (!fullAmountA || !fullAmountB || !currency0Usd || !currency1Usd) return '$0'

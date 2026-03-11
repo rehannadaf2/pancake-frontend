@@ -2,7 +2,7 @@ import { useDebouncedChangeHandler } from '@pancakeswap/hooks'
 import { getPoolId, type PoolKey } from '@pancakeswap/infinity-sdk'
 import { useTranslation } from '@pancakeswap/localization'
 import { zeroAddress } from '@pancakeswap/price-api-sdk'
-import { Percent } from '@pancakeswap/swap-sdk-core'
+import { CurrencyAmount, Percent } from '@pancakeswap/swap-sdk-core'
 import { Box, Button, Flex, FlexGap, PreTitle, RowBetween, Slider, Text, Toggle } from '@pancakeswap/uikit'
 import { INITIAL_ALLOWED_SLIPPAGE, useLiquidityUserSlippage } from '@pancakeswap/utils/user'
 import { LightGreyCard } from '@pancakeswap/widgets-internal'
@@ -114,14 +114,16 @@ export const InfinityCLPositionRemove = ({ position, poolInfo }: InfinityCLPosit
 
   const currency0NewAmount = useMemo(() => {
     if (!allAmount0 || !amount0) return currency0Amount
-    const result = BN(allAmount0.toExact()).minus(BN(amount0.toExact()))
-    return result.isNegative() ? '0' : result.toFormat(6)
+    const newQuotient = allAmount0.quotient - amount0.quotient
+    if (newQuotient < 0n) return '0'
+    return CurrencyAmount.fromRawAmount(allAmount0.currency, newQuotient).toSignificant(6)
   }, [allAmount0, amount0, currency0Amount])
 
   const currency1NewAmount = useMemo(() => {
     if (!allAmount1 || !amount1) return currency1Amount
-    const result = BN(allAmount1.toExact()).minus(BN(amount1.toExact()))
-    return result.isNegative() ? '0' : result.toFormat(6)
+    const newQuotient = allAmount1.quotient - amount1.quotient
+    if (newQuotient < 0n) return '0'
+    return CurrencyAmount.fromRawAmount(allAmount1.currency, newQuotient).toSignificant(6)
   }, [allAmount1, amount1, currency1Amount])
 
   const totalPositionUsd = useMemo(() => {

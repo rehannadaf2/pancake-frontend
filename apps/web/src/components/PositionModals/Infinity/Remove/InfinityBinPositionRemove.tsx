@@ -206,14 +206,16 @@ export const InfinityBinPositionRemove = ({ position, poolInfo }: InfinityBinPos
 
   const currency0NewAmount = useMemo(() => {
     if (!totalAmount0 || !amount0) return currency0AmountStr
-    const result = BN(totalAmount0.toExact()).minus(BN(amount0.toExact()))
-    return result.isNegative() ? '0' : result.toFormat(6)
+    const newQuotient = totalAmount0.quotient - amount0.quotient
+    if (newQuotient < 0n) return '0'
+    return CurrencyAmount.fromRawAmount(totalAmount0.currency, newQuotient).toSignificant(6)
   }, [totalAmount0, amount0, currency0AmountStr])
 
   const currency1NewAmount = useMemo(() => {
     if (!totalAmount1 || !amount1) return currency1AmountStr
-    const result = BN(totalAmount1.toExact()).minus(BN(amount1.toExact()))
-    return result.isNegative() ? '0' : result.toFormat(6)
+    const newQuotient = totalAmount1.quotient - amount1.quotient
+    if (newQuotient < 0n) return '0'
+    return CurrencyAmount.fromRawAmount(totalAmount1.currency, newQuotient).toSignificant(6)
   }, [totalAmount1, amount1, currency1AmountStr])
 
   const totalPositionUsd = useMemo(() => {
