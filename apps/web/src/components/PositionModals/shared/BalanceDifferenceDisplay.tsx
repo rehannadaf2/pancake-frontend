@@ -57,7 +57,7 @@ export function BalanceDifferenceDisplay({
           <Text small>{currency0Amount}</Text>
           <ArrowForwardIcon color="textSubtle" width="16px" mt="2px" />
           <Text minWidth={MIN_COL_WIDTH} textAlign="right" small>
-            {currency0NewAmount}
+            {Number(currency0NewAmount) === 0 ? '0' : currency0NewAmount}
           </Text>
         </FlexGap>
       </RowBetween>
@@ -74,7 +74,7 @@ export function BalanceDifferenceDisplay({
           <Text small>{currency1Amount}</Text>
           <ArrowForwardIcon color="textSubtle" width="16px" mt="2px" />
           <Text minWidth={MIN_COL_WIDTH} textAlign="right" small>
-            {currency1NewAmount}
+            {Number(currency1NewAmount) === 0 ? '0' : currency1NewAmount}
           </Text>
         </FlexGap>
       </RowBetween>

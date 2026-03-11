@@ -105,14 +105,16 @@ export const V3PositionRemove = ({ position, poolInfo }: V3PositionRemoveProps) 
 
   const currency0NewAmount = useMemo(() => {
     if (!fullAmount0 || !liquidityValue0) return currency0Amount
-    const result = BN(fullAmount0.toExact()).minus(BN(liquidityValue0.toExact()))
-    return result.isNegative() ? '0' : result.toFormat(6)
+    const newQuotient = fullAmount0.quotient - liquidityValue0.quotient
+    if (newQuotient < 0n) return '0'
+    return CurrencyAmount.fromRawAmount(fullAmount0.currency, newQuotient).toSignificant(6)
   }, [fullAmount0, liquidityValue0, currency0Amount])
 
   const currency1NewAmount = useMemo(() => {
     if (!fullAmount1 || !liquidityValue1) return currency1Amount
-    const result = BN(fullAmount1.toExact()).minus(BN(liquidityValue1.toExact()))
-    return result.isNegative() ? '0' : result.toFormat(6)
+    const newQuotient = fullAmount1.quotient - liquidityValue1.quotient
+    if (newQuotient < 0n) return '0'
+    return CurrencyAmount.fromRawAmount(fullAmount1.currency, newQuotient).toSignificant(6)
   }, [fullAmount1, liquidityValue1, currency1Amount])
 
   const totalPositionUsd = useMemo(() => {
