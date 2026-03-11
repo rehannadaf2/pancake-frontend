@@ -73,7 +73,7 @@ export const V3PositionAdd = ({ position: existingPositionDetail, poolInfo }: V3
   // Position Info
   const { tokenId } = existingPositionDetail
   const chainId = existingPositionDetail.chainId || poolInfo.chainId
-  const { position: existingPosition } = useDerivedPositionInfo(existingPositionDetail)
+  const { position: existingPosition } = useDerivedPositionInfo(existingPositionDetail, chainId)
 
   // Native token toggle
   const native = useNativeCurrency(chainId)
@@ -159,10 +159,10 @@ export const V3PositionAdd = ({ position: existingPositionDetail, poolInfo }: V3
     ticksAtLimit,
     currencyBalances,
   } = useV3DerivedInfo(
-    baseCurrency ?? undefined,
-    quoteCurrency ?? undefined,
+    baseCurrency.wrapped ?? undefined,
+    quoteCurrency.wrapped ?? undefined,
     feeAmount,
-    baseCurrency ?? undefined,
+    baseCurrency.wrapped ?? undefined,
     existingPosition,
     formState,
   )
