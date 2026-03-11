@@ -15,6 +15,8 @@ import { PositionTabType } from '../types'
 import { InfinityCLPositionAdd } from './Add'
 import { InfinityCLPositionRemove } from './Remove/InfinityCLPositionRemove'
 import { InfinityBinPositionRemove } from './Remove/InfinityBinPositionRemove'
+import { InfinityCLPositionHarvest } from './Harvest/InfinityCLPositionHarvest'
+import { InfinityBinPositionHarvest } from './Harvest/InfinityBinPositionHarvest'
 
 interface InfinityPositionModalContentProps {
   poolId?: Hex
@@ -64,6 +66,10 @@ export const InfinityPositionModalContent = ({
           <InfinityCLPositionRemove position={position as InfinityCLPositionDetail} poolInfo={poolInfo} />
         ) : tab === 'Remove' && poolInfo.protocol === Protocol.InfinityBIN ? (
           <InfinityBinPositionRemove position={position as InfinityBinPositionDetail} poolInfo={poolInfo} />
+        ) : tab === 'Harvest' && poolInfo.protocol === Protocol.InfinityCLAMM ? (
+          <InfinityCLPositionHarvest position={position as InfinityCLPositionDetail} poolInfo={poolInfo} />
+        ) : tab === 'Harvest' && poolInfo.protocol === Protocol.InfinityBIN ? (
+          <InfinityBinPositionHarvest position={position as InfinityBinPositionDetail} poolInfo={poolInfo} />
         ) : null}
       </Box>
     </Box>

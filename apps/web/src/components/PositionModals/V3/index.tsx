@@ -11,6 +11,7 @@ import { PoolInfoDisplay } from '../shared/PoolInfoDisplay'
 import { PositionTabType } from '../types'
 import { V3PositionAdd } from './Add'
 import { V3PositionRemove } from './Remove'
+import { V3PositionHarvest } from './Harvest'
 
 interface V3PositionModalContentProps {
   poolId?: Hex
@@ -52,6 +53,8 @@ export const V3PositionModalContent = ({ poolId, chainId, position, tab = 'Add' 
           <V3PositionAdd position={position as PositionDetail} poolInfo={poolInfo} />
         ) : tab === 'Remove' ? (
           <V3PositionRemove position={position as PositionDetail} poolInfo={poolInfo} />
+        ) : tab === 'Harvest' ? (
+          <V3PositionHarvest position={position as PositionDetail} poolInfo={poolInfo} />
         ) : null}
       </Box>
     </Box>

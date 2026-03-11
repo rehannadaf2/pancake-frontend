@@ -14,6 +14,7 @@ import { V2PositionAdd } from './Add/V2PositionAdd'
 import { SSPositionAdd } from './Add/SSPositionAdd'
 import { V2PositionRemove } from './Remove/V2PositionRemove'
 import { SSPositionRemove } from './Remove/SSPositionRemove'
+import { V2OrSSPositionHarvest } from './Harvest/V2OrSSPositionHarvest'
 
 interface V2PositionModalContentProps {
   poolId?: Hex
@@ -56,7 +57,9 @@ export const V2OrSSPositionModalContent = ({
       />
 
       <Box mt="16px">
-        {protocol === Protocol.V2 ? (
+        {tab === 'Harvest' ? (
+          <V2OrSSPositionHarvest position={position as V2LPDetail | StableLPDetail} poolInfo={poolInfo} />
+        ) : protocol === Protocol.V2 ? (
           tab === 'Add' ? (
             <V2PositionAdd position={position as V2LPDetail} poolInfo={poolInfo} />
           ) : tab === 'Remove' ? (

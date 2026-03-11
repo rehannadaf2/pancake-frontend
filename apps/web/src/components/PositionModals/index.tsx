@@ -3,7 +3,7 @@ import { useTranslation } from '@pancakeswap/localization'
 import { FlexGap, ModalV2, MotionModal, PreTitle } from '@pancakeswap/uikit'
 import { Hex } from 'viem'
 import { isInfinityProtocol } from 'utils/protocols'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import {
   InfinityBinPositionDetail,
   InfinityCLPositionDetail,
@@ -32,7 +32,11 @@ const ClickablePreTitle = styled(PreTitle)<{ $active?: boolean }>`
   }
 `
 
-const tabsOrder: PositionTabType[] = ['Add', 'Remove', 'Harvest']
+const TAB_LABELS: Record<PositionTabType, string> = {
+  Add: 'Add Liquidity',
+  Remove: 'Remove Liquidity',
+  Harvest: 'Harvest',
+}
 
 interface PositionModalProps {
   isOpen?: boolean
@@ -55,7 +59,31 @@ export function PositionModal({
   presetTab,
 }: PositionModalProps) {
   const { t } = useTranslation()
+
+  const availableTabs = useMemo(() => {
+    const tabs: PositionTabType[] = ['Add', 'Remove']
+
+    if (!protocol) return tabs
+
+    if (protocol === Protocol.V3 || isInfinityProtocol(protocol)) {
+      tabs.push('Harvest')
+      return tabs
+    }
+
+    if (position && 'farmingBalance' in position && position.farmingBalance.greaterThan(0)) {
+      tabs.push('Harvest')
+    }
+
+    return tabs
+  }, [protocol, position])
+
   const [tab, setTab] = useState<PositionTabType>(presetTab ?? 'Add')
+
+  useEffect(() => {
+    if (!availableTabs.includes(tab)) {
+      setTab('Add')
+    }
+  }, [availableTabs, tab])
 
   const handleTabSelect = useCallback(
     (tab: PositionTabType) => {
@@ -64,16 +92,15 @@ export function PositionModal({
     [setTab],
   )
 
-  // Keyboard navigation for tabs
   useEffect(() => {
     if (typeof window !== 'undefined' && tab) {
       const onKeyDown = (e: KeyboardEvent) => {
-        const index = tabsOrder.indexOf(tab)
+        const index = availableTabs.indexOf(tab)
 
-        if (e.key === 'ArrowRight' && index + 1 < tabsOrder.length) {
-          setTab(tabsOrder[index + 1])
+        if (e.key === 'ArrowRight' && index + 1 < availableTabs.length) {
+          setTab(availableTabs[index + 1])
         } else if (e.key === 'ArrowLeft' && index > 0) {
-          setTab(tabsOrder[index - 1])
+          setTab(availableTabs[index - 1])
         }
       }
 
@@ -85,7 +112,7 @@ export function PositionModal({
     }
 
     return () => {}
-  }, [tab])
+  }, [tab, availableTabs])
 
   if (!poolId || !protocol) return null
 
@@ -99,27 +126,16 @@ export function PositionModal({
         width="452px"
       >
         <FlexGap gap="16px" mb="16px">
-          <ClickablePreTitle
-            color={tab === 'Add' ? 'secondary' : 'textSubtle'}
-            onClick={() => handleTabSelect('Add')}
-            $active={tab === 'Add'}
-          >
-            {t('Add Liquidity')}
-          </ClickablePreTitle>
-          <ClickablePreTitle
-            color={tab === 'Remove' ? 'secondary' : 'textSubtle'}
-            onClick={() => handleTabSelect('Remove')}
-            $active={tab === 'Remove'}
-          >
-            {t('Remove Liquidity')}
-          </ClickablePreTitle>
-          <ClickablePreTitle
-            color={tab === 'Harvest' ? 'secondary' : 'textSubtle'}
-            onClick={() => handleTabSelect('Harvest')}
-            $active={tab === 'Harvest'}
-          >
-            {t('Harvest')}
-          </ClickablePreTitle>
+          {availableTabs.map((t_) => (
+            <ClickablePreTitle
+              key={t_}
+              color={tab === t_ ? 'secondary' : 'textSubtle'}
+              onClick={() => handleTabSelect(t_)}
+              $active={tab === t_}
+            >
+              {t(TAB_LABELS[t_])}
+            </ClickablePreTitle>
+          ))}
         </FlexGap>
         {isInfinityProtocol(protocol) ? (
           <InfinityPositionModalContent
