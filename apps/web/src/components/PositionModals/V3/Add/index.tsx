@@ -1,13 +1,13 @@
 import { useTranslation } from '@pancakeswap/localization'
 import { Currency, CurrencyAmount, Percent } from '@pancakeswap/swap-sdk-core'
-import { Box, Button, FlexGap, IconButton, PreTitle, RowBetween, SwapHorizIcon, Text } from '@pancakeswap/uikit'
+import { Box, Button, FlexGap, IconButton, PreTitle, RowBetween, SwapHorizIcon, Text, Toggle } from '@pancakeswap/uikit'
 import { formatNumber } from '@pancakeswap/utils/formatNumber'
 import { INITIAL_ALLOWED_SLIPPAGE, useLiquidityUserSlippage } from '@pancakeswap/utils/user'
 import { LightGreyCard } from '@pancakeswap/widgets-internal'
 import CurrencyInputPanelSimplify from 'components/CurrencyInputPanelSimplify'
 import useAccountActiveChain from 'hooks/useAccountActiveChain'
 import { ApprovalState, useApproveCallback } from 'hooks/useApproveCallback'
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState, type ChangeEvent } from 'react'
 import { PositionDetail } from 'state/farmsV4/state/accountPositions/type'
 import { PoolInfo } from 'state/farmsV4/state/type'
 import { basisPointsToPercent } from 'utils/exchange'
@@ -42,6 +42,7 @@ import { useRouter } from 'next/router'
 import LockedDeposit from 'views/AddLiquidityV3/formViews/V3FormView/components/LockedDeposit'
 import { MevProtectToggle } from 'views/Mev/MevProtectToggle'
 import { useCheckShouldSwitchNetwork } from 'views/universalFarms/hooks'
+import useNativeCurrency from 'hooks/useNativeCurrency'
 
 interface V3PositionAddProps {
   position: PositionDetail
@@ -74,11 +75,41 @@ export const V3PositionAdd = ({ position: existingPositionDetail, poolInfo }: V3
   const chainId = existingPositionDetail.chainId || poolInfo.chainId
   const { position: existingPosition } = useDerivedPositionInfo(existingPositionDetail)
 
-  // Currencies
-  const currency0 = token0 as Currency
-  const currency1 = token1 as Currency
-  const baseCurrency = token0 as Currency
-  const quoteCurrency = token1 as Currency
+  // Native token toggle
+  const native = useNativeCurrency(chainId)
+  const [useNativeInstead, setUseNativeInstead] = useState(true)
+
+  const canUseNativeCurrency = useMemo(() => {
+    return (
+      (token0 as Currency)?.wrapped?.address === native.wrapped.address ||
+      (token1 as Currency)?.wrapped?.address === native.wrapped.address
+    )
+  }, [token0, token1, native])
+
+  const handleToggleNative = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      setUseNativeInstead(e.target.checked)
+    },
+    [setUseNativeInstead],
+  )
+
+  // Currencies — swap wrapped → native when the toggle is active
+  const baseCurrency = useMemo<Currency>(() => {
+    if (useNativeInstead && canUseNativeCurrency && (token0 as Currency)?.wrapped?.address === native.wrapped.address) {
+      return native as Currency
+    }
+    return token0 as Currency
+  }, [token0, useNativeInstead, canUseNativeCurrency, native])
+
+  const quoteCurrency = useMemo<Currency>(() => {
+    if (useNativeInstead && canUseNativeCurrency && (token1 as Currency)?.wrapped?.address === native.wrapped.address) {
+      return native as Currency
+    }
+    return token1 as Currency
+  }, [token1, useNativeInstead, canUseNativeCurrency, native])
+
+  const currency0 = baseCurrency
+  const currency1 = quoteCurrency
 
   // Masterchef V3
   const masterchefV3 = useMasterchefV3()
@@ -389,6 +420,15 @@ export const V3PositionAdd = ({ position: existingPositionDetail, poolInfo }: V3
         </Text>
         <LiquiditySlippageButton />
       </RowBetween>
+
+      {canUseNativeCurrency && (
+        <RowBetween mt="16px">
+          <Text color="textSubtle" small>
+            {t('Use %symbol% instead', { symbol: native.symbol })}
+          </Text>
+          <Toggle scale="sm" checked={useNativeInstead} onChange={handleToggleNative} />
+        </RowBetween>
+      )}
 
       <LightGreyCard mt="16px" borderRadius="24px" padding="16px">
         <LockedDeposit locked={depositADisabled}>
