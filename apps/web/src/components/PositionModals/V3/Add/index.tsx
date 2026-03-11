@@ -1,36 +1,27 @@
-import { Permit2Signature } from '@pancakeswap/infinity-sdk'
 import { useTranslation } from '@pancakeswap/localization'
 import { Currency, CurrencyAmount, Percent } from '@pancakeswap/swap-sdk-core'
-import { Box, DynamicSection, FlexGap, IconButton, PreTitle, RowBetween, SwapHorizIcon, Text } from '@pancakeswap/uikit'
+import { Box, Button, FlexGap, IconButton, PreTitle, RowBetween, SwapHorizIcon, Text } from '@pancakeswap/uikit'
 import { formatNumber } from '@pancakeswap/utils/formatNumber'
 import { INITIAL_ALLOWED_SLIPPAGE, useLiquidityUserSlippage } from '@pancakeswap/utils/user'
 import { LightGreyCard } from '@pancakeswap/widgets-internal'
 import CurrencyInputPanelSimplify from 'components/CurrencyInputPanelSimplify'
-import { useAddCLPoolAndPosition } from 'hooks/infinity/useAddCLLiquidity'
-import { usePositionAmount } from 'hooks/infinity/usePositionAmount'
 import useAccountActiveChain from 'hooks/useAccountActiveChain'
 import { ApprovalState, useApproveCallback } from 'hooks/useApproveCallback'
-import { usePermit2 } from 'hooks/usePermit2'
 import { useCallback, useMemo, useState } from 'react'
-import { useExtraInfinityPositionInfo } from 'state/farmsV4/hooks'
-import { InfinityCLPositionDetail, PositionDetail } from 'state/farmsV4/state/accountPositions/type'
+import { PositionDetail } from 'state/farmsV4/state/accountPositions/type'
 import { PoolInfo } from 'state/farmsV4/state/type'
-import { getInfinityPositionManagerAddress } from 'utils/addressHelpers'
-import { basisPointsToPercent, calculateSlippageAmount } from 'utils/exchange'
+import { basisPointsToPercent } from 'utils/exchange'
 import { CurrencyField as Field } from 'utils/types'
 import { V3SubmitButton } from 'views/AddLiquidityV3/components/V3SubmitButton'
-import { useErrorMsg } from 'views/IncreaseLiquidity/hooks/useErrorMsg'
-import { useIncreaseForm } from 'views/IncreaseLiquidity/hooks/useIncreaseForm'
 import { PriceRangeDisplay } from 'views/PoolDetail/components/ProtocolPositionsTables'
 import { calculateTickBasedPriceRange } from 'views/PoolDetail/utils/priceRange'
 import { LiquiditySlippageButton } from 'views/Swap/components/SlippageButton'
-import { hexToBigInt, maxUint128, zeroAddress } from 'viem'
+import { hexToBigInt } from 'viem'
 import { BigNumber as BN } from 'bignumber.js'
 import { useCurrencyUsdPrice } from 'hooks/useCurrencyUsdPrice'
 import { useMasterchefV3, useV3NFTPositionManagerContract } from 'hooks/useContract'
 import { useTransactionAdder } from 'state/transactions/hooks'
 import { useV3TokenIdsByAccount } from 'hooks/v3/useV3Positions'
-import useIsTickAtLimit from 'hooks/v3/useIsTickAtLimit'
 import { FeeAmount, MasterChefV3, NonfungiblePositionManager, Pool } from '@pancakeswap/v3-sdk'
 import useV3DerivedInfo from 'hooks/v3/useV3DerivedInfo'
 import { useV3FormState } from 'views/AddLiquidityV3/formViews/V3FormView/form/reducer'
@@ -50,6 +41,7 @@ import { ZapLiquidityWidget } from 'components/ZapLiquidityWidget'
 import { useRouter } from 'next/router'
 import LockedDeposit from 'views/AddLiquidityV3/formViews/V3FormView/components/LockedDeposit'
 import { MevProtectToggle } from 'views/Mev/MevProtectToggle'
+import { useCheckShouldSwitchNetwork } from 'views/universalFarms/hooks'
 
 interface V3PositionAddProps {
   position: PositionDetail
@@ -61,6 +53,7 @@ export const V3PositionAdd = ({ position: existingPositionDetail, poolInfo }: V3
 
   // User Account
   const { account, chainId: activeChainId } = useAccountActiveChain()
+  const { switchNetworkIfNecessary, isLoading: isSwitchNetworkLoading } = useCheckShouldSwitchNetwork()
   const [deadline] = useTransactionDeadline() // custom from users settings
 
   // Transaction Management
@@ -452,31 +445,41 @@ export const V3PositionAdd = ({ position: existingPositionDetail, poolInfo }: V3
       </Box>
 
       <Box mt="16px">
-        <V3SubmitButton
-          addIsWarning={addIsWarning}
-          addIsUnsupported={addIsUnsupported}
-          account={account ?? undefined}
-          isWrongNetwork={activeChainId !== chainId}
-          approvalA={approvalA}
-          approvalB={approvalB}
-          isValid={isValid}
-          showApprovalA={showApprovalA}
-          approveACallback={approveACallback}
-          currentAllowanceA={currentAllowanceA}
-          revokeACallback={revokeACallback}
-          currencies={currencies}
-          approveBCallback={approveBCallback}
-          currentAllowanceB={currentAllowanceB}
-          revokeBCallback={revokeBCallback}
-          showApprovalB={showApprovalB}
-          parsedAmounts={parsedAmounts}
-          onClick={handleIncreaseLiquidity}
-          attemptingTxn={attemptingTxn}
-          errorMessage={errorMessage}
-          buttonText={t('Add')}
-          depositADisabled={depositADisabled}
-          depositBDisabled={depositBDisabled}
-        />
+        {activeChainId !== chainId ? (
+          <Button
+            width="100%"
+            onClick={() => (chainId ? switchNetworkIfNecessary(chainId) : undefined)}
+            disabled={isSwitchNetworkLoading}
+          >
+            {t('Switch Network')}
+          </Button>
+        ) : (
+          <V3SubmitButton
+            addIsWarning={addIsWarning}
+            addIsUnsupported={addIsUnsupported}
+            account={account ?? undefined}
+            approvalA={approvalA}
+            approvalB={approvalB}
+            isValid={isValid}
+            showApprovalA={showApprovalA}
+            approveACallback={approveACallback}
+            currentAllowanceA={currentAllowanceA}
+            revokeACallback={revokeACallback}
+            currencies={currencies}
+            approveBCallback={approveBCallback}
+            currentAllowanceB={currentAllowanceB}
+            revokeBCallback={revokeBCallback}
+            showApprovalB={showApprovalB}
+            parsedAmounts={parsedAmounts}
+            onClick={handleIncreaseLiquidity}
+            attemptingTxn={attemptingTxn}
+            errorMessage={errorMessage}
+            buttonText={t('Add')}
+            depositADisabled={depositADisabled}
+            depositBDisabled={depositBDisabled}
+            isWrongNetwork={false}
+          />
+        )}
       </Box>
       {hasZapV3Pool && hasInsufficentBalance && (
         <Box mt="16px" mx="auto" maxWidth={['auto', 'auto', 'auto', '370px']}>
