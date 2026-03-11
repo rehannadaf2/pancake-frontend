@@ -264,19 +264,25 @@ const V2PositionRemoveInner = ({ position, poolInfo }: V2PositionRemoveProps) =>
     const amt = parsedAmounts[Field.CURRENCY_A]
     const pct = parsedAmounts[Field.LIQUIDITY_PERCENT]
     if (!amt || pct.equalTo('0')) return currency0Amount
-    const remainingNum = Number(pct.denominator.toString()) - Number(pct.numerator.toString())
-    if (remainingNum <= 0) return '0'
-    return amt.multiply(new Percent(remainingNum, pct.numerator.toString())).toSignificant(6)
-  }, [parsedAmounts, currency0Amount])
+    if (innerLiquidityPercentage >= 100) return '0'
+    // total × (100 - live%) / 100
+    return amt
+      .multiply(new Percent(pct.denominator.toString(), pct.numerator.toString()))
+      .multiply(new Percent(100 - innerLiquidityPercentage, 100))
+      .toSignificant(6)
+  }, [parsedAmounts, currency0Amount, innerLiquidityPercentage])
 
   const currency1NewAmount = useMemo(() => {
     const amt = parsedAmounts[Field.CURRENCY_B]
     const pct = parsedAmounts[Field.LIQUIDITY_PERCENT]
     if (!amt || pct.equalTo('0')) return currency1Amount
-    const remainingNum = Number(pct.denominator.toString()) - Number(pct.numerator.toString())
-    if (remainingNum <= 0) return '0'
-    return amt.multiply(new Percent(remainingNum, pct.numerator.toString())).toSignificant(6)
-  }, [parsedAmounts, currency1Amount])
+    if (innerLiquidityPercentage >= 100) return '0'
+    // total × (100 - live%) / 100
+    return amt
+      .multiply(new Percent(pct.denominator.toString(), pct.numerator.toString()))
+      .multiply(new Percent(100 - innerLiquidityPercentage, 100))
+      .toSignificant(6)
+  }, [parsedAmounts, currency1Amount, innerLiquidityPercentage])
 
   const totalPositionUsd = useMemo(() => {
     if (!fullAmountA || !fullAmountB || !currency0Usd || !currency1Usd) return '$0'
@@ -286,12 +292,11 @@ const V2PositionRemoveInner = ({ position, poolInfo }: V2PositionRemoveProps) =>
   }, [fullAmountA, fullAmountB, currency0Usd, currency1Usd])
 
   const removedTokensUsd = useMemo(() => {
-    if (!parsedAmounts[Field.CURRENCY_A] || !parsedAmounts[Field.CURRENCY_B] || !currency0Usd || !currency1Usd)
-      return '0'
-    const usd0 = BN(parsedAmounts[Field.CURRENCY_A].toExact()).multipliedBy(currency0Usd)
-    const usd1 = BN(parsedAmounts[Field.CURRENCY_B].toExact()).multipliedBy(currency1Usd)
+    if (!fullAmountA || !fullAmountB || !currency0Usd || !currency1Usd) return '0'
+    const usd0 = fullAmountA.multipliedBy(currency0Usd).multipliedBy(innerLiquidityPercentage / 100)
+    const usd1 = fullAmountB.multipliedBy(currency1Usd).multipliedBy(innerLiquidityPercentage / 100)
     return usd0.plus(usd1).toFormat(2)
-  }, [parsedAmounts, currency0Usd, currency1Usd])
+  }, [fullAmountA, fullAmountB, currency0Usd, currency1Usd, innerLiquidityPercentage])
 
   const totalPositionNewUsd = useMemo(() => {
     if (totalPositionUsd === '$0' || removedTokensUsd === '0') return totalPositionUsd
@@ -365,7 +370,7 @@ const V2PositionRemoveInner = ({ position, poolInfo }: V2PositionRemoveProps) =>
             min={0}
             max={100}
             value={innerLiquidityPercentage}
-            onValueChanged={setInnerLiquidityPercentage}
+            onValueChanged={(value) => setInnerLiquidityPercentage(Math.ceil(value))}
             mb="16px"
           />
           <FlexGap gap="8px" justifyContent="space-between">

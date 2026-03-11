@@ -62,8 +62,11 @@ export const InfinityCLPositionRemove = ({ position, poolInfo }: InfinityCLPosit
   })
 
   const [amount0, amount1] = useMemo(
-    () => [allAmount0?.multiply(new Percent(percent, 100)), allAmount1?.multiply(new Percent(percent, 100))],
-    [allAmount0, allAmount1, percent],
+    () => [
+      allAmount0?.multiply(new Percent(percentForSlider, 100)),
+      allAmount1?.multiply(new Percent(percentForSlider, 100)),
+    ],
+    [allAmount0, allAmount1, percentForSlider],
   )
 
   const { data: currency0Usd } = useCurrencyUsdPrice(currency0)
@@ -89,7 +92,7 @@ export const InfinityCLPositionRemove = ({ position, poolInfo }: InfinityCLPosit
     await removeCLLiquidity({
       tokenId: position.tokenId,
       poolKey: position.poolKey as PoolKey<'CL'>,
-      liquidity: (position.liquidity * BigInt(percent)) / 100n,
+      liquidity: (position.liquidity * BigInt(percentForSlider)) / 100n,
       amount0Min,
       amount1Min,
       wrapAddress,
