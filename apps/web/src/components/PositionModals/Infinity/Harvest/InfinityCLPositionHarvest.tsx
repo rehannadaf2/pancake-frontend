@@ -43,7 +43,10 @@ export const InfinityCLPositionHarvest = ({ position, poolInfo }: InfinityCLPosi
 
   const feeUsd0 = useMemo(() => (fiatValue0 ? Number(fiatValue0.toExact()) : undefined), [fiatValue0])
   const feeUsd1 = useMemo(() => (fiatValue1 ? Number(fiatValue1.toExact()) : undefined), [fiatValue1])
-  const totalFeesUsd = useMemo(() => (totalFiatValue ? Number(totalFiatValue.toExact()) : undefined), [totalFiatValue])
+  const totalFeesUsd = useMemo(() => {
+    if (feeUsd0 === undefined && feeUsd1 === undefined) return undefined
+    return (feeUsd0 ?? 0) + (feeUsd1 ?? 0)
+  }, [feeUsd0, feeUsd1])
 
   const { onCollect, attemptingTx: collectAttemptingTx } = useInfinityCollectFeeAction({
     chainId,
