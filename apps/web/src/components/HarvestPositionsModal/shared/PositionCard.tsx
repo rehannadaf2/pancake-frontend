@@ -37,14 +37,7 @@ export function PositionCard({
   isLast,
 }: PositionCardProps) {
   return (
-    <CardRow
-      $isLast={isLast}
-      flexDirection="row"
-      justifyContent="space-between"
-      alignItems="flex-start"
-      gap="8px"
-      py="8px"
-    >
+    <CardRow $isLast={isLast} flexDirection="row" justifyContent="space-between" alignItems="center" gap="8px" py="8px">
       <FlexGap gap="8px" alignItems="flex-start" flex="1" minWidth="0">
         {status && status !== HarvestTxStatus.Idle && <HarvestStatusIndicator status={status} />}
         <DoubleCurrencyLogo currency0={currency0} currency1={currency1} size={24} innerMargin="-4px" />
@@ -61,7 +54,7 @@ export function PositionCard({
       </FlexGap>
       <FlexGap flexDirection="column" alignItems="flex-end" gap="1px" minWidth="0">
         <Text fontSize="14px" bold style={{ flexShrink: 0 }}>
-          {formatFiatNumber(earningsUSD)}
+          {formatFiatNumber(earningsUSD, undefined, { maximumSignificantDigits: 6 })}
         </Text>
         {rewards.length > 0 && (
           <FlexGap gap="4px">
@@ -69,7 +62,7 @@ export function PositionCard({
               {rewards.map((reward, idx) => (
                 <span key={reward.currency.symbol ?? idx}>
                   {idx > 0 && ' + '}
-                  {formatNumber(reward.amount)} {reward.currency.symbol}
+                  {formatNumber(reward.amount, { maximumSignificantDigits: 8 })} {reward.currency.symbol}
                 </span>
               ))}
             </Text>
