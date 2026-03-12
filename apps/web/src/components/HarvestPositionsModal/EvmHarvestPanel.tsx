@@ -2,7 +2,7 @@ import { Protocol } from '@pancakeswap/farms'
 import { chainNames } from '@pancakeswap/chains'
 import { useTranslation } from '@pancakeswap/localization'
 import { getTokenByAddress, CAKE } from '@pancakeswap/tokens'
-import { Button, FlexGap, Message, MessageText, PreTitle, Text } from '@pancakeswap/uikit'
+import { Box, Button, FlexGap, Message, MessageText, PreTitle, Text } from '@pancakeswap/uikit'
 import { formatFiatNumber } from '@pancakeswap/utils/formatFiatNumber'
 import { LightGreyCard, Tips } from '@pancakeswap/widgets-internal'
 import { useCurrencyByChainId } from 'hooks/Tokens'
@@ -10,6 +10,7 @@ import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 import { useActiveChainId } from 'hooks/useActiveChainId'
 import type { InfinityCLPositionDetail, StableLPDetail, V2LPDetail } from 'state/farmsV4/state/accountPositions/type'
+import { LinkText } from 'components/Liquidity/LinkText'
 import { HarvestTxStatus, harvestTxMapAtom, harvestingAtom } from './state/atoms'
 import { useEvmHarvestAll, type V2HarvestTarget } from './hooks/useEvmHarvestAll'
 import type { V3HarvestPositionEnriched, InfinityHarvestPositionEnriched } from './hooks/useHarvestModalData'
@@ -266,30 +267,40 @@ export function EvmHarvestPanel({
           </VerticalList>
 
           {!hasStarted && txCount > 1 && (
-            <Tips primaryMsg={t("You'll need to confirm %count% transactions in your wallet", { count: txCount })} />
+            <Box mt="8px">
+              <Tips
+                primaryMsg={t('You will need to confirm %count% transactions in your wallet', { count: txCount })}
+              />
+            </Box>
           )}
 
           {!hasStarted && (
-            <Button mt="12px" width="100%" variant="secondary" disabled={harvesting || noRewards} onClick={harvestAll}>
+            <Button
+              mt="12px"
+              width="100%"
+              variant="primary60Outline"
+              disabled={harvesting || noRewards}
+              onClick={harvestAll}
+            >
               {t('Harvest all')}
             </Button>
           )}
 
           {harvesting && !allSucceeded && (
-            <Button mt="12px" width="100%" variant="secondary" disabled>
+            <Button mt="12px" width="100%" variant="primary60Outline" disabled>
               {t('Harvesting')}
             </Button>
           )}
 
           {allSucceeded && (
-            <Button mt="12px" width="100%" variant="secondary" disabled>
+            <Button mt="12px" width="100%" variant="primary60Outline" disabled>
               {t('Harvested')}
             </Button>
           )}
 
           {failedCount > 0 && !harvesting && (
             <>
-              <Button mt="12px" width="100%" variant="secondary" onClick={retryFailed}>
+              <Button mt="12px" width="100%" variant="primary60Outline" onClick={retryFailed}>
                 {t('Retry')}
               </Button>
               <Message variant="warning" mt="12px">
@@ -309,18 +320,18 @@ export function EvmHarvestPanel({
           <MessageText>
             {t('You also have earnings on ')}{' '}
             {otherChainsWithRewards.map((cId, idx) => (
-              <Text
+              <LinkText
                 key={cId}
                 as="span"
                 fontSize="14px"
                 bold
-                color="primary"
+                color="primary60"
                 style={{ cursor: 'pointer' }}
                 onClick={() => onSwitchChain?.(cId)}
               >
                 {chainNames[cId]?.toUpperCase()}
                 {idx < otherChainsWithRewards.length - 1 ? ', ' : ''}
-              </Text>
+              </LinkText>
             ))}
             {'. '}
             {t('Switch network to harvest.')}

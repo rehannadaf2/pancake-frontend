@@ -5,4 +5,5 @@ export const VerticalList = styled(FlexGap)<{ $maxHeight?: string }>`
   flex-direction: column;
   max-height: ${({ $maxHeight }) => $maxHeight ?? '300px'};
   overflow-y: auto;
+  padding-right: 4px;
 `
