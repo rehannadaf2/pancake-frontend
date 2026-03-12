@@ -7,11 +7,13 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import {
   InfinityBinPositionDetail,
   InfinityCLPositionDetail,
+  StableLPDetail,
   UnifiedPositionDetail,
   V2LPDetail,
 } from 'state/farmsV4/state/accountPositions/type'
 import styled from 'styled-components'
 import { InfinityPositionModalContent } from './Infinity'
+import { InfinitySSPositionModalContent } from './InfinitySS'
 import { PositionTabType } from './types'
 import { V3PositionModalContent } from './V3'
 import { V2OrSSPositionModalContent } from './V2OrSS'
@@ -64,6 +66,8 @@ export function PositionModal({
     const tabs: PositionTabType[] = ['Add', 'Remove']
 
     if (!protocol) return tabs
+
+    if (protocol === Protocol.InfinitySTABLE) return tabs
 
     if (protocol === Protocol.V3 || isInfinityProtocol(protocol)) {
       tabs.push('Harvest')
@@ -137,7 +141,14 @@ export function PositionModal({
             </ClickablePreTitle>
           ))}
         </FlexGap>
-        {isInfinityProtocol(protocol) ? (
+        {protocol === Protocol.InfinitySTABLE ? (
+          <InfinitySSPositionModalContent
+            poolId={poolId as Hex}
+            chainId={chainId}
+            tab={tab}
+            position={position as StableLPDetail}
+          />
+        ) : isInfinityProtocol(protocol) ? (
           <InfinityPositionModalContent
             poolId={poolId as Hex}
             chainId={chainId}
