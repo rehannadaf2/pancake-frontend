@@ -10,7 +10,7 @@ import { getTokenByAddress } from '@pancakeswap/tokens'
 
 import { useActiveChainId } from 'hooks/useActiveChainId'
 import { useCakePrice } from 'hooks/useCakePrice'
-import { useUserAllFarmRewardsByChainIdFromAPI, usePoolFarmRewardsFormAPI } from 'hooks/infinity/useFarmReward'
+import { usePoolFarmRewardsFormAPI } from 'hooks/infinity/useFarmReward'
 import { useStakedPositionsByUser } from 'state/farmsV3/hooks'
 import {
   useAccountInfinityCLPositions,
@@ -97,17 +97,6 @@ export function useHarvestModalData(): HarvestModalData {
     [infinityCLAll, infinityBinAll, chainId],
   )
 
-  // --- Infinity earnings from API (aggregate, for panel total) ---
-  const { totalUnclaimedRewards } = useUserAllFarmRewardsByChainIdFromAPI({ chainId, user: account })
-
-  const infinityTotalUSD = useMemo(() => {
-    if (!totalUnclaimedRewards) return 0
-    return totalUnclaimedRewards
-      .reduce((acc, item) => new BigNumber(item.totalReward).plus(acc), new BigNumber(0))
-      .times(cakePrice)
-      .toNumber()
-  }, [totalUnclaimedRewards, cakePrice])
-
   // --- Per-position Infinity earnings: fetch ALL pool rewards in one call ---
   // usePoolFarmRewardsFormAPI without poolId → calls /farms/user-rewards/{chainId}/{address}
   // which returns per-pool, per-tokenId reward data for all positions at once.
@@ -136,25 +125,26 @@ export function useHarvestModalData(): HarvestModalData {
     return map
   }, [allPoolRewards, chainId])
 
-  // --- Infinity positions enriched with per-position earnings ---
+  // --- Infinity positions enriched with per-position earnings (zero-reward positions excluded) ---
   const infinityHarvestPositions = useMemo((): InfinityHarvestPositionEnriched[] => {
-    return infinityPositions.map((pos) => {
-      let cakeAmount = 0
-      const poolMap = infinityEarningsMap[pos.poolId]
-      if (poolMap) {
-        if (pos.protocol === Protocol.InfinityCLAMM) {
-          const clPos = pos as InfinityCLPositionDetail
-          // Sum all tokenId entries that match this position's tokenId
-          cakeAmount = poolMap[clPos.tokenId.toString()] ?? 0
-        } else {
-          // BIN: sum all tokenId entries for this pool (one user = one position per pool)
-          cakeAmount = Object.values(poolMap).reduce((acc, v) => acc + v, 0)
+    return infinityPositions
+      .map((pos) => {
+        let cakeAmount = 0
+        const poolMap = infinityEarningsMap[pos.poolId]
+        if (poolMap) {
+          if (pos.protocol === Protocol.InfinityCLAMM) {
+            const clPos = pos as InfinityCLPositionDetail
+            cakeAmount = poolMap[clPos.tokenId.toString()] ?? 0
+          } else {
+            // BIN: sum all tokenId entries for this pool (one user = one position per pool)
+            cakeAmount = Object.values(poolMap).reduce((acc, v) => acc + v, 0)
+          }
         }
-      }
-      const earningsUSD =
-        cakeAmount > 0 && cakePrice.gt(0) ? new BigNumber(cakeAmount).times(cakePrice.toString()).toNumber() : 0
-      return { position: pos, earningsUSD, cakeAmount }
-    })
+        const earningsUSD =
+          cakeAmount > 0 && cakePrice.gt(0) ? new BigNumber(cakeAmount).times(cakePrice.toString()).toNumber() : 0
+        return { position: pos, earningsUSD, cakeAmount }
+      })
+      .filter((p) => p.cakeAmount > 0)
   }, [infinityPositions, infinityEarningsMap, cakePrice])
 
   // --- V3: staked on current chain ---
@@ -167,8 +157,7 @@ export function useHarvestModalData(): HarvestModalData {
     [v3All, chainId],
   )
 
-  const v3StakedTokenIds = useMemo(() => v3StakedPositions.map((p) => p.tokenId!.toString()), [v3StakedPositions])
-
+  // All staked IDs (needed to query pending rewards for every position)
   const stakedBigIntIds = useMemo(
     () => v3StakedPositions.map((p) => BigInt(p.tokenId!.toString())),
     [v3StakedPositions],
@@ -180,13 +169,21 @@ export function useHarvestModalData(): HarvestModalData {
   )
 
   const v3HarvestPositions = useMemo((): V3HarvestPositionEnriched[] => {
-    return v3StakedPositions.map((pos, idx) => {
-      const pendingCake = v3PendingCakes?.[idx] ?? 0n
-      const amount = +formatBigInt(pendingCake, 5)
-      const usd = new BigNumber(amount).times(cakePrice.toString()).toNumber()
-      return { position: pos, pendingCakeAmount: amount, earningsUSD: usd }
-    })
+    return v3StakedPositions
+      .map((pos, idx) => {
+        const pendingCake = v3PendingCakes?.[idx] ?? 0n
+        const amount = +formatBigInt(pendingCake, 5)
+        const usd = new BigNumber(amount).times(cakePrice.toString()).toNumber()
+        return { position: pos, pendingCakeAmount: amount, earningsUSD: usd }
+      })
+      .filter((p) => p.pendingCakeAmount > 0)
   }, [v3StakedPositions, v3PendingCakes, cakePrice])
+
+  // Only harvest positions with actual rewards
+  const v3StakedTokenIds = useMemo(
+    () => v3HarvestPositions.map((p) => p.position.tokenId!.toString()),
+    [v3HarvestPositions],
+  )
 
   // --- V2: staked on current chain ---
   const v2Positions = useMemo(
@@ -243,12 +240,12 @@ export function useHarvestModalData(): HarvestModalData {
     return Array.from(others)
   }, [v3All, infinityCLAll, infinityBinAll, chainId])
 
-  const v3TotalEarningsUSD = useMemo(
-    () => v3HarvestPositions.reduce((acc, p) => acc + p.earningsUSD, 0),
-    [v3HarvestPositions],
+  const evmTotalEarningsUSD = useMemo(
+    () =>
+      infinityHarvestPositions.reduce((acc, p) => acc + p.earningsUSD, 0) +
+      v3HarvestPositions.reduce((acc, p) => acc + p.earningsUSD, 0),
+    [infinityHarvestPositions, v3HarvestPositions],
   )
-
-  const evmTotalEarningsUSD = infinityTotalUSD + v3TotalEarningsUSD
 
   // Solana placeholder
   const solanaPositions = useMemo((): SolanaPositionItem[] => [], [])

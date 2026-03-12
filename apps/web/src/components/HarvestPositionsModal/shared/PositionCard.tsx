@@ -48,17 +48,23 @@ export function PositionCard({
       <FlexGap gap="8px" alignItems="flex-start" flex="1" minWidth="0">
         {status && status !== HarvestTxStatus.Idle && <HarvestStatusIndicator status={status} />}
         <DoubleCurrencyLogo currency0={currency0} currency1={currency1} size={24} innerMargin="-4px" />
-        <FlexGap flexDirection="column" gap="1px" minWidth="0">
-          <Text fontSize="14px" bold>
-            {currency0.symbol} / {currency1.symbol}
-            {tokenId ? (
-              <Text as="span" fontSize="14px" color="textSubtle">
-                {' '}
-                #{String(tokenId)}
-              </Text>
-            ) : null}
-          </Text>
-          {rewards.length > 0 && (
+
+        <Text fontSize="14px" bold>
+          {currency0.symbol} / {currency1.symbol}
+          {tokenId ? (
+            <Text as="span" fontSize="14px" color="textSubtle">
+              {' '}
+              #{String(tokenId)}
+            </Text>
+          ) : null}
+        </Text>
+      </FlexGap>
+      <FlexGap flexDirection="column" alignItems="flex-end" gap="1px" minWidth="0">
+        <Text fontSize="14px" bold style={{ flexShrink: 0 }}>
+          {formatFiatNumber(earningsUSD)}
+        </Text>
+        {rewards.length > 0 && (
+          <FlexGap gap="4px">
             <Text fontSize="12px" color="textSubtle">
               {rewards.map((reward, idx) => (
                 <span key={reward.currency.symbol ?? idx}>
@@ -67,12 +73,9 @@ export function PositionCard({
                 </span>
               ))}
             </Text>
-          )}
-        </FlexGap>
+          </FlexGap>
+        )}
       </FlexGap>
-      <Text fontSize="14px" bold style={{ flexShrink: 0 }}>
-        {formatFiatNumber(earningsUSD)}
-      </Text>
     </CardRow>
   )
 }
