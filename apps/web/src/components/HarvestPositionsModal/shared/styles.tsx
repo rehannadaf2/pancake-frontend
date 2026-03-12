@@ -1,0 +1,8 @@
+import { FlexGap } from '@pancakeswap/uikit'
+import styled from 'styled-components'
+
+export const VerticalList = styled(FlexGap)<{ $maxHeight?: string }>`
+  flex-direction: column;
+  max-height: ${({ $maxHeight }) => $maxHeight ?? '300px'};
+  overflow-y: auto;
+`

@@ -7,6 +7,7 @@ import { useMemo } from 'react'
 import { HarvestTxStatus, harvestTxMapAtom, harvestingAtom } from './state/atoms'
 import { useSolanaHarvestAll, type SolanaHarvestTarget } from './hooks/useSolanaHarvestAll'
 import { PositionCard, type RewardInfo } from './shared/PositionCard'
+import { VerticalList } from './shared/styles'
 
 export interface SolanaPositionItem {
   key: string
@@ -57,7 +58,7 @@ export function SolanaHarvestPanel({ positions, totalEarningsUSD, harvestTargets
         </Text>
       ) : (
         <>
-          <FlexGap flexDirection="column" gap="0px">
+          <VerticalList>
             {positions.map((pos, idx) => (
               <PositionCard
                 key={pos.key}
@@ -70,7 +71,7 @@ export function SolanaHarvestPanel({ positions, totalEarningsUSD, harvestTargets
                 isLast={idx === positions.length - 1}
               />
             ))}
-          </FlexGap>
+          </VerticalList>
 
           {!hasStarted && (
             <Button mt="12px" width="100%" variant="secondary" disabled={harvesting || noRewards} onClick={harvestAll}>

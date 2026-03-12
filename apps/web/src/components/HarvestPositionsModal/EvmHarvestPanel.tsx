@@ -14,6 +14,7 @@ import { HarvestTxStatus, harvestTxMapAtom, harvestingAtom } from './state/atoms
 import { useEvmHarvestAll, type V2HarvestTarget } from './hooks/useEvmHarvestAll'
 import type { V3HarvestPositionEnriched, InfinityHarvestPositionEnriched } from './hooks/useHarvestModalData'
 import { PositionCard } from './shared/PositionCard'
+import { VerticalList } from './shared/styles'
 
 // --- Per-protocol row components ---
 
@@ -219,7 +220,7 @@ export function EvmHarvestPanel({
         </Text>
       ) : (
         <>
-          <FlexGap flexDirection="column" gap="0px">
+          <VerticalList>
             {allRows.map((row, idx) => {
               const isLast = idx === allRows.length - 1
               if (row.type === 'infinity') {
@@ -262,7 +263,7 @@ export function EvmHarvestPanel({
                 />
               )
             })}
-          </FlexGap>
+          </VerticalList>
 
           {!hasStarted && txCount > 1 && (
             <Tips primaryMsg={t("You'll need to confirm %count% transactions in your wallet", { count: txCount })} />
