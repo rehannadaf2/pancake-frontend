@@ -14,6 +14,7 @@ import {
   Toggle,
   useMatchBreakpoints,
   useModal,
+  useModalV2,
 } from '@pancakeswap/uikit'
 import { Liquidity } from '@pancakeswap/widgets-internal'
 import TransactionsModal from 'components/App/Transactions/TransactionsModal'
@@ -22,14 +23,14 @@ import { V3_MIGRATION_SUPPORTED_CHAINS } from 'config/constants/supportChains'
 import { useAtom } from 'jotai'
 import intersection from 'lodash/intersection'
 import NextLink from 'next/link'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { POSITION_STATUS, UnifiedPositionDetail } from 'state/farmsV4/state/accountPositions/type'
 import styled from 'styled-components'
 import { useAccount } from 'wagmi'
 
 import ConnectWalletButton from 'components/ConnectWalletButton'
+import { HarvestEarningsModal, useHarvestModalData, TotalEarningsBanner } from 'components/HarvestPositionsModal'
 import useAccountActiveChain from 'hooks/useAccountActiveChain'
-import { INFINITY_PROTOCOLS } from 'config/constants/protocols'
 import {
   AddLiquidityButton,
   Card,
@@ -39,7 +40,6 @@ import {
   CardBody as StyledCardBody,
   CardHeader as StyledCardHeader,
   useSelectedProtocols,
-  PositionCard,
   PositionsTable,
   PositionsList,
 } from './components'
@@ -49,7 +49,6 @@ import { useV3Positions } from './hooks/useV3Positions'
 import { useV2Positions } from './hooks/useV2Positions'
 import { useStablePositions } from './hooks/useStablePositions'
 import { positionEarningAmountAtom } from './hooks/usePositionEarningAmount'
-import { getPositionKey } from './components/PositionItem/PositionCard'
 import { matchPositionSearch } from './utils/matchPositionSearch'
 import { useSolanaV3PositionItems } from './hooks/useSolanaV3Positions'
 import { useStableInfinityPositions } from './hooks/useStableInfinityPositions'
@@ -321,6 +320,12 @@ export const PositionPage = () => {
     [infinityLoading, v3Loading, solanaLoading, v2Loading, stableLoading],
   )
 
+  const harvestModal = useModalV2()
+  // useHarvestModalData is self-contained and fetches positions independently.
+  // We call it here only to get totalEarningsUSD for the banner/button.
+  // The modal itself also calls this hook internally — React Query deduplicates the requests.
+  const { totalEarningsUSD: harvestTotalEarningsUSD, isLoading: harvestDataLoading } = useHarvestModalData()
+
   const mainSection = useMemo(() => {
     if (!account && !solanaAccount) {
       return <EmptyListPlaceholder text={t('Please Connect Wallet to view positions.')} />
@@ -376,6 +381,7 @@ export const PositionPage = () => {
     poolLengthMap,
     solanaAccount,
     isMobile,
+    isMd,
     isAllLoading,
   ])
 
@@ -418,6 +424,13 @@ export const PositionPage = () => {
             </ControlWrapper>
           ) : null}
         </PoolsFilterPanel>
+        {isMobile && (account || solanaAccount) && harvestTotalEarningsUSD > 0 && (
+          <TotalEarningsBanner
+            totalEarningsUSD={harvestTotalEarningsUSD}
+            onHarvest={() => harvestModal.setIsOpen(true)}
+            disabled={harvestDataLoading}
+          />
+        )}
         <SubPanel>
           <StyledButtonMenu
             $positionStatus={positionStatus}
@@ -433,6 +446,17 @@ export const PositionPage = () => {
           </StyledButtonMenu>
           {!isMobile ? (
             <ControlWrapper>
+              {(account || solanaAccount) && harvestTotalEarningsUSD > 0 && (
+                <Button
+                  variant="secondary"
+                  scale="sm"
+                  onClick={() => harvestModal.setIsOpen(true)}
+                  disabled={harvestDataLoading}
+                  style={{ whiteSpace: 'nowrap' }}
+                >
+                  {t('Harvest All')}
+                </Button>
+              )}
               <ToggleWrapper>
                 <Text>{t('Farms only')}</Text>
                 <Toggle checked={farmsOnly} onChange={toggleFarmsOnly} scale="sm" />
@@ -468,6 +492,7 @@ export const PositionPage = () => {
         ) : null}
         {Array.isArray(visibleList) && visibleList.length > 0 && <div ref={observerRef} />}
       </CardBody>
+      <HarvestEarningsModal isOpen={harvestModal.isOpen} onDismiss={harvestModal.onDismiss} />
     </StyledCard>
   )
 }
