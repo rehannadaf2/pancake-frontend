@@ -29,7 +29,7 @@ import styled from 'styled-components'
 import { useAccount } from 'wagmi'
 
 import ConnectWalletButton from 'components/ConnectWalletButton'
-import { HarvestEarningsModal, useHarvestModalData, TotalEarningsBanner } from 'components/HarvestPositionsModal'
+import { HarvestEarningsModal, HarvestModalContext } from 'components/HarvestPositionsModal'
 import useAccountActiveChain from 'hooks/useAccountActiveChain'
 import {
   AddLiquidityButton,
@@ -321,10 +321,6 @@ export const PositionPage = () => {
   )
 
   const harvestModal = useModalV2()
-  // useHarvestModalData is self-contained and fetches positions independently.
-  // We call it here only to get totalEarningsUSD for the banner/button.
-  // The modal itself also calls this hook internally — React Query deduplicates the requests.
-  const { totalEarningsUSD: harvestTotalEarningsUSD, isLoading: harvestDataLoading } = useHarvestModalData()
 
   const mainSection = useMemo(() => {
     if (!account && !solanaAccount) {
@@ -406,93 +402,79 @@ export const PositionPage = () => {
   }, [account])
 
   return (
-    <StyledCard>
-      <CardHeader p={isMobile ? '16px' : undefined}>
-        <PoolsFilterPanel onChange={handleFilterChange} value={poolsFilter} includeSolana>
-          {(isMobile || isMd) && <AddLiquidityButton scale="sm" height="40px" width="100%" />}
-          {isMobile ? (
-            <ControlWrapper>
-              <ToggleWrapper>
-                <Text>{t('Farms only')}</Text>
-                <Toggle checked={farmsOnly} onChange={toggleFarmsOnly} scale="sm" />
-              </ToggleWrapper>
-              <ButtonWrapper>
-                <IconButton onClick={onPresentTransactionsModal} variant="text" scale="xs">
-                  <HistoryIcon color="textSubtle" width="24px" />
-                </IconButton>
-              </ButtonWrapper>
-            </ControlWrapper>
-          ) : null}
-        </PoolsFilterPanel>
-        {isMobile && (account || solanaAccount) && harvestTotalEarningsUSD > 0 && (
-          <TotalEarningsBanner
-            totalEarningsUSD={harvestTotalEarningsUSD}
-            onHarvest={() => harvestModal.setIsOpen(true)}
-            disabled={harvestDataLoading}
-          />
-        )}
-        <SubPanel>
-          <StyledButtonMenu
-            $positionStatus={positionStatus}
-            activeIndex={positionStatus}
-            onItemClick={setPositionStatus}
-            variant="text"
-            scale="sm"
-          >
-            <ButtonMenuItem>{t('All')}</ButtonMenuItem>
-            <ButtonMenuItem>{t('Active')}</ButtonMenuItem>
-            <ButtonMenuItem>{t('Inactive')}</ButtonMenuItem>
-            <ButtonMenuItem>{t('Closed')}</ButtonMenuItem>
-          </StyledButtonMenu>
-          {!isMobile ? (
-            <ControlWrapper>
-              {(account || solanaAccount) && harvestTotalEarningsUSD > 0 && (
-                <Button
-                  variant="secondary"
-                  scale="sm"
-                  onClick={() => harvestModal.setIsOpen(true)}
-                  disabled={harvestDataLoading}
-                  style={{ whiteSpace: 'nowrap' }}
-                >
-                  {t('Harvest All')}
-                </Button>
-              )}
-              <ToggleWrapper>
-                <Text>{t('Farms only')}</Text>
-                <Toggle checked={farmsOnly} onChange={toggleFarmsOnly} scale="sm" />
-              </ToggleWrapper>
-              <ButtonWrapper>
-                <IconButton onClick={onPresentTransactionsModal} variant="text" scale="xs">
-                  <HistoryIcon color="textSubtle" width="24px" />
-                </IconButton>
-              </ButtonWrapper>
-            </ControlWrapper>
-          ) : null}
-          {/* <ButtonContainer>
+    <HarvestModalContext.Provider value={() => harvestModal.setIsOpen(true)}>
+      <StyledCard>
+        <CardHeader p={isMobile ? '16px' : undefined}>
+          <PoolsFilterPanel onChange={handleFilterChange} value={poolsFilter} includeSolana>
+            {(isMobile || isMd) && <AddLiquidityButton scale="sm" height="40px" width="100%" />}
+            {isMobile ? (
+              <ControlWrapper>
+                <ToggleWrapper>
+                  <Text>{t('Farms only')}</Text>
+                  <Toggle checked={farmsOnly} onChange={toggleFarmsOnly} scale="sm" />
+                </ToggleWrapper>
+                <ButtonWrapper>
+                  <IconButton onClick={onPresentTransactionsModal} variant="text" scale="xs">
+                    <HistoryIcon color="textSubtle" width="24px" />
+                  </IconButton>
+                </ButtonWrapper>
+              </ControlWrapper>
+            ) : null}
+          </PoolsFilterPanel>
+          <SubPanel>
+            <StyledButtonMenu
+              $positionStatus={positionStatus}
+              activeIndex={positionStatus}
+              onItemClick={setPositionStatus}
+              variant="text"
+              scale="sm"
+            >
+              <ButtonMenuItem>{t('All')}</ButtonMenuItem>
+              <ButtonMenuItem>{t('Active')}</ButtonMenuItem>
+              <ButtonMenuItem>{t('Inactive')}</ButtonMenuItem>
+              <ButtonMenuItem>{t('Closed')}</ButtonMenuItem>
+            </StyledButtonMenu>
+            {!isMobile ? (
+              <ControlWrapper>
+                <ToggleWrapper>
+                  <Text>{t('Farms only')}</Text>
+                  <Toggle checked={farmsOnly} onChange={toggleFarmsOnly} scale="sm" />
+                </ToggleWrapper>
+                <ButtonWrapper>
+                  <IconButton onClick={onPresentTransactionsModal} variant="text" scale="xs">
+                    <HistoryIcon color="textSubtle" width="24px" />
+                  </IconButton>
+                </ButtonWrapper>
+              </ControlWrapper>
+            ) : null}
+            {/* <ButtonContainer>
             <NextLink href={LIQUIDITY_PAGES.infinity.ADD_LIQUIDITY_SELECT}>
               <Button endIcon={<AddIcon color="invertedContrast" />} scale="sm" style={{ whiteSpace: 'nowrap' }}>
                 {t('Add Liquidity')}
               </Button>
             </NextLink>
           </ButtonContainer> */}
-        </SubPanel>
-      </CardHeader>
-      <CardBody>
-        {mainSection}
-        {selectedPoolTypes.length === 1 && selectedPoolTypes.includes(Protocol.V2) ? (
-          <Liquidity.FindOtherLP>
-            {!!intersection(V3_MIGRATION_SUPPORTED_CHAINS, selectedNetwork).length && (
-              <NextLink style={{ marginTop: '8px' }} href="/migration">
-                <Button id="migration-link" variant="secondary" scale="sm">
-                  {t('Migrate to V3')}
-                </Button>
-              </NextLink>
-            )}
-          </Liquidity.FindOtherLP>
-        ) : null}
-        {Array.isArray(visibleList) && visibleList.length > 0 && <div ref={observerRef} />}
-      </CardBody>
-      <HarvestEarningsModal isOpen={harvestModal.isOpen} onDismiss={harvestModal.onDismiss} />
-    </StyledCard>
+          </SubPanel>
+        </CardHeader>
+        <CardBody>
+          {mainSection}
+          {selectedPoolTypes.length === 1 && selectedPoolTypes.includes(Protocol.V2) ? (
+            <Liquidity.FindOtherLP>
+              {!!intersection(V3_MIGRATION_SUPPORTED_CHAINS, selectedNetwork).length && (
+                <NextLink style={{ marginTop: '8px' }} href="/migration">
+                  <Button id="migration-link" variant="secondary" scale="sm">
+                    {t('Migrate to V3')}
+                  </Button>
+                </NextLink>
+              )}
+            </Liquidity.FindOtherLP>
+          ) : null}
+          {Array.isArray(visibleList) && visibleList.length > 0 && <div ref={observerRef} />}
+        </CardBody>
+        {harvestModal.isOpen && (
+          <HarvestEarningsModal isOpen={harvestModal.isOpen} onDismiss={harvestModal.onDismiss} />
+        )}
+      </StyledCard>
+    </HarvestModalContext.Provider>
   )
 }

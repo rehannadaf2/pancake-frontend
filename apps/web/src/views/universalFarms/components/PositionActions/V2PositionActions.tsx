@@ -24,6 +24,7 @@ import { sumApr } from 'views/universalFarms/utils/sumApr'
 import { useAccount } from 'wagmi'
 import { getCurrencyAddress } from '@pancakeswap/swap-sdk-core'
 import { fetchAllUniversalFarmsMap } from '@pancakeswap/farms'
+import { useOpenHarvestModal } from 'components/HarvestPositionsModal'
 import { StopPropagation } from '../StopPropagation'
 import { DepositStakeAction, HarvestAction, ModifyStakeActions } from './StakeActions'
 
@@ -270,12 +271,8 @@ const V2NativeAction: React.FC<V2PositionActionsProps> = (props) => {
 }
 
 const V2HarvestAction: React.FC<V2PositionActionsProps> = ({ chainId, lpAddress, poolInfo }) => {
-  const { t } = useTranslation()
-  const { onHarvest } = useV2FarmActions(lpAddress, poolInfo.bCakeWrapperAddress)
-  const { toastSuccess } = useToast()
-  const { fetchWithCatchTxError, loading: pendingTx } = useCatchTxError()
   const { address: account } = useAccount()
-  const { switchNetworkIfNecessary } = useCheckShouldSwitchNetwork()
+  const openHarvestModal = useOpenHarvestModal()
   const { data: pendingReward_ } = useAccountV2PendingCakeReward(account, {
     chainId,
     lpAddress,
@@ -284,31 +281,10 @@ const V2HarvestAction: React.FC<V2PositionActionsProps> = ({ chainId, lpAddress,
   const pendingReward = useMemo(() => {
     return new BigNumber(pendingReward_?.toString() ?? '0')
   }, [pendingReward_])
-  const [, setLatestTxReceipt] = useLatestTxReceipt()
-  const handleHarvest = useCallback(async () => {
-    const shouldSwitch = await switchNetworkIfNecessary(chainId)
-    if (shouldSwitch) {
-      return
-    }
-    const receipt = await fetchWithCatchTxError(() => onHarvest())
-    if (receipt?.status) {
-      setLatestTxReceipt(receipt)
-      toastSuccess(
-        `${t('Harvested')}!`,
-        <ToastDescriptionWithTx txHash={receipt.transactionHash}>
-          {t('Your %symbol% earnings have been sent to your wallet!', { symbol: 'CAKE' })}
-        </ToastDescriptionWithTx>,
-      )
-    }
-  }, [setLatestTxReceipt, chainId, switchNetworkIfNecessary, fetchWithCatchTxError, onHarvest, t, toastSuccess])
-
-  const { hasEarnings, isLoading } = useV2CakeEarning(poolInfo)
 
   if (!pendingReward || pendingReward.isZero()) {
     return null
   }
 
-  return (
-    <HarvestAction onHarvest={handleHarvest} executing={pendingTx} disabled={pendingTx || isLoading || !hasEarnings} />
-  )
+  return <HarvestAction onHarvest={() => openHarvestModal?.()} />
 }

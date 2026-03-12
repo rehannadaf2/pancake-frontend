@@ -11,6 +11,7 @@ import { useHarvestModalData } from './hooks/useHarvestModalData'
 
 export { useHarvestModalData } from './hooks/useHarvestModalData'
 export { TotalEarningsBanner } from './TotalEarningsBanner'
+export { HarvestModalContext, useOpenHarvestModal } from './HarvestModalContext'
 
 interface HarvestEarningsModalProps extends Pick<ModalV2Props, 'isOpen' | 'onDismiss'> {}
 

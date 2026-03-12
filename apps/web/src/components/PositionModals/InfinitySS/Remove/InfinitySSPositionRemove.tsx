@@ -24,6 +24,7 @@ import { LiquiditySlippageButton } from 'views/Swap/components/SlippageButton'
 import { useUserSlippage } from '@pancakeswap/utils/user'
 import tryParseAmount from '@pancakeswap/utils/tryParseAmount'
 import { logGTMClickRemoveLiquidityEvent } from 'utils/customGTMEventTracking'
+import { Field } from 'state/burn/actions'
 import { useRemoveLiquidityInfinityStablePool } from 'views/StableInfinity/hooks/useRemoveLiquidityInfinityStablePool'
 import {
   useCalcTokenAmount,
@@ -312,7 +313,7 @@ export const InfinitySSPositionRemove = ({ poolInfo }: InfinitySSPositionRemoveP
     }
 
     return {
-      [Percent.name]: new Percent(percentToRemove, 100),
+      [Field.LIQUIDITY_PERCENT]: new Percent(percentToRemove, 100),
       CURRENCY_A: amountA,
       CURRENCY_B: amountB,
     }

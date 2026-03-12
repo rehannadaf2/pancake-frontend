@@ -48,7 +48,7 @@ export function PositionCard({
           showChainLogoCurrency1
         />
 
-        <Text fontSize="14px" bold>
+        <Text mt="1px" fontSize="14px" bold>
           {currency0.symbol} / {currency1.symbol}
           {tokenId ? (
             <Text as="span" fontSize="14px" color="textSubtle">

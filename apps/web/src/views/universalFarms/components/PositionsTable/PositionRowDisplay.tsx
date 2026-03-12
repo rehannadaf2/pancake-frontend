@@ -34,6 +34,7 @@ import { useRouter } from 'next/router'
 import { useMemo, memo, useState, useCallback, useRef } from 'react'
 import { formatNumber } from '@pancakeswap/utils/formatNumber'
 import { RangeTag } from 'components/RangeTag'
+import { useOpenHarvestModal } from 'components/HarvestPositionsModal'
 import { useSelectedProtocols } from '../PoolsFilterPanel'
 import { ExpandedRowContent } from './ExpandedRowContent'
 import { PositionDebugView } from '../PositionItem/PositionDebugView'
@@ -225,9 +226,10 @@ export const PositionRowDisplay: React.FC<PositionRowDisplayProps> = memo(
       v3SdkPool,
     } = data
 
+    const openHarvestModal = useOpenHarvestModal()
     const showExpandable = !isMobile && !removed
     const isInfinity = isInfinityProtocol(position.protocol)
-    const showHarvestButton = removed && isInfinity && hasUnclaimedRewards && onHarvest
+    const showHarvestButton = removed && isInfinity && hasUnclaimedRewards && Boolean(openHarvestModal)
     // const isSolanaPosition = isSolana(chainId)
 
     // For Solana positions, check pool.isFarming; for others, check position.isStaked
@@ -625,7 +627,7 @@ export const PositionRowDisplay: React.FC<PositionRowDisplayProps> = memo(
           <Cell align="right">
             {showHarvestButton ? (
               <div data-interactive>
-                <Button scale="md" onClick={onHarvest}>
+                <Button scale="md" onClick={() => openHarvestModal?.()}>
                   {t('Harvest')}
                 </Button>
               </div>
