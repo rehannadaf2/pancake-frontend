@@ -7,7 +7,7 @@ import {
 } from '@pancakeswap/infinity-sdk'
 import { useTranslation } from '@pancakeswap/localization'
 import { Currency, CurrencyAmount, Percent } from '@pancakeswap/swap-sdk-core'
-import { Box, FlexGap, IconButton, PreTitle, RowBetween, SwapHorizIcon, Text } from '@pancakeswap/uikit'
+import { Box, Button, FlexGap, IconButton, PreTitle, RowBetween, SwapHorizIcon, Text } from '@pancakeswap/uikit'
 import { formatNumber } from '@pancakeswap/utils/formatNumber'
 import { INITIAL_ALLOWED_SLIPPAGE, useLiquidityUserSlippage, useUserSlippagePercent } from '@pancakeswap/utils/user'
 import { CurrencyLogo, LightGreyCard } from '@pancakeswap/widgets-internal'
@@ -35,6 +35,7 @@ import { V3SubmitButton } from 'views/AddLiquidityV3/components/V3SubmitButton'
 import { AddBinLiquidityParams, useAddBinLiquidity } from 'views/CreateLiquidityPool/hooks/useAddBinLiquidity'
 import { useErrorMsg } from 'views/IncreaseLiquidity/hooks/useErrorMsg'
 import { MevProtectToggle } from 'views/Mev/MevProtectToggle'
+import { useCheckShouldSwitchNetwork } from 'views/universalFarms/hooks'
 import { LiquiditySlippageButton } from 'views/Swap/components/SlippageButton'
 import { PriceRangeDisplay } from 'views/PoolDetail/components/ProtocolPositionsTables'
 import { maxUint128, zeroAddress } from 'viem'
@@ -48,6 +49,7 @@ interface InfinityBinPositionAddProps {
 export const InfinityBinPositionAdd = ({ position, poolInfo }: InfinityBinPositionAddProps) => {
   const { t } = useTranslation()
   const { account, chainId: activeChainId } = useAccountActiveChain()
+  const { switchNetworkIfNecessary, isLoading: isSwitchNetworkLoading } = useCheckShouldSwitchNetwork()
   const chainId = position.chainId ?? poolInfo.chainId
 
   const [, pool] = usePoolById<'Bin'>(position.poolId, chainId)
@@ -472,6 +474,7 @@ export const InfinityBinPositionAdd = ({ position, poolInfo }: InfinityBinPositi
           defaultValue={inputValue0}
           currency={currency0}
           onUserInput={setInputValue0}
+          onMax={() => setInputValue0(balance0?.toExact() ?? '')}
           onPercentInput={handlePercent0Change}
           showUSDPrice
           showMaxButton
@@ -485,6 +488,7 @@ export const InfinityBinPositionAdd = ({ position, poolInfo }: InfinityBinPositi
           defaultValue={inputValue1}
           currency={currency1}
           onUserInput={setInputValue1}
+          onMax={() => setInputValue1(balance1?.toExact() ?? '')}
           onPercentInput={handlePercent1Change}
           showUSDPrice
           showMaxButton
@@ -506,31 +510,41 @@ export const InfinityBinPositionAdd = ({ position, poolInfo }: InfinityBinPositi
       </Box>
 
       <Box mt="16px">
-        <V3SubmitButton
-          addIsWarning={false}
-          addIsUnsupported={false}
-          account={account ?? undefined}
-          isWrongNetwork={activeChainId !== chainId}
-          approvalA={approveAState}
-          approvalB={approveBState}
-          isValid={isValid}
-          showApprovalA={showApprovalA}
-          approveACallback={approveCallbackA}
-          currentAllowanceA={currentAllowanceA}
-          revokeACallback={revokeCallbackA}
-          currencies={currencies}
-          approveBCallback={approveCallbackB}
-          currentAllowanceB={currentAllowanceB}
-          revokeBCallback={revokeCallbackB}
-          showApprovalB={showApprovalB}
-          parsedAmounts={parsedAmounts}
-          onClick={handleAddLiquidity}
-          attemptingTxn={attemptingTx}
-          errorMessage={errorMessage}
-          buttonText={t('Add')}
-          depositADisabled={!isDeposit0Enabled}
-          depositBDisabled={!isDeposit1Enabled}
-        />
+        {activeChainId !== chainId ? (
+          <Button
+            width="100%"
+            onClick={() => (chainId ? switchNetworkIfNecessary(chainId) : undefined)}
+            disabled={isSwitchNetworkLoading}
+          >
+            {t('Switch Network')}
+          </Button>
+        ) : (
+          <V3SubmitButton
+            addIsWarning={false}
+            addIsUnsupported={false}
+            account={account ?? undefined}
+            isWrongNetwork={false}
+            approvalA={approveAState}
+            approvalB={approveBState}
+            isValid={isValid}
+            showApprovalA={showApprovalA}
+            approveACallback={approveCallbackA}
+            currentAllowanceA={currentAllowanceA}
+            revokeACallback={revokeCallbackA}
+            currencies={currencies}
+            approveBCallback={approveCallbackB}
+            currentAllowanceB={currentAllowanceB}
+            revokeBCallback={revokeCallbackB}
+            showApprovalB={showApprovalB}
+            parsedAmounts={parsedAmounts}
+            onClick={handleAddLiquidity}
+            attemptingTxn={attemptingTx}
+            errorMessage={errorMessage}
+            buttonText={t('Add')}
+            depositADisabled={!isDeposit0Enabled}
+            depositBDisabled={!isDeposit1Enabled}
+          />
+        )}
       </Box>
     </Box>
   )

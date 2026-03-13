@@ -1,7 +1,7 @@
 import { Permit2Signature } from '@pancakeswap/infinity-sdk'
 import { useTranslation } from '@pancakeswap/localization'
 import { Currency } from '@pancakeswap/swap-sdk-core'
-import { Box, FlexGap, IconButton, PreTitle, RowBetween, SwapHorizIcon, Text } from '@pancakeswap/uikit'
+import { Box, Button, FlexGap, IconButton, PreTitle, RowBetween, SwapHorizIcon, Text } from '@pancakeswap/uikit'
 import { formatNumber } from '@pancakeswap/utils/formatNumber'
 import { INITIAL_ALLOWED_SLIPPAGE, useLiquidityUserSlippage } from '@pancakeswap/utils/user'
 import { LightGreyCard } from '@pancakeswap/widgets-internal'
@@ -29,6 +29,7 @@ import { maxUint128, zeroAddress } from 'viem'
 import { BigNumber as BN } from 'bignumber.js'
 import { useCurrencyUsdPrice } from 'hooks/useCurrencyUsdPrice'
 import { MevProtectToggle } from 'views/Mev/MevProtectToggle'
+import { useCheckShouldSwitchNetwork } from 'views/universalFarms/hooks'
 
 interface InfinityPositionAddProps {
   position: InfinityCLPositionDetail
@@ -38,6 +39,7 @@ export const InfinityCLPositionAdd = ({ position, poolInfo }: InfinityPositionAd
   const { t } = useTranslation()
 
   const { account, chainId: activeChainId } = useAccountActiveChain()
+  const { switchNetworkIfNecessary, isLoading: isSwitchNetworkLoading } = useCheckShouldSwitchNetwork()
 
   // Pool Info
   const { token0, token1, token0Price, token1Price } = poolInfo
@@ -347,31 +349,41 @@ export const InfinityCLPositionAdd = ({ position, poolInfo }: InfinityPositionAd
       </Box>
 
       <Box mt="16px">
-        <V3SubmitButton
-          addIsWarning={false}
-          addIsUnsupported={false}
-          account={account ?? undefined}
-          isWrongNetwork={activeChainId !== chainId}
-          approvalA={approveAState}
-          approvalB={approveBState}
-          isValid={isValid}
-          showApprovalA={showApprovalA}
-          approveACallback={approveCallbackA}
-          currentAllowanceA={currentAllowanceA}
-          revokeACallback={revokeCallbackA}
-          currencies={currencies}
-          approveBCallback={approveCallbackB}
-          currentAllowanceB={currentAllowanceB}
-          revokeBCallback={revokeCallbackB}
-          showApprovalB={showApprovalB}
-          parsedAmounts={parsedAmounts}
-          onClick={handleIncreaseLiquidity}
-          attemptingTxn={attemptingTx}
-          errorMessage={errorMessage}
-          buttonText={t('Add')}
-          depositADisabled={deposit0Disabled}
-          depositBDisabled={deposit1Disabled}
-        />
+        {activeChainId !== chainId ? (
+          <Button
+            width="100%"
+            onClick={() => (chainId ? switchNetworkIfNecessary(chainId) : undefined)}
+            disabled={isSwitchNetworkLoading}
+          >
+            {t('Switch Network')}
+          </Button>
+        ) : (
+          <V3SubmitButton
+            addIsWarning={false}
+            addIsUnsupported={false}
+            account={account ?? undefined}
+            isWrongNetwork={false}
+            approvalA={approveAState}
+            approvalB={approveBState}
+            isValid={isValid}
+            showApprovalA={showApprovalA}
+            approveACallback={approveCallbackA}
+            currentAllowanceA={currentAllowanceA}
+            revokeACallback={revokeCallbackA}
+            currencies={currencies}
+            approveBCallback={approveCallbackB}
+            currentAllowanceB={currentAllowanceB}
+            revokeBCallback={revokeCallbackB}
+            showApprovalB={showApprovalB}
+            parsedAmounts={parsedAmounts}
+            onClick={handleIncreaseLiquidity}
+            attemptingTxn={attemptingTx}
+            errorMessage={errorMessage}
+            buttonText={t('Add')}
+            depositADisabled={deposit0Disabled}
+            depositBDisabled={deposit1Disabled}
+          />
+        )}
       </Box>
     </Box>
   )

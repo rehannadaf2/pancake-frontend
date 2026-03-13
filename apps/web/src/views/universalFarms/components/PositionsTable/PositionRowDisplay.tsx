@@ -19,7 +19,6 @@ import { useTranslation } from '@pancakeswap/localization'
 import { formatDollarAmount } from 'views/V3Info/utils/numbers'
 import { CurrencyLogo } from '@pancakeswap/widgets-internal'
 import { Tooltips } from 'components/Tooltips'
-import { formatAmount } from '@pancakeswap/utils/formatInfoNumbers'
 import { PriceRangeDisplay } from 'views/PoolDetail/components/ProtocolPositionsTables/PriceRangeDisplay'
 import { UnifiedPositionDetail, SolanaV3PositionDetail } from 'state/farmsV4/state/accountPositions/type'
 import { InfinityPoolInfo, type UnifiedPoolInfo } from 'state/farmsV4/state/type'
@@ -475,7 +474,12 @@ export const PositionRowDisplay: React.FC<PositionRowDisplayProps> = memo(
                           </Text>
                         </FlexGap>
                         <Text fontSize="14px" bold>
-                          {amount0 ? formatAmount(BN(amount0.toExact()).toNumber()) : '-'}
+                          {amount0
+                            ? formatNumber(BN(amount0.toExact()).toNumber(), {
+                                maxDecimalDisplayDigits: 6,
+                                maximumDecimalTrailingZeroes: 3,
+                              })
+                            : '-'}
                         </Text>
                       </FlexGap>
                       <Text color="textSubtle" fontSize="12px" textAlign="right" width="100%">
@@ -493,7 +497,12 @@ export const PositionRowDisplay: React.FC<PositionRowDisplayProps> = memo(
                           </Text>
                         </FlexGap>
                         <Text fontSize="14px" bold>
-                          {amount1 ? formatAmount(BN(amount1.toExact()).toNumber()) : '-'}
+                          {amount1
+                            ? formatNumber(BN(amount1.toExact()).toNumber(), {
+                                maxDecimalDisplayDigits: 6,
+                                maximumDecimalTrailingZeroes: 3,
+                              })
+                            : '-'}
                         </Text>
                       </FlexGap>
                       <Text color="textSubtle" fontSize="12px" textAlign="right" width="100%">
@@ -527,7 +536,10 @@ export const PositionRowDisplay: React.FC<PositionRowDisplayProps> = memo(
                               </Text>
                             </FlexGap>
                             <Text fontSize="14px" bold>
-                              {formatAmount(earningsBreakdown.fee0Amount)}
+                              {formatNumber(earningsBreakdown.fee0Amount, {
+                                maxDecimalDisplayDigits: 6,
+                                maximumDecimalTrailingZeroes: 3,
+                              })}
                             </Text>
                           </FlexGap>
                           {earningsBreakdown.fee0USD !== undefined && (
@@ -547,7 +559,10 @@ export const PositionRowDisplay: React.FC<PositionRowDisplayProps> = memo(
                               </Text>
                             </FlexGap>
                             <Text fontSize="14px" bold>
-                              {formatAmount(earningsBreakdown.fee1Amount)}
+                              {formatNumber(earningsBreakdown.fee1Amount, {
+                                maxDecimalDisplayDigits: 6,
+                                maximumDecimalTrailingZeroes: 3,
+                              })}
                             </Text>
                           </FlexGap>
                           {earningsBreakdown.fee1USD !== undefined && (
@@ -568,7 +583,10 @@ export const PositionRowDisplay: React.FC<PositionRowDisplayProps> = memo(
                                   </Text>
                                 </FlexGap>
                                 <Text fontSize="14px" bold>
-                                  {formatAmount(reward.amount)}
+                                  {formatNumber(reward.amount, {
+                                    maxDecimalDisplayDigits: 6,
+                                    maximumDecimalTrailingZeroes: 3,
+                                  })}
                                 </Text>
                               </FlexGap>
                               <Text color="textSubtle" fontSize="12px" textAlign="right" width="100%">
@@ -588,7 +606,10 @@ export const PositionRowDisplay: React.FC<PositionRowDisplayProps> = memo(
                                   </Text>
                                 </FlexGap>
                                 <Text fontSize="14px" bold>
-                                  {formatAmount(earningsBreakdown.farmRewardsAmount)}
+                                  {formatNumber(earningsBreakdown.farmRewardsAmount, {
+                                    maxDecimalDisplayDigits: 6,
+                                    maximumDecimalTrailingZeroes: 3,
+                                  })}
                                 </Text>
                               </FlexGap>
                               {earningsBreakdown.farmRewardsUSD !== undefined && (

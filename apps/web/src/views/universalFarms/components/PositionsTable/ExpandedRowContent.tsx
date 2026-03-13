@@ -16,7 +16,6 @@ import {
   Text,
   useModalV2,
 } from '@pancakeswap/uikit'
-import { formatAmount } from '@pancakeswap/utils/formatInfoNumbers'
 import { formatNumber } from '@pancakeswap/utils/formatNumber'
 import { displayApr } from '@pancakeswap/utils/displayApr'
 import { CurrencyLogo } from 'components/Logo'
@@ -455,7 +454,11 @@ export const ExpandedRowContent: React.FC<ExpandedRowContentProps> = memo(
                     {currency0 && <CurrencyLogo currency={currency0} size="16px" />}
                     <FlexGap flexDirection="column" gap="0px">
                       <TokenValue>
-                        {formatAmount(BN(depositDisplay.amount0Str).toNumber())} {currency0?.symbol}
+                        {formatNumber(BN(depositDisplay.amount0Str).toNumber(), {
+                          maxDecimalDisplayDigits: 6,
+                          maximumDecimalTrailingZeroes: 3,
+                        })}{' '}
+                        {currency0?.symbol}
                       </TokenValue>
                       <TokenUsdValue>~{formatDollarAmount(depositDisplay.amount0Usd)}</TokenUsdValue>
                     </FlexGap>
@@ -464,7 +467,11 @@ export const ExpandedRowContent: React.FC<ExpandedRowContentProps> = memo(
                     {currency1 && <CurrencyLogo currency={currency1} size="16px" />}
                     <FlexGap flexDirection="column" gap="0px">
                       <TokenValue>
-                        {formatAmount(BN(depositDisplay.amount1Str).toNumber())} {currency1?.symbol}
+                        {formatNumber(BN(depositDisplay.amount1Str).toNumber(), {
+                          maxDecimalDisplayDigits: 6,
+                          maximumDecimalTrailingZeroes: 3,
+                        })}{' '}
+                        {currency1?.symbol}
                       </TokenValue>
                       <TokenUsdValue>~{formatDollarAmount(depositDisplay.amount1Usd)}</TokenUsdValue>
                     </FlexGap>
@@ -487,7 +494,12 @@ export const ExpandedRowContent: React.FC<ExpandedRowContentProps> = memo(
                     {currency0 && <CurrencyLogo currency={currency0} size="16px" />}
                     <FlexGap flexDirection="column" gap="0px">
                       <TokenValue>
-                        {earningsDisplay?.fee0Amount ? formatAmount(earningsDisplay.fee0Amount) : '0'}{' '}
+                        {earningsDisplay?.fee0Amount
+                          ? formatNumber(earningsDisplay.fee0Amount, {
+                              maxDecimalDisplayDigits: 6,
+                              maximumDecimalTrailingZeroes: 3,
+                            })
+                          : '0'}{' '}
                         {currency0?.symbol}
                       </TokenValue>
                       <TokenUsdValue>~{formatDollarAmount(earningsDisplay?.fee0USD ?? 0)}</TokenUsdValue>
@@ -497,7 +509,12 @@ export const ExpandedRowContent: React.FC<ExpandedRowContentProps> = memo(
                     {currency1 && <CurrencyLogo currency={currency1} size="16px" />}
                     <FlexGap flexDirection="column" gap="0px">
                       <TokenValue>
-                        {earningsDisplay?.fee1Amount ? formatAmount(earningsDisplay.fee1Amount) : '0'}{' '}
+                        {earningsDisplay?.fee1Amount
+                          ? formatNumber(earningsDisplay.fee1Amount, {
+                              maxDecimalDisplayDigits: 6,
+                              maximumDecimalTrailingZeroes: 3,
+                            })
+                          : '0'}{' '}
                         {currency1?.symbol}
                       </TokenValue>
                       <TokenUsdValue>~{formatDollarAmount(earningsDisplay?.fee1USD ?? 0)}</TokenUsdValue>
@@ -516,7 +533,11 @@ export const ExpandedRowContent: React.FC<ExpandedRowContentProps> = memo(
                               <CurrencyLogo currency={reward.currency} size="16px" />
                               <FlexGap flexDirection="column" gap="0px">
                                 <TokenValue>
-                                  {formatAmount(reward.amount)} {reward.currency.symbol}
+                                  {formatNumber(reward.amount, {
+                                    maxDecimalDisplayDigits: 6,
+                                    maximumDecimalTrailingZeroes: 3,
+                                  })}{' '}
+                                  {reward.currency.symbol}
                                 </TokenValue>
                                 <TokenUsdValue>~{formatDollarAmount(reward.amountUSD)}</TokenUsdValue>
                               </FlexGap>
@@ -528,7 +549,10 @@ export const ExpandedRowContent: React.FC<ExpandedRowContentProps> = memo(
                               <CurrencyLogo currency={earningsDisplay.rewardCurrency} size="16px" />
                               <FlexGap flexDirection="column" gap="0px">
                                 <TokenValue>
-                                  {formatAmount(earningsDisplay.farmRewardsAmount)}{' '}
+                                  {formatNumber(earningsDisplay.farmRewardsAmount, {
+                                    maxDecimalDisplayDigits: 6,
+                                    maximumDecimalTrailingZeroes: 3,
+                                  })}{' '}
                                   {earningsDisplay.rewardCurrency.symbol}
                                 </TokenValue>
                                 <TokenUsdValue>
