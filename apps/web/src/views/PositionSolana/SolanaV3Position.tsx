@@ -7,6 +7,7 @@ import { PoolInfoCard } from './components/PoolInfoCard'
 import { PositionChart } from './components/PositionChart'
 import { useSolanaV3Position } from './hooks/useSolanaV3Position'
 import { PositionCard } from './components/PositionCard'
+import { HistoryList } from './components/HistoryList'
 import { usePoolInfoByQuery } from './hooks/usePoolInfoByQuery'
 
 const StyledPage = styled(Page)`
@@ -48,6 +49,7 @@ export const SolanaV3Position = () => {
             )}
           </Grid>
         </AutoColumn>
+        <HistoryList poolId={poolId} chainId={poolInfo?.chainId} />
       </AutoColumn>
     </StyledPage>
   )
