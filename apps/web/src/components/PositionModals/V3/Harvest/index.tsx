@@ -6,7 +6,7 @@ import { useCurrencyUsdPrice } from 'hooks/useCurrencyUsdPrice'
 import { useDerivedPositionInfo } from 'hooks/v3/useDerivedPositionInfo'
 import { useV3PositionFees } from 'hooks/v3/useV3PositionFees'
 import useAccountActiveChain from 'hooks/useAccountActiveChain'
-import { useMasterchefV3 } from 'hooks/useContract'
+import { useMasterchefV3ByChain } from 'hooks/useContract'
 import { useV3TokenIdsByAccount } from 'hooks/v3/useV3Positions'
 import { useCallback, useMemo } from 'react'
 import { PositionDetail } from 'state/farmsV4/state/accountPositions/type'
@@ -78,11 +78,12 @@ export const V3PositionHarvest = ({ position, poolInfo }: V3PositionHarvestProps
 
   const collectDisabled = collectAttemptingTx || !pool || !(feeValue0?.greaterThan(0) || feeValue1?.greaterThan(0))
 
-  const masterchefV3 = useMasterchefV3()
+  const masterchefV3 = useMasterchefV3ByChain(chainId)
   const isMasterChefV3Available = Boolean(masterchefV3?.address && masterchefV3?.address !== '0x')
   const { tokenIds: stakedTokenIds } = useV3TokenIdsByAccount(
     isMasterChefV3Available ? masterchefV3?.address : undefined,
     account,
+    chainId,
   )
   const isStaked = useMemo(
     () => Boolean(tokenId && stakedTokenIds.find((id) => id === tokenId)),

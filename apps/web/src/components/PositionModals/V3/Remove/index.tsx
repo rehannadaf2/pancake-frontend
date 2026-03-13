@@ -9,7 +9,7 @@ import { MasterChefV3, NonfungiblePositionManager } from '@pancakeswap/v3-sdk'
 import { BigNumber as BN } from 'bignumber.js'
 import { BalanceDifferenceDisplay } from 'components/PositionModals/shared/BalanceDifferenceDisplay'
 import useAccountActiveChain from 'hooks/useAccountActiveChain'
-import { useMasterchefV3, useV3NFTPositionManagerContract } from 'hooks/useContract'
+import { useMasterchefV3ByChain, useV3NFTPositionManagerContract } from 'hooks/useContract'
 import { useCurrencyUsdPrice } from 'hooks/useCurrencyUsdPrice'
 import useNativeCurrency from 'hooks/useNativeCurrency'
 import { useTransactionDeadline } from 'hooks/useTransactionDeadline'
@@ -81,12 +81,13 @@ export const V3PositionRemove = ({ position, poolInfo }: V3PositionRemoveProps) 
         WNATIVE[liquidityValue1.currency.chainId]?.equals(liquidityValue1.currency.wrapped)),
   )
 
-  const masterchefV3 = useMasterchefV3()
-  const positionManager = useV3NFTPositionManagerContract()
+  const masterchefV3 = useMasterchefV3ByChain(chainId)
+  const positionManager = useV3NFTPositionManagerContract({ chainId })
   const isMasterChefV3Available = Boolean(masterchefV3?.address && masterchefV3?.address !== '0x')
   const { tokenIds: stakedTokenIds, loading: tokenIdsInMCv3Loading } = useV3TokenIdsByAccount(
     isMasterChefV3Available ? masterchefV3?.address : undefined,
     account,
+    chainId,
   )
   const isStakedInMCv3 = useMemo(
     () => Boolean(tokenId && stakedTokenIds.find((id) => id === tokenId)),
