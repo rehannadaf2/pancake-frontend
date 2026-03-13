@@ -427,18 +427,8 @@ export const InfinityBinPositionAdd = ({ position, poolInfo }: InfinityBinPositi
             <Text small>{totalAmount0?.toSignificant(6) ?? '0'}</Text>
             <Text small>{totalAmount1?.toSignificant(6) ?? '0'}</Text>
           </RowBetween>
-          <Box
-            mt="8px"
-            height="8px"
-            borderRadius="4px"
-            overflow="hidden"
-            style={{ background: 'var(--colors-tertiary)' }}
-          >
-            <Box
-              height="100%"
-              borderRadius="4px"
-              style={{ width: `${distributionPercent0}%`, background: 'var(--colors-secondary)' }}
-            />
+          <Box mt="8px" height="5px" borderRadius="4px" overflow="hidden" backgroundColor="primary">
+            <Box height="100%" borderRadius="4px" width={`${distributionPercent0}%`} backgroundColor="textSubtle" />
           </Box>
           <RowBetween mt="4px">
             <Text small color="textSubtle">
