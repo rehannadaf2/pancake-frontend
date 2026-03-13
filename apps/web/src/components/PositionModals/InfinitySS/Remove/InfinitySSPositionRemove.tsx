@@ -8,6 +8,7 @@ import CurrencyInputPanelSimplify from 'components/CurrencyInputPanelSimplify'
 import ConfirmLiquidityModal from 'components/Liquidity/ConfirmRemoveLiquidityModal'
 import useAccountActiveChain from 'hooks/useAccountActiveChain'
 import { useCurrencyUsdPrice } from 'hooks/useCurrencyUsdPrice'
+import { useCheckShouldSwitchNetwork } from 'views/universalFarms/hooks'
 import { useTotalPriceUSD } from 'hooks/useTotalPriceUSD'
 import { ApprovalState } from 'hooks/useApproveCallback'
 import { useCallback, useEffect, useMemo, useState } from 'react'
@@ -43,7 +44,9 @@ interface InfinitySSPositionRemoveProps {
 
 export const InfinitySSPositionRemove = ({ poolInfo }: InfinitySSPositionRemoveProps) => {
   const { t } = useTranslation()
-  const { account } = useAccountActiveChain()
+  const { account, chainId: activeChainId } = useAccountActiveChain()
+  const { switchNetworkIfNecessary, isLoading: isSwitchNetworkLoading } = useCheckShouldSwitchNetwork()
+  const positionChainId = poolInfo.chainId
   const queryClient = useQueryClient()
   const publicClient = usePublicClient()
 
@@ -880,18 +883,29 @@ export const InfinitySSPositionRemove = ({ poolInfo }: InfinitySSPositionRemoveP
         </>
       )}
 
-      <Button
-        mt="16px"
-        width="100%"
-        variant={!isValid && lpAmountToBurn > 0n ? 'danger' : 'primary'}
-        onClick={() => {
-          handleOpenRemoveLiquidityModal()
-          logGTMClickRemoveLiquidityEvent()
-        }}
-        disabled={!isValid || isPreflightChecking}
-      >
-        {buttonText}
-      </Button>
+      {activeChainId !== positionChainId ? (
+        <Button
+          mt="16px"
+          width="100%"
+          onClick={() => (positionChainId ? switchNetworkIfNecessary(positionChainId) : undefined)}
+          disabled={isSwitchNetworkLoading}
+        >
+          {t('Switch Network')}
+        </Button>
+      ) : (
+        <Button
+          mt="16px"
+          width="100%"
+          variant={!isValid && lpAmountToBurn > 0n ? 'danger' : 'primary'}
+          onClick={() => {
+            handleOpenRemoveLiquidityModal()
+            logGTMClickRemoveLiquidityEvent()
+          }}
+          disabled={!isValid || isPreflightChecking}
+        >
+          {buttonText}
+        </Button>
+      )}
     </Box>
   )
 }

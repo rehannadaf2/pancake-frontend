@@ -27,6 +27,7 @@ import { calculateSlippageAmount, useRouterContract } from 'utils/exchange'
 import { isUserRejected, logError } from 'utils/sentry'
 import { transactionErrorToUserReadableMessage } from 'utils/transactionErrorToUserReadableMessage'
 import { LiquiditySlippageButton } from 'views/Swap/components/SlippageButton'
+import { useCheckShouldSwitchNetwork } from 'views/universalFarms/hooks'
 import { Hash } from 'viem'
 
 interface V2PositionRemoveProps {
@@ -47,6 +48,8 @@ export const V2PositionRemove = ({ position, poolInfo }: V2PositionRemoveProps) 
 const V2PositionRemoveInner = ({ position, poolInfo }: V2PositionRemoveProps) => {
   const { t } = useTranslation()
   const { account, chainId } = useAccountActiveChain()
+  const { switchNetworkIfNecessary, isLoading: isSwitchNetworkLoading } = useCheckShouldSwitchNetwork()
+  const positionChainId = poolInfo.chainId
   const gasPrice = useGasPrice()
 
   const currency0 = poolInfo.token0 as Currency
@@ -449,7 +452,16 @@ const V2PositionRemoveInner = ({ position, poolInfo }: V2PositionRemoveProps) =>
         removedAmountUsd={`$${removedTokensUsd}`}
       />
 
-      {needsApproval ? (
+      {chainId !== positionChainId ? (
+        <Button
+          mt="16px"
+          width="100%"
+          onClick={() => (positionChainId ? switchNetworkIfNecessary(positionChainId) : undefined)}
+          disabled={isSwitchNetworkLoading}
+        >
+          {t('Switch Network')}
+        </Button>
+      ) : needsApproval ? (
         <Button
           mt="16px"
           width="100%"

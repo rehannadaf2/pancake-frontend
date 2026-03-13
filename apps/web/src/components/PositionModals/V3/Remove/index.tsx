@@ -27,6 +27,7 @@ import { isUserRejected } from 'utils/sentry'
 import { transactionErrorToUserReadableMessage } from 'utils/transactionErrorToUserReadableMessage'
 import { getViemClients } from 'utils/viem'
 import { LiquiditySlippageButton } from 'views/Swap/components/SlippageButton'
+import { useCheckShouldSwitchNetwork } from 'views/universalFarms/hooks'
 import { hexToBigInt } from 'viem'
 import { useSendTransaction } from 'wagmi'
 
@@ -37,7 +38,8 @@ interface V3PositionRemoveProps {
 export const V3PositionRemove = ({ position, poolInfo }: V3PositionRemoveProps) => {
   const { t } = useTranslation()
 
-  const { account } = useAccountActiveChain()
+  const { account, chainId: activeChainId } = useAccountActiveChain()
+  const { switchNetworkIfNecessary, isLoading: isSwitchNetworkLoading } = useCheckShouldSwitchNetwork()
 
   const currency0 = poolInfo.token0 as Currency
   const currency1 = poolInfo.token1 as Currency
@@ -316,17 +318,28 @@ export const V3PositionRemove = ({ position, poolInfo }: V3PositionRemoveProps) 
         </Message>
       ) : null}
 
-      <Button
-        mt="16px"
-        width="100%"
-        disabled={buttonDisabled}
-        onClick={() => {
-          onRemove()
-          logGTMClickRemoveLiquidityEvent()
-        }}
-      >
-        {removed ? t('Closed') : error ?? t('Remove')}
-      </Button>
+      {activeChainId !== chainId ? (
+        <Button
+          mt="16px"
+          width="100%"
+          onClick={() => (chainId ? switchNetworkIfNecessary(chainId) : undefined)}
+          disabled={isSwitchNetworkLoading}
+        >
+          {t('Switch Network')}
+        </Button>
+      ) : (
+        <Button
+          mt="16px"
+          width="100%"
+          disabled={buttonDisabled}
+          onClick={() => {
+            onRemove()
+            logGTMClickRemoveLiquidityEvent()
+          }}
+        >
+          {removed ? t('Closed') : error ?? t('Remove')}
+        </Button>
+      )}
     </Box>
   )
 }

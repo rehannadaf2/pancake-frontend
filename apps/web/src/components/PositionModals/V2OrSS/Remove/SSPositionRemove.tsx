@@ -26,6 +26,7 @@ import { transactionErrorToUserReadableMessage } from 'utils/transactionErrorToU
 import { useStableDerivedBurnInfo } from 'views/RemoveLiquidity/RemoveStableLiquidity/hooks/useStableDerivedBurnInfo'
 import useStableConfig, { StableConfigContext, useStableConfigContext } from 'views/Swap/hooks/useStableConfig'
 import { LiquiditySlippageButton } from 'views/Swap/components/SlippageButton'
+import { useCheckShouldSwitchNetwork } from 'views/universalFarms/hooks'
 import { Hash } from 'viem'
 
 interface SSPositionRemoveProps {
@@ -56,6 +57,8 @@ export const SSPositionRemove = ({ position, poolInfo }: SSPositionRemoveProps) 
 const SSPositionRemoveInner = ({ position, poolInfo }: SSPositionRemoveProps) => {
   const { t } = useTranslation()
   const { account, chainId } = useAccountActiveChain()
+  const { switchNetworkIfNecessary, isLoading: isSwitchNetworkLoading } = useCheckShouldSwitchNetwork()
+  const positionChainId = poolInfo.chainId
   const gasPrice = useGasPrice()
 
   const currency0 = poolInfo.token0 as Currency
@@ -368,7 +371,16 @@ const SSPositionRemoveInner = ({ position, poolInfo }: SSPositionRemoveProps) =>
         removedAmountUsd={`$${removedTokensUsd}`}
       />
 
-      {needsApproval ? (
+      {chainId !== positionChainId ? (
+        <Button
+          mt="16px"
+          width="100%"
+          onClick={() => (positionChainId ? switchNetworkIfNecessary(positionChainId) : undefined)}
+          disabled={isSwitchNetworkLoading}
+        >
+          {t('Switch Network')}
+        </Button>
+      ) : needsApproval ? (
         <Button
           mt="16px"
           width="100%"

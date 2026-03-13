@@ -11,6 +11,7 @@ import { BalanceDifferenceDisplay } from 'components/PositionModals/shared/Balan
 import { usePoolById } from 'hooks/infinity/usePool'
 import { usePositionAmount } from 'hooks/infinity/usePositionAmount'
 import { useRemoveClLiquidity } from 'hooks/infinity/useRemoveClLiquidity'
+import useAccountActiveChain from 'hooks/useAccountActiveChain'
 import { useCurrencyUsdPrice } from 'hooks/useCurrencyUsdPrice'
 import useNativeCurrency from 'hooks/useNativeCurrency'
 import { useCallback, useMemo, useState } from 'react'
@@ -19,6 +20,7 @@ import { PoolInfo } from 'state/farmsV4/state/type'
 import { logGTMClickRemoveLiquidityEvent } from 'utils/customGTMEventTracking'
 import { calculateSlippageAmount } from 'utils/exchange'
 import { LiquiditySlippageButton } from 'views/Swap/components/SlippageButton'
+import { useCheckShouldSwitchNetwork } from 'views/universalFarms/hooks'
 import { maxUint128 } from 'viem'
 import { useAccount } from 'wagmi'
 
@@ -30,6 +32,8 @@ interface InfinityCLPositionRemoveProps {
 export const InfinityCLPositionRemove = ({ position, poolInfo }: InfinityCLPositionRemoveProps) => {
   const { t } = useTranslation()
   const { address: account } = useAccount()
+  const { chainId: activeChainId } = useAccountActiveChain()
+  const { switchNetworkIfNecessary, isLoading: isSwitchNetworkLoading } = useCheckShouldSwitchNetwork()
 
   const chainId = position.chainId ?? poolInfo.chainId
   const currency0 = poolInfo.token0
@@ -223,17 +227,28 @@ export const InfinityCLPositionRemove = ({ position, poolInfo }: InfinityCLPosit
         removedAmountUsd={`$${removedTokensUsd}`}
       />
 
-      <Button
-        mt="16px"
-        width="100%"
-        disabled={buttonDisabled}
-        onClick={() => {
-          handleRemoveLiquidity()
-          logGTMClickRemoveLiquidityEvent()
-        }}
-      >
-        {removed ? t('Closed') : error ?? t('Remove')}
-      </Button>
+      {activeChainId !== chainId ? (
+        <Button
+          mt="16px"
+          width="100%"
+          onClick={() => (chainId ? switchNetworkIfNecessary(chainId) : undefined)}
+          disabled={isSwitchNetworkLoading}
+        >
+          {t('Switch Network')}
+        </Button>
+      ) : (
+        <Button
+          mt="16px"
+          width="100%"
+          disabled={buttonDisabled}
+          onClick={() => {
+            handleRemoveLiquidity()
+            logGTMClickRemoveLiquidityEvent()
+          }}
+        >
+          {removed ? t('Closed') : error ?? t('Remove')}
+        </Button>
+      )}
     </Box>
   )
 }
