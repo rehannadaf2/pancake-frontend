@@ -20,12 +20,8 @@ import { formatAmount } from '@pancakeswap/utils/formatInfoNumbers'
 import { formatNumber } from '@pancakeswap/utils/formatNumber'
 import { displayApr } from '@pancakeswap/utils/displayApr'
 import { CurrencyLogo } from 'components/Logo'
-import { CHAIN_QUERY_NAME } from 'config/chains'
-import { PERSIST_CHAIN_KEY } from 'config/constants'
-import { $path } from 'next-typesafe-url'
 import { NextLinkFromReactRouter } from '@pancakeswap/widgets-internal'
 import { getPoolAddLiquidityLink, getPoolDetailPageLink } from 'utils/getPoolLink'
-import { currencyId } from 'utils/currencyId'
 import { useCurrencyUsdPrice } from 'hooks/useCurrencyUsdPrice'
 import { useMemo, useState, memo, useCallback } from 'react'
 import { useExtraInfinityPositionInfo, useExtraV3PositionInfo } from 'state/farmsV4/hooks'
@@ -43,6 +39,7 @@ import { BigNumber as BN } from 'bignumber.js'
 import { isSolana } from '@pancakeswap/chains'
 import { useQuery } from '@tanstack/react-query'
 import { PositionModal } from 'components/PositionModals'
+import { PositionTabType } from 'components/PositionModals/types'
 import { getPositionChainId } from '../../utils'
 import { PositionChartByProtocol } from './charts'
 import { PositionActionButtons } from './PositionActionButtons'
@@ -370,103 +367,6 @@ export const ExpandedRowContent: React.FC<ExpandedRowContentProps> = memo(
       },
     })
 
-    const increaseLiquidityUrl = useMemo(() => {
-      if (!chainId) return undefined
-
-      // Handle each protocol separately for proper type narrowing
-      // InfinityBIN uses string tokenId
-      if (position.protocol === Protocol.InfinityBIN && tokenId) {
-        return $path({
-          route: '/liquidity/position/[[...positionId]]',
-          routeParams: { positionId: [Protocol.InfinityBIN, String(tokenId), 'increase'] },
-          // @ts-ignore
-          searchParams: { chain: CHAIN_QUERY_NAME[chainId], [PERSIST_CHAIN_KEY]: '1' },
-        })
-      }
-
-      // InfinityCLAMM uses number tokenId
-      if (position.protocol === Protocol.InfinityCLAMM && tokenId) {
-        return $path({
-          route: '/liquidity/position/[[...positionId]]',
-          routeParams: { positionId: [Protocol.InfinityCLAMM, Number(tokenId), 'increase'] },
-          // @ts-ignore
-          searchParams: { chain: CHAIN_QUERY_NAME[chainId], [PERSIST_CHAIN_KEY]: '1' },
-        })
-      }
-
-      // V3 positions use a different URL structure
-      if (
-        position.protocol === Protocol.V3 &&
-        tokenId &&
-        v3Pool &&
-        currency0 &&
-        currency1 &&
-        'token0' in v3Pool &&
-        v3Pool.token0 &&
-        v3Pool.token1
-      ) {
-        const token0Id = currencyId(currency0)
-        const token1Id = currencyId(currency1)
-        const feeTier = 'fee' in position ? position.fee : v3Pool.fee
-        return `/increase/${token0Id}/${token1Id}/${feeTier.toString()}/${tokenId.toString()}?chain=${
-          CHAIN_QUERY_NAME[chainId]
-        }&${PERSIST_CHAIN_KEY}=1`
-      }
-
-      // V2 and STABLE are handled by addLiquidityUrl
-      return undefined
-    }, [chainId, tokenId, position.protocol, position, v3Pool, currency0, currency1])
-
-    const removeLiquidityUrl = useMemo(() => {
-      if (!chainId) return undefined
-
-      // Handle each protocol separately for proper type narrowing
-      // InfinityBIN uses string tokenId
-      if (position.protocol === Protocol.InfinityBIN && poolId) {
-        return $path({
-          route: '/liquidity/position/[[...positionId]]',
-          routeParams: { positionId: [Protocol.InfinityBIN, poolId?.toString() ?? '', 'decrease'] },
-          // @ts-ignore
-          searchParams: { chain: CHAIN_QUERY_NAME[chainId], [PERSIST_CHAIN_KEY]: '1' },
-        })
-      }
-
-      // InfinityCLAMM uses number tokenId
-      if (position.protocol === Protocol.InfinityCLAMM && tokenId) {
-        return $path({
-          route: '/liquidity/position/[[...positionId]]',
-          routeParams: { positionId: [Protocol.InfinityCLAMM, Number(tokenId), 'decrease'] },
-          // @ts-ignore
-          searchParams: { chain: CHAIN_QUERY_NAME[chainId], [PERSIST_CHAIN_KEY]: '1' },
-        })
-      }
-
-      // V3 positions use a different URL structure
-      if (position.protocol === Protocol.V3 && tokenId) {
-        return `/remove/${tokenId.toString()}?chain=${CHAIN_QUERY_NAME[chainId]}&${PERSIST_CHAIN_KEY}=1`
-      }
-
-      // V2 and STABLE positions use token addresses in URL
-      if (
-        (position.protocol === Protocol.V2 || position.protocol === Protocol.STABLE) &&
-        pool &&
-        'token0' in pool &&
-        pool.token0 &&
-        pool.token1
-      ) {
-        const token0Id = currencyId(pool.token0)
-        const token1Id = currencyId(pool.token1)
-        const prefix = position.protocol === Protocol.STABLE ? 'stable' : 'v2'
-        return `/${prefix}/remove/${token0Id}/${token1Id}?chain=${CHAIN_QUERY_NAME[chainId]}&${PERSIST_CHAIN_KEY}=1`
-      }
-
-      if (position.protocol === Protocol.InfinitySTABLE && pool?.poolId) {
-        return `/infinityStable/remove/${pool?.poolId}?chain=${CHAIN_QUERY_NAME[chainId]}&${PERSIST_CHAIN_KEY}=1`
-      }
-
-      return undefined
-    }, [chainId, tokenId, position.protocol, pool, poolId])
-
     const addLiquidityUrl = useMemo(() => {
       if (!pool || !('token0' in pool && pool.token0)) return undefined
       try {
@@ -488,9 +388,15 @@ export const ExpandedRowContent: React.FC<ExpandedRowContentProps> = memo(
       position.protocol === Protocol.STABLE ||
       position.protocol === Protocol.InfinitySTABLE
 
-    // TESTING. POSITION MODAL
-    // TODO: REMOVE COMMENTS AFTER TESTING
     const { isOpen, setIsOpen, onDismiss } = useModalV2()
+    const [modalPresetTab, setModalPresetTab] = useState<PositionTabType>('Add')
+    const openModal = useCallback(
+      (tab: PositionTabType) => {
+        setModalPresetTab(tab)
+        setIsOpen(true)
+      },
+      [setIsOpen],
+    )
 
     return (
       <Container>
@@ -670,15 +576,15 @@ export const ExpandedRowContent: React.FC<ExpandedRowContentProps> = memo(
           </Column>
         </MainContent>
 
-        {/* TESTING */}
-        <Button onClick={() => setIsOpen(true)}>OPEN POSITION MODAL</Button>
         <PositionModal
+          key={modalPresetTab}
           isOpen={isOpen}
           onDismiss={onDismiss}
           poolId={pool?.poolId ?? pool?.lpAddress ?? pool?.stableSwapAddress}
           protocol={pool?.protocol}
           chainId={pool?.chainId}
           position={position}
+          presetTab={modalPresetTab}
         />
 
         {/* Action Buttons */}
@@ -696,28 +602,14 @@ export const ExpandedRowContent: React.FC<ExpandedRowContentProps> = memo(
               {t('Full Page')}
             </Button>
           )}
-          {removeLiquidityUrl && !isSolanaV3Position && !(isV2OrStablePosition && position?.isStaked) && (
-            <Button
-              variant="primary60"
-              scale="md"
-              as={NextLinkFromReactRouter}
-              to={removeLiquidityUrl}
-              width="48px"
-              p="0"
-            >
+          {!isSolanaV3Position && !(isV2OrStablePosition && position?.isStaked) && pool?.protocol && (
+            <Button variant="primary60" scale="md" onClick={() => openModal('Remove')} width="48px" p="0">
               <MinusIcon width="24px" color="primary60" />
             </Button>
           )}
           {/* Hide plus button for V2 and STABLE positions and Solana V3 positions */}
-          {!isV2OrStablePosition && !isSolanaV3Position && (increaseLiquidityUrl || addLiquidityUrl) && (
-            <Button
-              variant="primary60"
-              scale="md"
-              as={NextLinkFromReactRouter}
-              to={increaseLiquidityUrl || addLiquidityUrl}
-              width="48px"
-              p="0"
-            >
+          {!isV2OrStablePosition && !isSolanaV3Position && pool?.protocol && (
+            <Button variant="primary60" scale="md" onClick={() => openModal('Add')} width="48px" p="0">
               <AddIcon width="24px" color="primary60" />
             </Button>
           )}
