@@ -16,6 +16,7 @@ import CurrencyInputPanelSimplify from 'components/CurrencyInputPanelSimplify'
 import { BinRangeSelector } from 'components/Liquidity/Form/BinRangeSelector'
 import { FieldLiquidityShape } from 'components/Liquidity/Form/FieldLiquidityShape'
 import { MAX_BIN_NUM_PER_SIDE } from 'hooks/infinity/useBinNum'
+import { useInfinityFeeTier } from 'hooks/infinity/useInfinityFeeTier'
 import { usePoolById } from 'hooks/infinity/usePool'
 import { usePoolKeyByPoolId } from 'hooks/infinity/usePoolKeyByPoolId'
 import useAccountActiveChain from 'hooks/useAccountActiveChain'
@@ -52,6 +53,8 @@ export const InfinityBinPositionAdd = ({ position, poolInfo }: InfinityBinPositi
   const [, pool] = usePoolById<'Bin'>(position.poolId, chainId)
   const poolKeyResult = usePoolKeyByPoolId(position.poolId, chainId, 'Bin')
   const poolKey = (position.poolKey ?? poolKeyResult?.data) as PoolKey<'Bin'> | undefined
+
+  const feeTier = useInfinityFeeTier(pool ?? null)
 
   const currency0 = pool?.token0
   const currency1 = pool?.token1
@@ -407,7 +410,7 @@ export const InfinityBinPositionAdd = ({ position, poolInfo }: InfinityBinPositi
           <RowBetween>
             <PreTitle>{t('Distribution')}</PreTitle>
             <PreTitle>
-              {t('Fee Tier')} {poolInfo.feeTierBase ? `${poolInfo.feeTierBase}%` : ''}
+              {t('Fee Tier')} {feeTier.percent.toSignificant(2)}%
             </PreTitle>
           </RowBetween>
           <RowBetween mt="12px">
