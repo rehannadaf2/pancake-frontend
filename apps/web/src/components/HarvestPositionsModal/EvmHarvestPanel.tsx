@@ -266,6 +266,7 @@ export function EvmHarvestPanel({
             })}
           </VerticalList>
 
+          {/* TODO: This can be hidden if EIP-5792 is supported */}
           {!hasStarted && txCount > 1 && (
             <Box mt="8px">
               <Tips
