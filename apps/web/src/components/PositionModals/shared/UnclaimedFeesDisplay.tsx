@@ -16,6 +16,7 @@ interface UnclaimedFeesDisplayProps {
   onCollect: () => void
   collecting: boolean
   disabled: boolean
+  hideButton?: boolean
 }
 
 export function UnclaimedFeesDisplay({
@@ -29,6 +30,7 @@ export function UnclaimedFeesDisplay({
   onCollect,
   collecting,
   disabled,
+  hideButton,
 }: UnclaimedFeesDisplayProps) {
   const { t } = useTranslation()
 
@@ -65,9 +67,11 @@ export function UnclaimedFeesDisplay({
         </RowBetween>
       </LightGreyCard>
 
-      <Button mt="16px" width="100%" disabled={disabled} onClick={onCollect}>
-        {collecting ? t('Collecting...') : t('Collect')}
-      </Button>
+      {hideButton ? null : (
+        <Button mt="16px" width="100%" disabled={disabled} onClick={onCollect}>
+          {collecting ? t('Collecting...') : t('Collect')}
+        </Button>
+      )}
     </>
   )
 }

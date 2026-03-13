@@ -1,7 +1,8 @@
 import { useTranslation } from '@pancakeswap/localization'
-import { useToast, Box, Text } from '@pancakeswap/uikit'
+import { useToast, Box, Button, Text } from '@pancakeswap/uikit'
 import { CAKE } from '@pancakeswap/tokens'
 import { ToastDescriptionWithTx } from 'components/Toast'
+import useAccountActiveChain from 'hooks/useAccountActiveChain'
 import useCatchTxError from 'hooks/useCatchTxError'
 import { useCallback } from 'react'
 import { StableLPDetail, V2LPDetail } from 'state/farmsV4/state/accountPositions/type'
@@ -9,6 +10,7 @@ import { PoolInfo, StablePoolInfo, V2PoolInfo } from 'state/farmsV4/state/type'
 import { useLatestTxReceipt } from 'state/farmsV4/state/accountPositions/hooks/useLatestTxReceipt'
 import { useV2CakeEarning } from 'views/universalFarms/hooks/useCakeEarning'
 import { useV2FarmActions } from 'views/universalFarms/hooks/useV2FarmActions'
+import { useCheckShouldSwitchNetwork } from 'views/universalFarms/hooks'
 import { Address } from 'viem'
 import { FarmingRewardsDisplay } from '../../shared/FarmingRewardsDisplay'
 
@@ -20,10 +22,13 @@ interface V2OrSSPositionHarvestProps {
 export const V2OrSSPositionHarvest = ({ position, poolInfo }: V2OrSSPositionHarvestProps) => {
   const { t } = useTranslation()
   const { toastSuccess } = useToast()
+  const { chainId: activeChainId } = useAccountActiveChain()
+  const { switchNetworkIfNecessary, isLoading: isSwitchNetworkLoading } = useCheckShouldSwitchNetwork()
   const [, setLatestTxReceipt] = useLatestTxReceipt()
   const { loading: pendingTx, fetchWithCatchTxError } = useCatchTxError()
 
   const { chainId } = poolInfo
+  const needsSwitchNetwork = activeChainId !== chainId
   const lpAddress = poolInfo.lpAddress as Address
   const { bCakeWrapperAddress } = poolInfo as V2PoolInfo | StablePoolInfo
 
@@ -62,7 +67,19 @@ export const V2OrSSPositionHarvest = ({ position, poolInfo }: V2OrSSPositionHarv
         onHarvest={handleHarvest}
         harvesting={pendingTx}
         disabled={pendingTx || isLoading || !hasEarnings}
+        hideButton={needsSwitchNetwork}
       />
+
+      {needsSwitchNetwork && (
+        <Button
+          mt="16px"
+          width="100%"
+          onClick={() => (chainId ? switchNetworkIfNecessary(chainId) : undefined)}
+          disabled={isSwitchNetworkLoading}
+        >
+          {t('Switch Network')}
+        </Button>
+      )}
     </Box>
   )
 }

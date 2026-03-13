@@ -1,9 +1,11 @@
 import { getPoolId, type PoolKey } from '@pancakeswap/infinity-sdk'
-import { Box } from '@pancakeswap/uikit'
+import { useTranslation } from '@pancakeswap/localization'
+import { Box, Button } from '@pancakeswap/uikit'
 import { zeroAddress } from 'viem'
 import BigNumber from 'bignumber.js'
 import { useFeesEarnedUSD } from 'hooks/infinity/useFeesEarned'
 import { useUserAllFarmRewardsByChainIdFromAPI } from 'hooks/infinity/useFarmReward'
+import useAccountActiveChain from 'hooks/useAccountActiveChain'
 import { useCakePrice } from 'hooks/useCakePrice'
 import { useMemo } from 'react'
 import { bscTokens } from '@pancakeswap/tokens'
@@ -12,6 +14,7 @@ import { PoolInfo } from 'state/farmsV4/state/type'
 import { useLatestTxReceipt } from 'state/farmsV4/state/accountPositions/hooks/useLatestTxReceipt'
 import useFarmInfinityActions from 'views/universalFarms/hooks/useFarmInfinityActions'
 import useInfinityCollectFeeAction from 'views/universalFarms/hooks/useInfinityCollectFeeAction'
+import { useCheckShouldSwitchNetwork } from 'views/universalFarms/hooks'
 import { useAccount } from 'wagmi'
 import { UnclaimedFeesDisplay } from '../../shared/UnclaimedFeesDisplay'
 import { FarmingRewardsDisplay } from '../../shared/FarmingRewardsDisplay'
@@ -22,10 +25,14 @@ interface InfinityCLPositionHarvestProps {
 }
 
 export const InfinityCLPositionHarvest = ({ position, poolInfo }: InfinityCLPositionHarvestProps) => {
+  const { t } = useTranslation()
   const { address } = useAccount()
+  const { chainId: activeChainId } = useAccountActiveChain()
+  const { switchNetworkIfNecessary, isLoading: isSwitchNetworkLoading } = useCheckShouldSwitchNetwork()
   const [, setLatestTxReceipt] = useLatestTxReceipt()
 
   const chainId = position.chainId ?? poolInfo.chainId
+  const needsSwitchNetwork = activeChainId !== chainId
   const currency0 = poolInfo.token0
   const currency1 = poolInfo.token1
   const { poolKey, tokenId, tickLower, tickUpper } = position
@@ -101,6 +108,7 @@ export const InfinityCLPositionHarvest = ({ position, poolInfo }: InfinityCLPosi
         onCollect={handleCollect}
         collecting={collectAttemptingTx}
         disabled={collectDisabled}
+        hideButton={needsSwitchNetwork}
       />
 
       {showFarmRewards ? (
@@ -112,9 +120,21 @@ export const InfinityCLPositionHarvest = ({ position, poolInfo }: InfinityCLPosi
             onHarvest={onHarvest}
             harvesting={harvestAttemptingTx}
             disabled={harvestAttemptingTx || !hasUnclaimedRewards}
+            hideButton={needsSwitchNetwork}
           />
         </Box>
       ) : null}
+
+      {needsSwitchNetwork && (
+        <Button
+          mt="16px"
+          width="100%"
+          onClick={() => (chainId ? switchNetworkIfNecessary(chainId) : undefined)}
+          disabled={isSwitchNetworkLoading}
+        >
+          {t('Switch Network')}
+        </Button>
+      )}
     </Box>
   )
 }

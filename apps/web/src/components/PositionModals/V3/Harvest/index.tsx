@@ -1,9 +1,11 @@
+import { useTranslation } from '@pancakeswap/localization'
 import { Currency } from '@pancakeswap/sdk'
-import { Box } from '@pancakeswap/uikit'
+import { Box, Button } from '@pancakeswap/uikit'
 import { CAKE } from '@pancakeswap/tokens'
 import { useCurrencyUsdPrice } from 'hooks/useCurrencyUsdPrice'
 import { useDerivedPositionInfo } from 'hooks/v3/useDerivedPositionInfo'
 import { useV3PositionFees } from 'hooks/v3/useV3PositionFees'
+import useAccountActiveChain from 'hooks/useAccountActiveChain'
 import { useMasterchefV3 } from 'hooks/useContract'
 import { useV3TokenIdsByAccount } from 'hooks/v3/useV3Positions'
 import { useCallback, useMemo } from 'react'
@@ -13,6 +15,7 @@ import { useLatestTxReceipt } from 'state/farmsV4/state/accountPositions/hooks/u
 import useFarmV3Actions from 'views/Farms/hooks/v3/useFarmV3Actions'
 import { useV3CakeEarning } from 'views/universalFarms/hooks/useCakeEarning'
 import useV3CollectFeeAction from 'views/universalFarms/hooks/useV3CollectFeeAction'
+import { useCheckShouldSwitchNetwork } from 'views/universalFarms/hooks'
 import { useAccount } from 'wagmi'
 import { UnclaimedFeesDisplay } from '../../shared/UnclaimedFeesDisplay'
 import { FarmingRewardsDisplay } from '../../shared/FarmingRewardsDisplay'
@@ -23,15 +26,19 @@ interface V3PositionHarvestProps {
 }
 
 export const V3PositionHarvest = ({ position, poolInfo }: V3PositionHarvestProps) => {
+  const { t } = useTranslation()
   const { address: account } = useAccount()
+  const { chainId: activeChainId } = useAccountActiveChain()
+  const { switchNetworkIfNecessary, isLoading: isSwitchNetworkLoading } = useCheckShouldSwitchNetwork()
   const [, setLatestTxReceipt] = useLatestTxReceipt()
 
   const chainId = position.chainId ?? poolInfo.chainId
+  const needsSwitchNetwork = activeChainId !== chainId
   const currency0 = poolInfo.token0 as Currency
   const currency1 = poolInfo.token1 as Currency
   const { tokenId } = position
 
-  const { pool } = useDerivedPositionInfo(position)
+  const { pool } = useDerivedPositionInfo(position, chainId)
 
   const [feeValue0, feeValue1] = useV3PositionFees(pool, tokenId, false)
 
@@ -107,6 +114,7 @@ export const V3PositionHarvest = ({ position, poolInfo }: V3PositionHarvestProps
         onCollect={handleCollect}
         collecting={collectAttemptingTx}
         disabled={collectDisabled}
+        hideButton={needsSwitchNetwork}
       />
 
       {showFarmRewards ? (
@@ -118,9 +126,21 @@ export const V3PositionHarvest = ({ position, poolInfo }: V3PositionHarvestProps
             onHarvest={onHarvest}
             harvesting={harvestAttemptingTx}
             disabled={harvestAttemptingTx || !hasEarnings}
+            hideButton={needsSwitchNetwork}
           />
         </Box>
       ) : null}
+
+      {needsSwitchNetwork && (
+        <Button
+          mt="16px"
+          width="100%"
+          onClick={() => (chainId ? switchNetworkIfNecessary(chainId) : undefined)}
+          disabled={isSwitchNetworkLoading}
+        >
+          {t('Switch Network')}
+        </Button>
+      )}
     </Box>
   )
 }

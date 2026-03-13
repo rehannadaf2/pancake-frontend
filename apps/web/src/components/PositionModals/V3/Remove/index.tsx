@@ -70,7 +70,7 @@ export const V3PositionRemove = ({ position, poolInfo }: V3PositionRemoveProps) 
     feeValue0,
     feeValue1,
     error,
-  } = useDerivedV3BurnInfo(position, percentForSlider, receiveWNATIVE)
+  } = useDerivedV3BurnInfo(position, percentForSlider, receiveWNATIVE, chainId)
 
   const showCollectAsWNative = Boolean(
     liquidityValue0?.currency &&

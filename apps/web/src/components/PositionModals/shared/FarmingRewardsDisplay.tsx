@@ -12,6 +12,7 @@ interface FarmingRewardsDisplayProps {
   onHarvest: () => void
   harvesting: boolean
   disabled: boolean
+  hideButton?: boolean
 }
 
 export function FarmingRewardsDisplay({
@@ -21,6 +22,7 @@ export function FarmingRewardsDisplay({
   onHarvest,
   harvesting,
   disabled,
+  hideButton,
 }: FarmingRewardsDisplayProps) {
   const { t } = useTranslation()
 
@@ -46,9 +48,11 @@ export function FarmingRewardsDisplay({
         </RowBetween>
       </LightGreyCard>
 
-      <Button mt="16px" width="100%" disabled={disabled} onClick={onHarvest}>
-        {harvesting ? t('Harvesting...') : t('Harvest')}
-      </Button>
+      {hideButton ? null : (
+        <Button mt="16px" width="100%" disabled={disabled} onClick={onHarvest}>
+          {harvesting ? t('Harvesting...') : t('Harvest')}
+        </Button>
+      )}
     </>
   )
 }
