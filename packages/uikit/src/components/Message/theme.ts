@@ -1,3 +1,5 @@
+import { Variant } from "./types";
+
 const variants = {
   warning: {
     backgroundColor: "#FFB23719",
@@ -30,11 +32,8 @@ const variants = {
   warning60: {
     backgroundColor: "warning10",
     borderColor: "warning20",
-    iconColor: "warning50",
+    iconColor: "warning60",
   },
-} as const satisfies Record<
-  keyof typeof variants,
-  { backgroundColor: string; borderColor: string; iconColor?: string }
->;
+} as const satisfies Record<Variant, { backgroundColor: string; borderColor: string; iconColor?: string }>;
 
 export default variants;

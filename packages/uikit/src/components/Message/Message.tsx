@@ -75,7 +75,16 @@ const Message: React.FC<React.PropsWithChildren<MessageProps>> = ({
         <Flex>
           {showIcon && (
             <Box mr="12px">
-              {icon ?? <Icon color={variants[variant].iconColor ?? variants[variant].borderColor} width="24px" />}
+              {icon ?? (
+                <Icon
+                  color={
+                    "iconColor" in variants[variant]
+                      ? (variants[variant].iconColor as string)
+                      : (variants[variant].borderColor as string)
+                  }
+                  width="24px"
+                />
+              )}
             </Box>
           )}
           {children}
