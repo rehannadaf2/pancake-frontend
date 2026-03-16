@@ -304,7 +304,7 @@ export function EvmHarvestPanel({
               <Button mt="12px" width="100%" variant="primary60Outline" onClick={retryFailed}>
                 {t('Retry')}
               </Button>
-              <Message variant="warning" mt="12px">
+              <Message variant="warning60" mt="12px">
                 <MessageText>
                   {failedCount === 1
                     ? t('An error occurred during the harvest, please try again')

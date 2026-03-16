@@ -11,6 +11,7 @@ const MessageContext = React.createContext<MessageProps>({ variant: "success" })
 
 const Icons = {
   warning: WarningIcon,
+  warning60: WarningIcon,
   danger: ErrorIcon,
   success: CheckmarkCircleIcon,
   primary: InfoFilledIcon,
@@ -45,6 +46,7 @@ const colors = {
   danger: "failure",
   secondary: "#D67E0A",
   secondary60: "text",
+  warning60: "text",
 };
 
 export const MessageText: React.FC<React.PropsWithChildren<TextProps>> = ({ children, ...props }) => {
@@ -71,7 +73,11 @@ const Message: React.FC<React.PropsWithChildren<MessageProps>> = ({
     <MessageContext.Provider value={providerValue}>
       <MessageContainer variant={variant} {...props}>
         <Flex>
-          {showIcon && <Box mr="12px">{icon ?? <Icon color={variants[variant].borderColor} width="24px" />}</Box>}
+          {showIcon && (
+            <Box mr="12px">
+              {icon ?? <Icon color={variants[variant].iconColor ?? variants[variant].borderColor} width="24px" />}
+            </Box>
+          )}
           {children}
           {actionInline && action}
         </Flex>

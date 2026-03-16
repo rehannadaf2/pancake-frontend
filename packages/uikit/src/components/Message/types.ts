@@ -3,6 +3,7 @@ import { SpaceProps } from "styled-system";
 
 export const variants = {
   WARNING: "warning",
+  WARNING60: "warning60",
   DANGER: "danger",
   SUCCESS: "success",
   PRIMARY: "primary",

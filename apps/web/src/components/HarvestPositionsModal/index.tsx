@@ -1,5 +1,16 @@
 import { useTranslation } from '@pancakeswap/localization'
-import { Dots, FlexGap, ModalV2, ModalV2Props, MotionModal, Skeleton, Text } from '@pancakeswap/uikit'
+import {
+  CircleLoader,
+  Dots,
+  FlexGap,
+  Loading,
+  ModalV2,
+  ModalV2Props,
+  MotionModal,
+  Spinner,
+  SwapSpinner,
+  Text,
+} from '@pancakeswap/uikit'
 import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 import { useWallet } from '@solana/wallet-adapter-react'
@@ -60,8 +71,8 @@ export function HarvestEarningsModal({ isOpen, onDismiss }: HarvestEarningsModal
         width="480px"
       >
         {isLoading ? (
-          <FlexGap flexDirection="column" gap="12px">
-            <Skeleton height={120} borderRadius="24px" />
+          <FlexGap alignItems="center" gap="12px" mx="auto" mt="48px">
+            <CircleLoader size="20px" />
             <Text color="textSubtle" textAlign="center" fontSize="14px">
               <Dots>{t('Loading positions')}</Dots>
             </Text>
