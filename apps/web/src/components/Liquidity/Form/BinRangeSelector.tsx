@@ -126,7 +126,7 @@ export const BinRangeSelector: React.FC<BinRangeSelectorProps> = ({
     }
   }, [activeBinId, minBinId, maxBinId, setBinRange])
 
-  const [prevActiveBinId, setPrevActiveBinId] = useState<number | null>(activeBinId ?? null)
+  const [prevActiveBinId, setPrevActiveBinId] = useState<number | null>(null)
   useEffect(() => {
     if (activeBinId && activeBinId !== prevActiveBinId) {
       setDefaultBinRange()
