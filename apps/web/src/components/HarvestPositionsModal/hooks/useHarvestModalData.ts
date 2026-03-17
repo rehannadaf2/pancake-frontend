@@ -212,7 +212,6 @@ export function useHarvestModalData(): HarvestModalData {
         key,
         lpAddress: lpAddress as Address,
         bCakeWrapperAddress: farmConfig.bCakeWrapperAddress,
-        onHarvest: async () => undefined,
       })
     }
     for (const pos of v2Positions) {

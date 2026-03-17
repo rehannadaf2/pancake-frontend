@@ -29,7 +29,6 @@ export interface V2HarvestTarget {
   key: string
   lpAddress: Address
   bCakeWrapperAddress: Address
-  onHarvest: () => Promise<`0x${string}` | undefined>
 }
 
 interface UseEvmHarvestAllParams {
@@ -272,13 +271,17 @@ export function useEvmHarvestAll({ v3StakedTokenIds, v2Targets }: UseEvmHarvestA
       }
     }
 
-    for (const target of v2Targets) {
+    const v2Calls = buildV2Calldatas()
+    for (let i = 0; i < v2Targets.length; i++) {
+      const target = v2Targets[i]
+      const call = v2Calls[i]
       setStatus({ key: target.key, status: HarvestTxStatus.Pending })
       try {
         // eslint-disable-next-line no-await-in-loop
-        const hash = await target.onHarvest()
-        if (hash) {
-          setStatus({ key: target.key, status: HarvestTxStatus.Success, hash })
+        const receipt = await sendTx(call)
+        if (receipt?.status) {
+          setStatus({ key: target.key, status: HarvestTxStatus.Success, hash: receipt.transactionHash })
+          setLatestTxReceipt({ blockHash: receipt.blockHash, status: receipt.status })
         } else {
           setStatus({ key: target.key, status: HarvestTxStatus.Failed })
         }
@@ -295,6 +298,7 @@ export function useEvmHarvestAll({ v3StakedTokenIds, v2Targets }: UseEvmHarvestA
     v2Targets,
     buildInfinityCalldata,
     buildV3Calldata,
+    buildV2Calldatas,
     sendTx,
     setStatus,
     setLatestTxReceipt,
@@ -356,13 +360,17 @@ export function useEvmHarvestAll({ v3StakedTokenIds, v2Targets }: UseEvmHarvestA
         }
       }
 
-      for (const target of v2Targets) {
+      const v2Calls = buildV2Calldatas()
+      for (let i = 0; i < v2Targets.length; i++) {
+        const target = v2Targets[i]
+        const call = v2Calls[i]
         setStatus({ key: target.key, status: HarvestTxStatus.Pending })
         try {
           // eslint-disable-next-line no-await-in-loop
-          const hash = await target.onHarvest()
-          if (hash) {
-            setStatus({ key: target.key, status: HarvestTxStatus.Success, hash })
+          const receipt = await sendTx(call)
+          if (receipt?.status) {
+            setStatus({ key: target.key, status: HarvestTxStatus.Success, hash: receipt.transactionHash })
+            setLatestTxReceipt({ blockHash: receipt.blockHash, status: receipt.status })
           } else {
             setStatus({ key: target.key, status: HarvestTxStatus.Failed })
           }
@@ -382,9 +390,11 @@ export function useEvmHarvestAll({ v3StakedTokenIds, v2Targets }: UseEvmHarvestA
     v2Targets,
     buildInfinityCalldata,
     buildV3Calldata,
+    buildV2Calldatas,
     sendTx,
     setStatus,
     setHarvesting,
+    setLatestTxReceipt,
   ])
 
   return {
