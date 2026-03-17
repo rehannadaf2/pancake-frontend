@@ -1,17 +1,14 @@
+import { getPoolId } from '@pancakeswap/infinity-sdk'
 import { Box, Button, Text } from '@pancakeswap/uikit'
 import { useTranslation } from '@pancakeswap/localization'
-import BigNumber from 'bignumber.js'
-import { bscTokens } from '@pancakeswap/tokens'
-import { useUserAllFarmRewardsByChainIdFromAPI } from 'hooks/infinity/useFarmReward'
-import useAccountActiveChain from 'hooks/useAccountActiveChain'
-import { useCakePrice } from 'hooks/useCakePrice'
 import { useMemo } from 'react'
+import { bscTokens } from '@pancakeswap/tokens'
 import { InfinityBinPositionDetail } from 'state/farmsV4/state/accountPositions/type'
 import { PoolInfo } from 'state/farmsV4/state/type'
 import { useLatestTxReceipt } from 'state/farmsV4/state/accountPositions/hooks/useLatestTxReceipt'
-import useFarmInfinityActions from 'views/universalFarms/hooks/useFarmInfinityActions'
+import { useFarmInfinityPositionActions } from 'views/universalFarms/hooks/useFarmInfinityPositionActions'
 import { useCheckShouldSwitchNetwork } from 'views/universalFarms/hooks'
-import { useAccount } from 'wagmi'
+import useAccountActiveChain from 'hooks/useAccountActiveChain'
 import { FarmingRewardsDisplay } from '../../shared/FarmingRewardsDisplay'
 
 interface InfinityBinPositionHarvestProps {
@@ -21,31 +18,21 @@ interface InfinityBinPositionHarvestProps {
 
 export const InfinityBinPositionHarvest = ({ position, poolInfo }: InfinityBinPositionHarvestProps) => {
   const { t } = useTranslation()
-  const { address } = useAccount()
   const { chainId: activeChainId } = useAccountActiveChain()
   const { switchNetworkIfNecessary, isLoading: isSwitchNetworkLoading } = useCheckShouldSwitchNetwork()
   const [, setLatestTxReceipt] = useLatestTxReceipt()
 
   const chainId = position.chainId ?? poolInfo.chainId
   const needsSwitchNetwork = activeChainId !== chainId
+  const poolId = position.poolKey ? getPoolId(position.poolKey) : position.poolId
 
-  const { totalUnclaimedRewards } = useUserAllFarmRewardsByChainIdFromAPI({
-    chainId,
-    user: address,
-  })
-
-  const { onHarvest, attemptingTx, hasUnclaimedRewards } = useFarmInfinityActions({
-    chainId,
-    onDone: setLatestTxReceipt,
-  })
-
-  const cakePrice = useCakePrice()
-
-  const totalRewardsAmount = useMemo(
-    () => totalUnclaimedRewards.reduce((acc, item) => new BigNumber(item.totalReward).plus(acc), new BigNumber(0)),
-    [totalUnclaimedRewards],
-  )
-  const totalRewardsUSD = useMemo(() => totalRewardsAmount.times(cakePrice).toNumber(), [totalRewardsAmount, cakePrice])
+  const { rewardsCurrencyAmount, totalRewardsAmount, totalRewardsUSD, hasUnclaimedRewards, onHarvest, attemptingTx } =
+    useFarmInfinityPositionActions({
+      chainId,
+      poolId,
+      position,
+      onDone: (receipt) => setLatestTxReceipt(receipt ?? undefined),
+    })
 
   if (!hasUnclaimedRewards || totalRewardsAmount.isLessThanOrEqualTo(0)) {
     return (
@@ -61,7 +48,7 @@ export const InfinityBinPositionHarvest = ({ position, poolInfo }: InfinityBinPo
     <Box>
       <FarmingRewardsDisplay
         rewardToken={bscTokens.cake}
-        rewardsAmount={totalRewardsAmount.toFixed(4)}
+        rewardsAmount={rewardsCurrencyAmount?.toSignificant(6) ?? totalRewardsAmount.toFixed(6)}
         rewardsUSD={totalRewardsUSD}
         onHarvest={onHarvest}
         harvesting={attemptingTx}
