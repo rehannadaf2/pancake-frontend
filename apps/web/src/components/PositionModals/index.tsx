@@ -127,7 +127,7 @@ export function PositionModal({
         headerBorderColor="transparent"
         bodyPadding="0 24px 16px"
         onDismiss={onDismiss}
-        width="452px"
+        width={['100%', null, '452px']}
       >
         <FlexGap gap="16px" mb="16px">
           {availableTabs.map((t_) => (

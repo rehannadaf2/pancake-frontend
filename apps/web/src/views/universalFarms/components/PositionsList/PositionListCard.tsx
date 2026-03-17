@@ -1,6 +1,6 @@
 import { Protocol } from '@pancakeswap/farms'
 import { getPoolId } from '@pancakeswap/infinity-sdk'
-import { Box, Flex, FlexGap, Text, FeeTier, Button, useMatchBreakpoints } from '@pancakeswap/uikit'
+import { Box, Flex, FlexGap, Text, FeeTier, Button, useMatchBreakpoints, useModalV2 } from '@pancakeswap/uikit'
 import { FiatNumberDisplay, NextLinkFromReactRouter } from '@pancakeswap/widgets-internal'
 import { TokenPairLogo } from 'components/TokenImage'
 import { unwrappedToken } from '@pancakeswap/tokens'
@@ -27,7 +27,7 @@ import { formatDollarAmount } from 'views/V3Info/utils/numbers'
 import { Currency } from '@pancakeswap/sdk'
 import { useAccount } from 'wagmi'
 import { getLiquidityDetailURL } from 'config/constants/liquidity'
-import React, { useMemo, useState, useEffect } from 'react'
+import React, { useMemo, useState, useEffect, useCallback } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { getPoolDetailPageLink } from 'utils/getPoolLink'
 import {
@@ -57,6 +57,8 @@ import {
 } from 'state/farmsV4/state/accountPositions/type'
 import { InfinityPoolInfo, type PoolInfo, V2PoolInfo, StablePoolInfo, SolanaV3PoolInfo } from 'state/farmsV4/state/type'
 import { isInfinityProtocol } from 'utils/protocols'
+import { PositionModal } from 'components/PositionModals'
+import { PositionTabType } from 'components/PositionModals/types'
 import styled from 'styled-components'
 import { isSolana, NonEVMChainId } from '@pancakeswap/chains'
 import { TokenInfo } from '@pancakeswap/solana-core-sdk'
@@ -201,6 +203,21 @@ export const PositionListCard: React.FC<PositionListCardProps> = ({ position, po
     isEVMV3 && 'fee' in position ? position.fee : undefined,
   )
   const poolForFees = isEVMV3 ? v3Info.pool ?? evmV3Pool : undefined
+
+  // Position Modal state (same as desktop ExpandedRowContent)
+  const {
+    isOpen: isPositionModalOpen,
+    setIsOpen: setPositionModalOpen,
+    onDismiss: onPositionModalDismiss,
+  } = useModalV2()
+  const [modalPresetTab, setModalPresetTab] = useState<PositionTabType>('Add')
+  const openPositionModal = useCallback(
+    (tab: PositionTabType) => {
+      setModalPresetTab(tab)
+      setPositionModalOpen(true)
+    },
+    [setPositionModalOpen],
+  )
 
   // Combine Solana price range with EVM price range
   // Extract raw numeric values from formatted strings for inversion support (matching SolanaV3PositionRow)
@@ -431,6 +448,11 @@ export const PositionListCard: React.FC<PositionListCardProps> = ({ position, po
 
           {/* Action buttons using unified PositionActionButtons component */}
           <ActionsRow>
+            {!removed && pool?.protocol && (
+              <Button width="100%" onClick={() => openPositionModal('Add')}>
+                {t('Add Liquidity')}
+              </Button>
+            )}
             <PositionActionButtons
               position={position}
               pool={pool}
@@ -467,6 +489,16 @@ export const PositionListCard: React.FC<PositionListCardProps> = ({ position, po
           </ActionsRow>
         </CardBody>
       </Card>
+      <PositionModal
+        key={modalPresetTab}
+        isOpen={isPositionModalOpen}
+        onDismiss={onPositionModalDismiss}
+        poolId={pool?.poolId ?? pool?.lpAddress ?? pool?.stableSwapAddress}
+        protocol={pool?.protocol}
+        chainId={pool?.chainId}
+        position={position}
+        presetTab={modalPresetTab}
+      />
     </>
   )
 }
