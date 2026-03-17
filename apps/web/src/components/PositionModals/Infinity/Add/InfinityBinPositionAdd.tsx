@@ -125,13 +125,19 @@ export const InfinityBinPositionAdd = ({ position, poolInfo }: InfinityBinPositi
 
   const totalAmount0 = useMemo(() => {
     if (!currency0 || !position.reserveOfBins) return undefined
-    const total = position.reserveOfBins.reduce((acc, bin) => acc + bin.reserveX, 0n)
+    const total = position.reserveOfBins.reduce((acc, bin) => {
+      if (bin.userSharesOfBin === 0n || bin.totalShares === 0n) return acc
+      return acc + (bin.userSharesOfBin * bin.reserveX) / bin.totalShares
+    }, 0n)
     return CurrencyAmount.fromRawAmount(currency0, total)
   }, [position.reserveOfBins, currency0])
 
   const totalAmount1 = useMemo(() => {
     if (!currency1 || !position.reserveOfBins) return undefined
-    const total = position.reserveOfBins.reduce((acc, bin) => acc + bin.reserveY, 0n)
+    const total = position.reserveOfBins.reduce((acc, bin) => {
+      if (bin.userSharesOfBin === 0n || bin.totalShares === 0n) return acc
+      return acc + (bin.userSharesOfBin * bin.reserveY) / bin.totalShares
+    }, 0n)
     return CurrencyAmount.fromRawAmount(currency1, total)
   }, [position.reserveOfBins, currency1])
 

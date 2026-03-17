@@ -53,37 +53,48 @@ export const InfinityBinPositionRemove = ({ position, poolInfo }: InfinityBinPos
   const [, setBinQueryState] = useBinRangeQueryState()
   const [selectedBinNums, setSelectedBinNums] = useState<number[]>([position.minBinId ?? 0, position.maxBinId ?? 0])
 
+  const userReserveOfBins = useMemo(() => {
+    if (!position.reserveOfBins) return []
+    return position.reserveOfBins
+      .filter((bin) => bin.userSharesOfBin > 0n)
+      .map((bin) => ({
+        ...bin,
+        reserveX: bin.totalShares > 0n ? (bin.userSharesOfBin * bin.reserveX) / bin.totalShares : 0n,
+        reserveY: bin.totalShares > 0n ? (bin.userSharesOfBin * bin.reserveY) / bin.totalShares : 0n,
+      }))
+  }, [position.reserveOfBins])
+
   const amount0 = useMemo(() => {
-    if (!currency0 || !position.reserveOfBins) return undefined
+    if (!currency0 || !userReserveOfBins.length) return undefined
     const [min, max] = selectedBinNums
-    const reserveX = position.reserveOfBins.reduce((acc, bin) => {
+    const reserveX = userReserveOfBins.reduce((acc, bin) => {
       if (bin.binId >= min && bin.binId <= max) return acc + bin.reserveX
       return acc
     }, 0n)
     return CurrencyAmount.fromRawAmount(currency0, reserveX)
-  }, [position.reserveOfBins, currency0, selectedBinNums])
+  }, [userReserveOfBins, currency0, selectedBinNums])
 
   const amount1 = useMemo(() => {
-    if (!currency1 || !position.reserveOfBins) return undefined
+    if (!currency1 || !userReserveOfBins.length) return undefined
     const [min, max] = selectedBinNums
-    const reserveY = position.reserveOfBins.reduce((acc, bin) => {
+    const reserveY = userReserveOfBins.reduce((acc, bin) => {
       if (bin.binId >= min && bin.binId <= max) return acc + bin.reserveY
       return acc
     }, 0n)
     return CurrencyAmount.fromRawAmount(currency1, reserveY)
-  }, [position.reserveOfBins, currency1, selectedBinNums])
+  }, [userReserveOfBins, currency1, selectedBinNums])
 
   const totalAmount0 = useMemo(() => {
-    if (!currency0 || !position.reserveOfBins) return undefined
-    const total = position.reserveOfBins.reduce((acc, bin) => acc + bin.reserveX, 0n)
+    if (!currency0 || !userReserveOfBins.length) return undefined
+    const total = userReserveOfBins.reduce((acc, bin) => acc + bin.reserveX, 0n)
     return CurrencyAmount.fromRawAmount(currency0, total)
-  }, [position.reserveOfBins, currency0])
+  }, [userReserveOfBins, currency0])
 
   const totalAmount1 = useMemo(() => {
-    if (!currency1 || !position.reserveOfBins) return undefined
-    const total = position.reserveOfBins.reduce((acc, bin) => acc + bin.reserveY, 0n)
+    if (!currency1 || !userReserveOfBins.length) return undefined
+    const total = userReserveOfBins.reduce((acc, bin) => acc + bin.reserveY, 0n)
     return CurrencyAmount.fromRawAmount(currency1, total)
-  }, [position.reserveOfBins, currency1])
+  }, [userReserveOfBins, currency1])
 
   const { data: currency0Usd } = useCurrencyUsdPrice(currency0)
   const { data: currency1Usd } = useCurrencyUsdPrice(currency1)
@@ -124,8 +135,8 @@ export const InfinityBinPositionRemove = ({ position, poolInfo }: InfinityBinPos
   }, [collectAsWrappedNative, currency0, currency1])
 
   const handleRemoveLiquidity = useCallback(async () => {
-    if (!pool || !account || !poolKey || !position.reserveOfBins) return
-    const selectedBins = position.reserveOfBins.filter(
+    if (!pool || !account || !poolKey || !userReserveOfBins.length) return
+    const selectedBins = userReserveOfBins.filter(
       (bin) => bin.binId >= selectedBinNums[0] && bin.binId <= selectedBinNums[1],
     )
     const ids = selectedBins.map((bin) => bin.binId)
@@ -154,7 +165,7 @@ export const InfinityBinPositionRemove = ({ position, poolInfo }: InfinityBinPos
   }, [
     account,
     allowedSlippage,
-    position.reserveOfBins,
+    userReserveOfBins,
     deadline,
     pool,
     poolKey,
