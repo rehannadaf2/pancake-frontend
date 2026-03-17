@@ -11,6 +11,7 @@ import {
   RowBetween,
   ScanLink,
   Text,
+  Toggle,
 } from '@pancakeswap/uikit'
 import { LightGreyCard } from '@pancakeswap/widgets-internal'
 import CurrencyInputPanelSimplify from 'components/CurrencyInputPanelSimplify'
@@ -20,7 +21,7 @@ import AddLiquidity, { LP2ChildrenProps } from 'views/AddLiquidity'
 import { LiquiditySlippageButton } from 'views/Swap/components/SlippageButton'
 import { CurrencyField as Field } from 'utils/types'
 import useAccountActiveChain from 'hooks/useAccountActiveChain'
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, useState, type ChangeEvent } from 'react'
 import { CommitButton } from 'components/CommitButton'
 import { useExpertMode } from '@pancakeswap/utils/user'
 import { logGTMClickAddLiquidityEvent } from 'utils/customGTMEventTracking'
@@ -32,6 +33,7 @@ import { getBlockExploreLink } from 'utils'
 import { Pair } from '@pancakeswap/sdk'
 import { MevProtectToggle } from 'views/Mev/MevProtectToggle'
 import { useCheckShouldSwitchNetwork } from 'views/universalFarms/hooks'
+import useNativeCurrency from 'hooks/useNativeCurrency'
 
 interface V2PositionAddProps {
   position: V2LPDetail // Unused
