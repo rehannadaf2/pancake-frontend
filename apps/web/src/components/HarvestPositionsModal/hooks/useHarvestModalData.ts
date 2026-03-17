@@ -31,9 +31,8 @@ import type { V2PoolInfo, StablePoolInfo } from 'state/farmsV4/state/type'
 import { formatBigInt } from '@pancakeswap/utils/formatBalance'
 import { useAllEvmChainIds } from 'views/universalFarms/hooks/useMultiChains'
 
-import type { SolanaPositionItem } from '../SolanaHarvestPanel'
 import type { V2HarvestTarget } from './useEvmHarvestAll'
-import type { SolanaHarvestTarget } from './useSolanaHarvestAll'
+import { useSolanaHarvestModalData, type SolanaHarvestModalData } from './useSolanaHarvestModalData'
 
 export interface V3HarvestPositionEnriched {
   position: PositionDetail
@@ -56,9 +55,9 @@ export interface HarvestModalData {
   v3StakedTokenIds: string[]
   v2Targets: V2HarvestTarget[]
   otherChainsWithRewards: number[]
-  solanaPositions: SolanaPositionItem[]
+  solanaPositions: SolanaHarvestModalData['solanaPositions']
   solanaTotalEarningsUSD: number
-  solanaHarvestTargets: SolanaHarvestTarget[]
+  solanaHarvestTargets: SolanaHarvestModalData['solanaHarvestTargets']
   totalEarningsUSD: number
   isLoading: boolean
 }
@@ -247,9 +246,7 @@ export function useHarvestModalData(): HarvestModalData {
     [infinityHarvestPositions, v3HarvestPositions],
   )
 
-  // Solana placeholder
-  const solanaPositions = useMemo((): SolanaPositionItem[] => [], [])
-  const solanaHarvestTargets = useMemo((): SolanaHarvestTarget[] => [], [])
+  const { solanaPositions, solanaTotalEarningsUSD, solanaHarvestTargets, solanaLoading } = useSolanaHarvestModalData()
 
   return {
     v3HarvestPositions,
@@ -261,9 +258,9 @@ export function useHarvestModalData(): HarvestModalData {
     v2Targets,
     otherChainsWithRewards,
     solanaPositions,
-    solanaTotalEarningsUSD: 0,
+    solanaTotalEarningsUSD,
     solanaHarvestTargets,
-    totalEarningsUSD: evmTotalEarningsUSD,
-    isLoading: isLoading || v3EarningsLoading,
+    totalEarningsUSD: evmTotalEarningsUSD + solanaTotalEarningsUSD,
+    isLoading: isLoading || v3EarningsLoading || solanaLoading,
   }
 }
