@@ -44,8 +44,39 @@ export const V2PositionAdd = ({ poolInfo }: V2PositionAddProps) => {
 
   // Currencies
   const { token0, token1 } = poolInfo
-  const currency0 = token0 as Currency
-  const currency1 = token1 as Currency
+  const { chainId } = poolInfo
+
+  // Native token toggle
+  const native = useNativeCurrency(chainId)
+  const [useNativeInstead, setUseNativeInstead] = useState(true)
+
+  const canUseNativeCurrency = useMemo(() => {
+    return (
+      (token0 as Currency)?.wrapped?.address === native.wrapped.address ||
+      (token1 as Currency)?.wrapped?.address === native.wrapped.address
+    )
+  }, [token0, token1, native])
+
+  const handleToggleNative = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      setUseNativeInstead(e.target.checked)
+    },
+    [setUseNativeInstead],
+  )
+
+  const currency0 = useMemo<Currency>(() => {
+    if (useNativeInstead && canUseNativeCurrency && (token0 as Currency)?.wrapped?.address === native.wrapped.address) {
+      return native as Currency
+    }
+    return token0 as Currency
+  }, [token0, useNativeInstead, canUseNativeCurrency, native])
+
+  const currency1 = useMemo<Currency>(() => {
+    if (useNativeInstead && canUseNativeCurrency && (token1 as Currency)?.wrapped?.address === native.wrapped.address) {
+      return native as Currency
+    }
+    return token1 as Currency
+  }, [token1, useNativeInstead, canUseNativeCurrency, native])
 
   return (
     <Box>
@@ -56,6 +87,15 @@ export const V2PositionAdd = ({ poolInfo }: V2PositionAddProps) => {
         </Text>
         <LiquiditySlippageButton />
       </RowBetween>
+
+      {canUseNativeCurrency && (
+        <RowBetween mt="16px">
+          <Text color="textSubtle" small>
+            {t('Use %symbol% instead', { symbol: native.symbol })}
+          </Text>
+          <Toggle scale="sm" checked={useNativeInstead} onChange={handleToggleNative} />
+        </RowBetween>
+      )}
 
       <AddLiquidity currencyA={currency0} currencyB={currency1}>
         {(props) => <V2PositionAddInner {...props} />}

@@ -14,6 +14,7 @@ import {
   RowBetween,
   ScanLink,
   Text,
+  Toggle,
 } from '@pancakeswap/uikit'
 import { LightGreyCard } from '@pancakeswap/widgets-internal'
 import CurrencyInputPanelSimplify from 'components/CurrencyInputPanelSimplify'
@@ -23,7 +24,7 @@ import AddLiquidity, { LP2ChildrenProps } from 'views/AddLiquidity'
 import { LiquiditySlippageButton } from 'views/Swap/components/SlippageButton'
 import { CurrencyField as Field } from 'utils/types'
 import useAccountActiveChain from 'hooks/useAccountActiveChain'
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, useState, type ChangeEvent } from 'react'
 import { CommitButton } from 'components/CommitButton'
 import { useExpertMode } from '@pancakeswap/utils/user'
 import { logGTMClickAddLiquidityEvent } from 'utils/customGTMEventTracking'
@@ -43,6 +44,7 @@ import { formatDollarAmount } from 'views/V3Info/utils/numbers'
 import { FormattedSlippage } from 'views/AddLiquidity/AddStableLiquidity/components'
 import { useCheckAndSwitchChain } from 'hooks/useCheckAndSwitchChain'
 import { useCheckShouldSwitchNetwork } from 'views/universalFarms/hooks'
+import useNativeCurrency from 'hooks/useNativeCurrency'
 
 interface SSPositionAddProps {
   position: StableLPDetail // Unused
@@ -53,8 +55,39 @@ export const SSPositionAdd = ({ poolInfo }: SSPositionAddProps) => {
 
   // Currencies
   const { token0, token1 } = poolInfo
-  const currency0 = token0 as Currency
-  const currency1 = token1 as Currency
+  const { chainId } = poolInfo
+
+  // Native token toggle
+  const native = useNativeCurrency(chainId)
+  const [useNativeInstead, setUseNativeInstead] = useState(true)
+
+  const canUseNativeCurrency = useMemo(() => {
+    return (
+      (token0 as Currency)?.wrapped?.address === native.wrapped.address ||
+      (token1 as Currency)?.wrapped?.address === native.wrapped.address
+    )
+  }, [token0, token1, native])
+
+  const handleToggleNative = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      setUseNativeInstead(e.target.checked)
+    },
+    [setUseNativeInstead],
+  )
+
+  const currency0 = useMemo<Currency>(() => {
+    if (useNativeInstead && canUseNativeCurrency && (token0 as Currency)?.wrapped?.address === native.wrapped.address) {
+      return native as Currency
+    }
+    return token0 as Currency
+  }, [token0, useNativeInstead, canUseNativeCurrency, native])
+
+  const currency1 = useMemo<Currency>(() => {
+    if (useNativeInstead && canUseNativeCurrency && (token1 as Currency)?.wrapped?.address === native.wrapped.address) {
+      return native as Currency
+    }
+    return token1 as Currency
+  }, [token1, useNativeInstead, canUseNativeCurrency, native])
 
   // Stable config
   const stableConfig = useStableConfig({
@@ -72,9 +105,14 @@ export const SSPositionAdd = ({ poolInfo }: SSPositionAddProps) => {
         <LiquiditySlippageButton />
       </RowBetween>
 
-      {/* <AddLiquidity currencyA={currency0} currencyB={currency1}>
-        {(props) => <SSPositionAddInner {...props} />}
-      </AddLiquidity> */}
+      {canUseNativeCurrency && (
+        <RowBetween mt="16px">
+          <Text color="textSubtle" small>
+            {t('Use %symbol% instead', { symbol: native.symbol })}
+          </Text>
+          <Toggle scale="sm" checked={useNativeInstead} onChange={handleToggleNative} />
+        </RowBetween>
+      )}
 
       <StableConfigContext.Provider value={stableConfig}>
         <AddStableLiquidity currencyA={currency0} currencyB={currency1}>

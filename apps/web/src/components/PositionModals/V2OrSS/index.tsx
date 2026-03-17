@@ -53,7 +53,7 @@ export const V2OrSSPositionModalContent = ({
             {poolInfo?.isFarming && <Tag variant="primary60">{t('Farming')}</Tag>}
           </FlexGap>
         }
-        aprDisplay={<AprCalculatorV2 pool={poolInfo} showTitle={false} derived showApyButton={false} fontSize="16px" />}
+        aprDisplay={<AprCalculatorV2 pool={poolInfo} showTitle={false} showApyButton={false} fontSize="16px" />}
       />
 
       <Box mt="16px">
