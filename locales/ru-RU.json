@@ -4146,7 +4146,6 @@
   "Enter in USD": "Введите в USD",
   "Infinity | SS": "Бесконечность | SS",
   "3. Pool Filter": "3. Фильтр пула",
-  "Pool is not created yet.": "Пул еще не создан.",
   "Slippage bonus": "Бонус за ребалансировку",
   "Extra LP tokens earned when depositing the low-balance coin in the pool, appearing as a bonus for helping rebalance.": "Дополнительные LP-токены, получаемые при внесении в пул монеты с низким балансом, которые являются бонусом за помощь в ребалансировке.",
   "Upcoming launches on CAKE.PAD": "Предстоящие запуски на CAKE.PAD",
@@ -4214,5 +4213,12 @@
   "Chart display error": "Ошибка отображения графика",
   "Stable": "Стабильный",
   "stable": "стабильный",
-  "AI": "ИИ"
+  "AI": "ИИ",
+  "Phantom EVM currently supports Ethereum, Base, and Monad only, current chainId is %chainId%": "Phantom EVM в настоящее время поддерживает только Ethereum, Base и Monad, текущий chainId: %chainId%",
+  "Switch to Ethereum, Base, or Monad, or use another wallet.": "Переключитесь на Ethereum, Base или Monad или используйте другой кошелек.",
+  "Classic": "Классический",
+  "Add Stable Liquidity": "Добавить стабильную ликвидность",
+  "Create Infinity Stable Pool": "Создать стабильный пул Infinity",
+  "Pair address copied": "Адрес пары скопирован",
+  "Unsupported network": "Неподдерживаемая сеть"
 }

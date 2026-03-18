@@ -4146,7 +4146,6 @@
   "Enter in USD": "Εισαγωγή σε USD",
   "Infinity | SS": "Infinity | SS",
   "3. Pool Filter": "3. Φίλτρο Δεξαμενής",
-  "Pool is not created yet.": "Η δεξαμενή δεν έχει δημιουργηθεί ακόμη.",
   "Slippage bonus": "Μπόνους απόκλισης",
   "Extra LP tokens earned when depositing the low-balance coin in the pool, appearing as a bonus for helping rebalance.": "Επιπλέον LP tokens που κερδίζετε κατά την κατάθεση του νομίσματος με το χαμηλό υπόλοιπο στη δεξαμενή, τα οποία εμφανίζονται ως μπόνους για τη βοήθεια στην εξισορρόπηση.",
   "Upcoming launches on CAKE.PAD": "Προσεχείς εκκινήσεις στο CAKE.PAD",
@@ -4214,5 +4213,12 @@
   "Chart display error": "Σφάλμα εμφάνισης γραφήματος",
   "Stable": "Σταθερό",
   "stable": "σταθερό",
-  "AI": "AI"
+  "AI": "AI",
+  "Phantom EVM currently supports Ethereum, Base, and Monad only, current chainId is %chainId%": "Το Phantom EVM υποστηρίζει προς το παρόν μόνο Ethereum, Base, και Monad. Το τρέχον chainId είναι %chainId%",
+  "Switch to Ethereum, Base, or Monad, or use another wallet.": "Μεταβείτε σε Ethereum, Base, ή Monad, ή χρησιμοποιήστε ένα άλλο πορτοφόλι.",
+  "Classic": "Κλασικό",
+  "Add Stable Liquidity": "Προσθήκη σταθερής ρευστότητας",
+  "Create Infinity Stable Pool": "Δημιουργία Infinity Stable Pool",
+  "Pair address copied": "Η διεύθυνση ζεύγους αντιγράφηκε",
+  "Unsupported network": "Μη υποστηριζόμενο δίκτυο"
 }

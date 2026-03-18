@@ -4146,7 +4146,6 @@
   "Enter in USD": "Ilagay sa USD",
   "Infinity | SS": "Infinity | SS",
   "3. Pool Filter": "3. Filter ng Pool",
-  "Pool is not created yet.": "Hindi pa nalilikha ang pool.",
   "Slippage bonus": "Slippage bonus",
   "Extra LP tokens earned when depositing the low-balance coin in the pool, appearing as a bonus for helping rebalance.": "Dagdag na LP token na kinita kapag nagdeposito ng coin na may mababang balanse sa pool, na lumalabas bilang bonus para makatulong sa pag-rebalance.",
   "Upcoming launches on CAKE.PAD": "Mga paparating na launch sa CAKE.PAD",
@@ -4214,5 +4213,12 @@
   "Chart display error": "Error sa pag-display ng chart",
   "Stable": "Stable",
   "stable": "stable",
-  "AI": "AI"
+  "AI": "AI",
+  "Phantom EVM currently supports Ethereum, Base, and Monad only, current chainId is %chainId%": "Kasalukuyang sinusuportahan lang ng Phantom EVM ang Ethereum, Base, at Monad, ang kasalukuyang chainId ay %chainId%",
+  "Switch to Ethereum, Base, or Monad, or use another wallet.": "Lumipat sa Ethereum, Base, o Monad, o gumamit ng ibang wallet.",
+  "Classic": "Classic",
+  "Add Stable Liquidity": "Magdagdag ng Stable Liquidity",
+  "Create Infinity Stable Pool": "Gumawa ng Infinity Stable Pool",
+  "Pair address copied": "Kinopya ang pair address",
+  "Unsupported network": "Hindi suportadong network"
 }

@@ -4146,7 +4146,6 @@
   "Enter in USD": "USDで入力",
   "Infinity | SS": "Infinity | SS",
   "3. Pool Filter": "3. プールのフィルター",
-  "Pool is not created yet.": "プールはまだ作成されていません。",
   "Slippage bonus": "スリッページボーナス",
   "Extra LP tokens earned when depositing the low-balance coin in the pool, appearing as a bonus for helping rebalance.": "プール内の残高が少ないコインを入金すると、リバランスに貢献したボーナスとして追加のLPトークンを獲得できます。",
   "Upcoming launches on CAKE.PAD": "CAKE.PADで近日公開予定のローンチ",
@@ -4214,5 +4213,12 @@
   "Chart display error": "チャート表示エラー",
   "Stable": "ステーブル",
   "stable": "ステーブル",
-  "AI": "AI"
+  "AI": "AI",
+  "Phantom EVM currently supports Ethereum, Base, and Monad only, current chainId is %chainId%": "Phantom EVMは現在、Ethereum、Base、Monadのみに対応しています。現在のchainIdは%chainId%です。",
+  "Switch to Ethereum, Base, or Monad, or use another wallet.": "Ethereum、Base、またはMonadに切り替えるか、別のウォレットを使用してください。",
+  "Classic": "クラシック",
+  "Add Stable Liquidity": "ステーブル流動性の追加",
+  "Create Infinity Stable Pool": "Infinityステーブルプールの作成",
+  "Pair address copied": "ペアアドレスをコピーしました",
+  "Unsupported network": "非対応のネットワーク"
 }

@@ -4146,7 +4146,6 @@
   "Enter in USD": "Nhập bằng USD",
   "Infinity | SS": "Vô hạn | SS",
   "3. Pool Filter": "3. Bộ lọc Pool",
-  "Pool is not created yet.": "Pool chưa được tạo.",
   "Slippage bonus": "Thưởng trượt giá",
   "Extra LP tokens earned when depositing the low-balance coin in the pool, appearing as a bonus for helping rebalance.": "Lượng token LP thưởng thêm bạn nhận được khi nạp coin có số dư thấp vào pool. Đây là phần thưởng cho việc giúp pool cân bằng lại.",
   "Upcoming launches on CAKE.PAD": "Các đợt ra mắt sắp tới trên CAKE.PAD",
@@ -4214,5 +4213,12 @@
   "Chart display error": "Lỗi hiển thị biểu đồ",
   "Stable": "Ổn định",
   "stable": "ổn định",
-  "AI": "AI"
+  "AI": "AI",
+  "Phantom EVM currently supports Ethereum, Base, and Monad only, current chainId is %chainId%": "Phantom EVM hiện chỉ hỗ trợ Ethereum, Base và Monad, chainId hiện tại là %chainId%",
+  "Switch to Ethereum, Base, or Monad, or use another wallet.": "Chuyển sang Ethereum, Base, hoặc Monad, hoặc sử dụng một ví khác.",
+  "Classic": "Cổ điển",
+  "Add Stable Liquidity": "Thêm thanh khoản Stable",
+  "Create Infinity Stable Pool": "Tạo Bể Infinity Stable",
+  "Pair address copied": "Đã sao chép địa chỉ cặp",
+  "Unsupported network": "Mạng không được hỗ trợ"
 }

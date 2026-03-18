@@ -4146,7 +4146,6 @@
   "Enter in USD": "输入美元金额",
   "Infinity | SS": "Infinity | SS",
   "3. Pool Filter": "3. 流动性池筛选器",
-  "Pool is not created yet.": "流动性池尚未创建。",
   "Slippage bonus": "滑点奖励",
   "Extra LP tokens earned when depositing the low-balance coin in the pool, appearing as a bonus for helping rebalance.": "向池中存入低余额代币时可赚取额外的 LP 代币，作为帮助池子重新平衡的奖励。",
   "Upcoming launches on CAKE.PAD": "CAKE.PAD 即将上线项目",
@@ -4214,5 +4213,12 @@
   "Chart display error": "图表显示错误",
   "Stable": "稳定",
   "stable": "稳定",
-  "AI": "人工智能"
+  "AI": "人工智能",
+  "Phantom EVM currently supports Ethereum, Base, and Monad only, current chainId is %chainId%": "Phantom EVM 目前仅支持 Ethereum、Base 和 Monad，当前链 ID 是 %chainId%",
+  "Switch to Ethereum, Base, or Monad, or use another wallet.": "切换至 Ethereum、Base 或 Monad，或使用其他钱包。",
+  "Classic": "经典",
+  "Add Stable Liquidity": "添加稳定流动性",
+  "Create Infinity Stable Pool": "创建 Infinity 稳定池",
+  "Pair address copied": "交易对地址已复制",
+  "Unsupported network": "不支持的网络"
 }

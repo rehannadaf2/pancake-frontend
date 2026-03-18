@@ -4146,7 +4146,6 @@
   "Enter in USD": "USD-তে লিখুন",
   "Infinity | SS": "অসীম | SS",
   "3. Pool Filter": "৩. পুল ফিল্টার",
-  "Pool is not created yet.": "পুল এখনো তৈরি করা হয়নি।",
   "Slippage bonus": "স্লিপেজ বোনাস",
   "Extra LP tokens earned when depositing the low-balance coin in the pool, appearing as a bonus for helping rebalance.": "পুলে কম-ব্যালেন্সের কয়েন জমা করার সময় অতিরিক্ত LP টোকেন উপার্জন করা হয়, যা রি-ব্যালেন্সে সাহায্য করার জন্য একটি বোনাস হিসাবে প্রদর্শিত হয়।",
   "Upcoming launches on CAKE.PAD": "CAKE.PAD-এ আসন্ন লঞ্চ",
@@ -4214,5 +4213,12 @@
   "Chart display error": "চার্ট প্রদর্শনে ত্রুটি",
   "Stable": "স্টেবল",
   "stable": "স্টেবল",
-  "AI": "AI"
+  "AI": "AI",
+  "Phantom EVM currently supports Ethereum, Base, and Monad only, current chainId is %chainId%": "Phantom EVM বর্তমানে শুধুমাত্র Ethereum, Base, এবং Monad সমর্থন করে, বর্তমান chainId হলো %chainId%",
+  "Switch to Ethereum, Base, or Monad, or use another wallet.": "Ethereum, Base, বা Monad-এ স্যুইচ করুন, অথবা অন্য একটি ওয়ালেট ব্যবহার করুন।",
+  "Classic": "ক্লাসিক",
+  "Add Stable Liquidity": "স্টেবল লিকুইডিটি যোগ করুন",
+  "Create Infinity Stable Pool": "ইনফিনিটি স্টেবল পুল তৈরি করুন",
+  "Pair address copied": "পেয়ার অ্যাড্রেস কপি করা হয়েছে",
+  "Unsupported network": "অসমর্থিত নেটওয়ার্ক"
 }

@@ -4146,7 +4146,6 @@
   "Enter in USD": "USD இல் உள்ளிடவும்",
   "Infinity | SS": "முடிவிலி | SS",
   "3. Pool Filter": "3. பூல் வடிகட்டி",
-  "Pool is not created yet.": "பூல் இன்னும் உருவாக்கப்படவில்லை.",
   "Slippage bonus": "சரிவு போனஸ்",
   "Extra LP tokens earned when depositing the low-balance coin in the pool, appearing as a bonus for helping rebalance.": "பூலில் குறைந்த இருப்புள்ள காயினை டெபாசிட் செய்யும்போது, மறுசமநிலைக்கு உதவ போனஸாகக் கூடுதல் LP டோக்கன்கள் கிடைக்கும்.",
   "Upcoming launches on CAKE.PAD": "CAKE.PAD இல் வரவிருக்கும் வெளியீடுகள்",
@@ -4214,5 +4213,12 @@
   "Chart display error": "விளக்கப்படக் காட்சிப் பிழை",
   "Stable": "ஸ்டேபிள்",
   "stable": "ஸ்டேபிள்",
-  "AI": "AI"
+  "AI": "AI",
+  "Phantom EVM currently supports Ethereum, Base, and Monad only, current chainId is %chainId%": "Phantom EVM தற்போது Ethereum, Base மற்றும் Monad ஆகியவற்றை மட்டுமே ஆதரிக்கிறது, தற்போதைய chainId %chainId%",
+  "Switch to Ethereum, Base, or Monad, or use another wallet.": "Ethereum, Base, அல்லது Monad-க்கு மாறவும், அல்லது வேறு வாலட்டைப் பயன்படுத்தவும்.",
+  "Classic": "கிளாசிக்",
+  "Add Stable Liquidity": "ஸ்டேபிள் லிக்விடிட்டியைச் சேர்க்கவும்",
+  "Create Infinity Stable Pool": "Infinity ஸ்டேபிள் பூலை உருவாக்கவும்",
+  "Pair address copied": "ஜோடி முகவரி நகலெடுக்கப்பட்டது",
+  "Unsupported network": "ஆதரிக்கப்படாத நெட்வொர்க்"
 }

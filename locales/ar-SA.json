@@ -4146,7 +4146,6 @@
   "Enter in USD": "أدخل بـ USD",
   "Infinity | SS": "لا نهائي | SS",
   "3. Pool Filter": "3. فلتر المجمع",
-  "Pool is not created yet.": "لم يتم إنشاء المجمع بعد.",
   "Slippage bonus": "مكافأة الانزلاق السعري",
   "Extra LP tokens earned when depositing the low-balance coin in the pool, appearing as a bonus for helping rebalance.": "رموز LP إضافية يتم كسبها عند إيداع العملة ذات الرصيد المنخفض في المجمع، وتظهر كمكافأة للمساعدة في إعادة التوازن.",
   "Upcoming launches on CAKE.PAD": "الإطلاقات القادمة على CAKE.PAD",
@@ -4214,5 +4213,12 @@
   "Chart display error": "خطأ في عرض الرسم البياني",
   "Stable": "مستقر",
   "stable": "مستقر",
-  "AI": "الذكاء الاصطناعي"
+  "AI": "الذكاء الاصطناعي",
+  "Phantom EVM currently supports Ethereum, Base, and Monad only, current chainId is %chainId%": "يدعم Phantom EVM حاليًا شبكات Ethereum، و Base، و Monad فقط، ومعرف السلسلة الحالي هو %chainId%",
+  "Switch to Ethereum, Base, or Monad, or use another wallet.": "قم بالتبديل إلى Ethereum أو Base أو Monad، أو استخدم محفظة أخرى.",
+  "Classic": "كلاسيكي",
+  "Add Stable Liquidity": "إضافة سيولة مستقرة",
+  "Create Infinity Stable Pool": "إنشاء مجمع سيولة Infinity المستقر",
+  "Pair address copied": "تم نسخ عنوان الزوج",
+  "Unsupported network": "شبكة غير مدعومة"
 }

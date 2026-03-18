@@ -4146,7 +4146,6 @@
   "Enter in USD": "Adja meg USD-ben",
   "Infinity | SS": "Infinity | SS",
   "3. Pool Filter": "3. Pool szűrő",
-  "Pool is not created yet.": "A pool még nincs létrehozva.",
   "Slippage bonus": "Csúszás bónusz",
   "Extra LP tokens earned when depositing the low-balance coin in the pool, appearing as a bonus for helping rebalance.": "Extra LP tokenek, amelyeket a pool alacsony egyenlegű érméjének befizetésekor kap, bónuszként az újraegyensúlyozásért.",
   "Upcoming launches on CAKE.PAD": "Közelgő indulások a CAKE.PAD-en",
@@ -4214,5 +4213,12 @@
   "Chart display error": "Diagram megjelenítési hiba",
   "Stable": "Stabil",
   "stable": "stabil",
-  "AI": "AI"
+  "AI": "AI",
+  "Phantom EVM currently supports Ethereum, Base, and Monad only, current chainId is %chainId%": "A Phantom EVM jelenleg csak az Ethereum, a Base és a Monad hálózatokat támogatja. A jelenlegi chainId: %chainId%.",
+  "Switch to Ethereum, Base, or Monad, or use another wallet.": "Váltson az Ethereum, Base vagy Monad hálózatra, vagy használjon másik tárcát.",
+  "Classic": "Klasszikus",
+  "Add Stable Liquidity": "Stabil likviditás hozzáadása",
+  "Create Infinity Stable Pool": "Infinity Stable Pool létrehozása",
+  "Pair address copied": "A pár címe másolva.",
+  "Unsupported network": "Nem támogatott hálózat"
 }

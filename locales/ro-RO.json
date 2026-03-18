@@ -4146,7 +4146,6 @@
   "Enter in USD": "Introdu în USD",
   "Infinity | SS": "Infinit | SS",
   "3. Pool Filter": "3. Filtru fond comun",
-  "Pool is not created yet.": "Fondul comun nu este încă creat.",
   "Slippage bonus": "Bonus de slippage",
   "Extra LP tokens earned when depositing the low-balance coin in the pool, appearing as a bonus for helping rebalance.": "Jetoane LP suplimentare câștigate la depunerea monedei cu sold redus în fondul comun, apărând ca un bonus pentru ajutor la reechilibrare.",
   "Upcoming launches on CAKE.PAD": "Lansări viitoare pe CAKE.PAD",
@@ -4214,5 +4213,12 @@
   "Chart display error": "Eroare de afișare a graficului",
   "Stable": "Stabil",
   "stable": "stabil",
-  "AI": "AI"
+  "AI": "AI",
+  "Phantom EVM currently supports Ethereum, Base, and Monad only, current chainId is %chainId%": "Phantom EVM acceptă în prezent doar Ethereum, Base și Monad, ID-ul de rețea curent este %chainId%",
+  "Switch to Ethereum, Base, or Monad, or use another wallet.": "Comutați la Ethereum, Base sau Monad sau utilizați un alt portofel.",
+  "Classic": "Clasic",
+  "Add Stable Liquidity": "Adăugați lichiditate stabilă",
+  "Create Infinity Stable Pool": "Creați fond de lichiditate stabil Infinity",
+  "Pair address copied": "Adresă pereche copiată",
+  "Unsupported network": "Rețea neacceptată"
 }

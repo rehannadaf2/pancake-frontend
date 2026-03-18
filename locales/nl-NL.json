@@ -4146,7 +4146,6 @@
   "Enter in USD": "Voer in USD",
   "Infinity | SS": "Oneindig | SS",
   "3. Pool Filter": "3. Poolfilter",
-  "Pool is not created yet.": "Pool is nog niet aangemaakt.",
   "Slippage bonus": "Slippage-bonus",
   "Extra LP tokens earned when depositing the low-balance coin in the pool, appearing as a bonus for helping rebalance.": "Extra LP-tokens verdiend bij het storten van de munt met een lage balans in de pool, die verschijnen als een bonus voor het helpen herbalanceren.",
   "Upcoming launches on CAKE.PAD": "Aankomende lanceringen op CAKE.PAD",
@@ -4214,5 +4213,12 @@
   "Chart display error": "Grafiekweergavefout",
   "Stable": "Stabiel",
   "stable": "stabiel",
-  "AI": "AI"
+  "AI": "AI",
+  "Phantom EVM currently supports Ethereum, Base, and Monad only, current chainId is %chainId%": "Phantom EVM ondersteunt momenteel alleen Ethereum, Base en Monad, de huidige chainId is %chainId%",
+  "Switch to Ethereum, Base, or Monad, or use another wallet.": "Schakel over naar Ethereum, Base of Monad, of gebruik een andere wallet.",
+  "Classic": "Klassiek",
+  "Add Stable Liquidity": "Stabiele liquiditeit toevoegen",
+  "Create Infinity Stable Pool": "Creëer Infinity Stable Pool",
+  "Pair address copied": "Adres van het paar gekopieerd",
+  "Unsupported network": "Niet-ondersteund netwerk"
 }

@@ -4146,7 +4146,6 @@
   "Enter in USD": "Syötä USD-määrä",
   "Infinity | SS": "Ääretön | SS",
   "3. Pool Filter": "3. Poolisuodatin",
-  "Pool is not created yet.": "Poolia ei ole vielä luotu.",
   "Slippage bonus": "Slippage-bonus",
   "Extra LP tokens earned when depositing the low-balance coin in the pool, appearing as a bonus for helping rebalance.": "Ansaitset ylimääräisiä LP-tokeneita tallettamalla pooliin matalamman saldon kolikkoa. Bonus auttaa uudelleentasapainottamaan poolia.",
   "Upcoming launches on CAKE.PAD": "Tulevat julkaisut CAKE.PADissa",
@@ -4214,5 +4213,12 @@
   "Chart display error": "Kaavion näyttövirhe",
   "Stable": "Vakaa",
   "stable": "vakaa",
-  "AI": "AI"
+  "AI": "AI",
+  "Phantom EVM currently supports Ethereum, Base, and Monad only, current chainId is %chainId%": "Phantom EVM tukee tällä hetkellä vain Ethereumia, Basea ja Monadia, nykyinen ketjutunnus on %chainId%",
+  "Switch to Ethereum, Base, or Monad, or use another wallet.": "Vaihda Ethereumiin, Baseen tai Monadiin, tai käytä toista lompakkoa.",
+  "Classic": "Klassinen",
+  "Add Stable Liquidity": "Lisää vakaata likviditeettiä",
+  "Create Infinity Stable Pool": "Luo Infinity Stable -pooli",
+  "Pair address copied": "Parin osoite kopioitu",
+  "Unsupported network": "Ei-tuettu verkko"
 }
